@@ -1,0 +1,5 @@
+name=Hello World Nim
+author=Samuele Zolfanelli
+description=A small demo of the Nim API
+bundleID=com.samdze.hellonim
+imagePath=

@@ -1,0 +1,22 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Universal PDX",
+            "type": "shell",
+            "command": "nim all"
+        },
+        {
+            "label": "Build Simulator PDX",
+            "type": "shell",
+            "command": "nim simulator"
+        },
+        {
+            "label": "Build Device PDX",
+            "type": "shell",
+            "command": "nim device"
+        }
+    ]
+}
