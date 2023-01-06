@@ -3,6 +3,7 @@
 import std/importutils
 import bindings/sound
 import bindings/api
+import system
 
 # Only export public symbols, then import all
 export sound
@@ -25,10 +26,13 @@ proc newAudioSample*(this: ptr PlaydateSound, bytes: int32): AudioSample =
     privateAccess(PlaydateSoundSample)
     result = AudioSample(resource: this.sample.newSampleBuffer(bytes))
 
-proc newAudioSample*(this: ptr PlaydateSound, path: string): AudioSample =
+proc newAudioSample*(this: ptr PlaydateSound, path: string): AudioSample {.raises: [IOError].} =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSample)
-    result = AudioSample(resource: this.sample.load(path.cstring))
+    let resource = this.sample.load(path.cstring)
+    if resource == nil:
+        raise newException(IOError, fmt"file {path} not found: No such file")
+    result = AudioSample(resource: resource)
 
 proc load*(this: AudioSample, path: string) =
     privateAccess(PlaydateSound)
@@ -60,16 +64,18 @@ proc newFilePlayer*(this: ptr PlaydateSound): FilePlayer =
     privateAccess(PlaydateSoundFileplayer)
     result = FilePlayer(resource: this.fileplayer.newPlayer())
 
-proc newFilePlayer*(this: ptr PlaydateSound, path: string): FilePlayer =
+proc newFilePlayer*(this: ptr PlaydateSound, path: string): FilePlayer {.raises: [IOError].} =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
     result = FilePlayer(resource: this.fileplayer.newPlayer())
-    discard this.fileplayer.loadIntoPlayer(result.resource, path.cstring)
+    if this.fileplayer.loadIntoPlayer(result.resource, path.cstring) == 0:
+        raise newException(IOError, fmt"file {path} not found: No such file")
 
-proc load*(this: FilePlayer, path: string) =
+proc load*(this: FilePlayer, path: string) {.raises: [IOError].} =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
-    discard playdate.sound.fileplayer.loadIntoPlayer(this.resource, path.cstring)
+    if playdate.sound.fileplayer.loadIntoPlayer(this.resource, path.cstring) == 0:
+        raise newException(IOError, fmt"file {path} not found: No such file")
 
 proc play*(this: FilePlayer, repeat: int) =
     privateAccess(PlaydateSound)
@@ -149,7 +155,7 @@ proc `sample=`*(this: SamplePlayer, sample: AudioSample) =
     playdate.sound.sampleplayer.setSample(this.resource, if sample != nil: sample.resource else: nil)
     this.sample = sample
 
-proc newSamplePlayer*(this: ptr PlaydateSound, path: string): SamplePlayer =
+proc newSamplePlayer*(this: ptr PlaydateSound, path: string): SamplePlayer {.raises: [IOError].} =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     result = SamplePlayer(resource: this.sampleplayer.newPlayer())

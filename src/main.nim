@@ -53,18 +53,28 @@ proc update(): int =
     return 1
 
 # This is the application entrypoint and event handler
-proc handler(event: PDSystemEvent, keycode: uint) =
+proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
     if event == kEventInit:
         playdate.display.setRefreshRate(50)
         # Enables the accelerometer even if it's not used here
         playdate.system.setPeripheralsEnabled(kAllPeripherals)
 
-        samplePlayer = playdate.sound.newSamplePlayer("/audio/jingle")
-        filePlayer = playdate.sound.newFilePlayer("/audio/finally_see_the_light")
+        # Errors are handled through exceptions
+        try:
+            samplePlayer = playdate.sound.newSamplePlayer("/audio/jingle")
+        except:
+            playdate.system.logToConsole(getCurrentExceptionMsg())
+        # Inline try/except
+        filePlayer = try: playdate.sound.newFilePlayer("/audio/finally_see_the_light") except: nil
 
         filePlayer.play(0)
 
-        # Errors are handled through exceptions
+        # Add a checkmark menu item that plays a sound when switched and unpaused
+        discard playdate.system.addCheckmarkMenuItem("Checkmark", false,
+            proc(menuItem: PDMenuItemCheckmark) =
+                samplePlayer.play(1, 1.0)
+        )
+
         font = try: playdate.graphics.newFont(FONT_PATH) except: nil
         playdate.graphics.setFont(font)
 
