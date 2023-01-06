@@ -17,7 +17,7 @@ type PDMenuItemPtr {.importc: "PDMenuItem*", header: "pd_api.h".} = pointer
 type
     PDMenuItem* = ref object of RootObj
         resource: PDMenuItemPtr
-        active: bool
+        active {.requiresinit.}: bool
     PDMenuItemButton* = ref object of PDMenuItem
         callback*: proc(menuItem: PDMenuItemButton) {.raises: [].}
     PDMenuItemCheckmark* = ref object of PDMenuItem
@@ -33,61 +33,61 @@ type PDCallbackFunctionRaw {.importc: "PDCallbackFunction", header: "pd_api.h".}
 type PDMenuItemCallbackFunctionRaw {.importc: "PDMenuItemCallbackFunction", header: "pd_api.h".} = proc(userdata: pointer) {.cdecl.}
 
 # System
-sdktype PlaydateSys:
-    type PlaydateSys {.importc: "const struct playdate_sys", header: "pd_api.h".} = object
+sdktype:
+    type PlaydateSys* {.importc: "const struct playdate_sys", header: "pd_api.h".} = object
         realloc {.importc: "realloc".}: proc (`ptr`: pointer; size: csize_t): pointer {.
             cdecl, raises: [].}
         formatString {.importc: "formatString".}: proc (ret: cstringArray; fmt: cstring): cint {.
             cdecl, varargs, raises: [].}
-        logToConsoleRaw {.importc: "logToConsole".}: proc (fmt: cstring) {.cdecl, varargs, raises: [].}
-        errorRaw {.importc: "error".}: proc (fmt: cstring) {.cdecl, varargs, raises: [].}
+        logToConsole {.importc: "logToConsole".}: proc (fmt: cstring) {.cdecl, varargs, raises: [].}
+        error {.importc: "error".}: proc (fmt: cstring) {.cdecl, varargs, raises: [].}
         getLanguage {.importsdk.}: proc (): PDLanguage
-        getCurrentTimeMillisecondsRaw {.importsdk.}: proc (): cuint
-        getSecondsSinceEpochRaw {.importc: "getSecondsSinceEpoch".}: proc (milliseconds: ptr cuint): cuint {.cdecl, raises: [].}
+        getCurrentTimeMilliseconds {.importsdk.}: proc (): cuint
+        getSecondsSinceEpoch {.importc: "getSecondsSinceEpoch".}: proc (milliseconds: ptr cuint): cuint {.cdecl, raises: [].}
         drawFPS {.importsdk.}: proc (x: cint; y: cint)
-        setUpdateCallbackRaw {.importc: "setUpdateCallback".}: proc (update: PDCallbackFunctionRaw, userdata: pointer) {.cdecl, raises: [].}
-        getButtonStateRaw {.importc: "getButtonState".}: proc (current: ptr PDButton;
+        setUpdateCallback {.importc: "setUpdateCallback".}: proc (update: PDCallbackFunctionRaw, userdata: pointer) {.cdecl, raises: [].}
+        getButtonState {.importc: "getButtonState".}: proc (current: ptr PDButton;
             pushed: ptr PDButton; released: ptr PDButton) {.cdecl, raises: [].}
         setPeripheralsEnabled* {.importc.}: proc (mask: PDPeripherals) {.cdecl, raises: [].}
-        getAccelerometerRaw {.importc: "getAccelerometer".}: proc (outx: ptr cfloat;
+        getAccelerometer {.importc: "getAccelerometer".}: proc (outx: ptr cfloat;
             outy: ptr cfloat; outz: ptr cfloat) {.cdecl, raises: [].}
         getCrankChange {.importsdk.}: proc (): cfloat
         getCrankAngle {.importsdk.}: proc (): cfloat
-        isCrankDockedRaw {.importc: "isCrankDocked".}: proc (): cint {.cdecl, raises: [].}
-        setCrankSoundsDisabledRaw {.importc: "setCrankSoundsDisabled".}: proc (flag: cint): cint {.
+        isCrankDocked {.importc: "isCrankDocked".}: proc (): cint {.cdecl, raises: [].}
+        setCrankSoundsDisabled {.importc: "setCrankSoundsDisabled".}: proc (flag: cint): cint {.
             cdecl, raises: [].}               ##  returns previous setting
-        getFlippedRaw {.importc: "getFlipped".}: proc (): cint {.cdecl, raises: [].}
-        setAutoLockDisabledRaw {.importc: "setAutoLockDisabled".}: proc (disable: cint) {.
+        getFlipped {.importc: "getFlipped".}: proc (): cint {.cdecl, raises: [].}
+        setAutoLockDisabled {.importc: "setAutoLockDisabled".}: proc (disable: cint) {.
             cdecl, raises: [].}
         
         setMenuImage {.importsdk.}: proc (bitmap: LCDBitmapPtr;
             xOffset: cint)
-        addMenuItemRaw {.importc: "addMenuItem".}: proc (title: cstring;
+        addMenuItem {.importc: "addMenuItem".}: proc (title: cstring;
             callback: PDMenuItemCallbackFunctionRaw; userdata: pointer): PDMenuItemPtr {.
             cdecl, raises: [].}
-        addCheckmarkMenuItemRaw {.importc: "addCheckmarkMenuItem".}: proc (title: cstring;
+        addCheckmarkMenuItem {.importc: "addCheckmarkMenuItem".}: proc (title: cstring;
             value: cint; callback: PDMenuItemCallbackFunctionRaw; userdata: pointer): PDMenuItemPtr {.
             cdecl, raises: [].}
-        addOptionsMenuItemRaw {.importc: "addOptionsMenuItem".}: proc (title: cstring;
+        addOptionsMenuItem {.importc: "addOptionsMenuItem".}: proc (title: cstring;
             optionTitles: ConstCharPtr; optionsCount: cint;
             f: PDMenuItemCallbackFunctionRaw; userdata: pointer): PDMenuItemPtr {.cdecl, raises: [].}
-        removeAllMenuItemsRaw {.importc: "removeAllMenuItems".}: proc () {.cdecl, raises: [].}
-        removeMenuItemRaw {.importc: "removeMenuItem".}: proc (menuItem: PDMenuItemPtr) {.
+        removeAllMenuItems {.importc: "removeAllMenuItems".}: proc () {.cdecl, raises: [].}
+        removeMenuItem {.importc: "removeMenuItem".}: proc (menuItem: PDMenuItemPtr) {.
             cdecl, raises: [].}
-        getMenuItemValueRaw {.importc: "getMenuItemValue".}: proc (
+        getMenuItemValue {.importc: "getMenuItemValue".}: proc (
             menuItem: PDMenuItemPtr): cint {.cdecl, raises: [].}
-        setMenuItemValueRaw {.importc: "setMenuItemValue".}: proc (
+        setMenuItemValue {.importc: "setMenuItemValue".}: proc (
             menuItem: PDMenuItemPtr; value: cint) {.cdecl, raises: [].}
-        getMenuItemTitleRaw {.importc: "getMenuItemTitle".}: proc (
+        getMenuItemTitle {.importc: "getMenuItemTitle".}: proc (
             menuItem: PDMenuItemPtr): ConstChar {.cdecl, raises: [].}
-        setMenuItemTitleRaw {.importc: "setMenuItemTitle".}: proc (
+        setMenuItemTitle {.importc: "setMenuItemTitle".}: proc (
             menuItem: PDMenuItemPtr; title: cstring) {.cdecl, raises: [].}
-        getMenuItemUserdataRaw {.importc: "getMenuItemUserdata".}: proc (
+        getMenuItemUserdata {.importc: "getMenuItemUserdata".}: proc (
             menuItem: PDMenuItemPtr): pointer {.cdecl, raises: [].}
-        setMenuItemUserdataRaw {.importc: "setMenuItemUserdata".}: proc (
+        setMenuItemUserdata {.importc: "setMenuItemUserdata".}: proc (
             menuItem: PDMenuItemPtr; ud: pointer) {.cdecl, raises: [].}
         
-        getReduceFlashingRaw {.importc: "getReduceFlashing".}: proc (): cint {.cdecl, raises: [].} ##  1.1
+        getReduceFlashing {.importc: "getReduceFlashing".}: proc (): cint {.cdecl, raises: [].} ##  1.1
         getElapsedTime {.importsdk.}: proc (): cfloat
         resetElapsedTime* {.importc: "resetElapsedTime".}: proc () {.cdecl, raises: [].} ##  1.4
         getBatteryPercentage {.importsdk.}: proc (): cfloat

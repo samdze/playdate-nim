@@ -5,12 +5,16 @@ import std/[importutils, lists, sequtils]
 import graphics {.all.}
 import types {.all.}
 import bindings/[api, utils]
-import bindings/sprite {.all.}
+import bindings/sprite
+
+# Only export public symbols, then import all
 export sprite
+{.hint[DuplicateModuleImport]: off.}
+import bindings/sprite {.all.}
 
 type
     LCDSpriteObj = object
-        resource: LCDSpritePtr
+        resource {.requiresinit.}: LCDSpritePtr
         bitmap: LCDBitmap # Resource the sprite has to keep in memory
         stencil: LCDBitmap # Resource the sprite has to keep in memory
         collisionFunction: LCDSpriteCollisionFilterProc
@@ -33,58 +37,57 @@ proc `=destroy`(this: var LCDSpriteObj) =
 
 var spritesData = initDoublyLinkedList[LCDSprite]()
 
-proc setAlwaysRedraw*(this: PlaydateSprite, flag: bool) =
+proc setAlwaysRedraw*(this: ptr PlaydateSprite, flag: bool) =
     privateAccess(PlaydateSprite)
-    this.setAlwaysRedrawRaw(if flag: 1 else: 0)
+    this.setAlwaysRedraw(if flag: 1 else: 0)
 
-proc moveTo*(this: PlaydateSprite, sprite: LCDSprite, x: cfloat, y: cfloat) =
+proc moveTo*(this: LCDSprite, x: cfloat, y: cfloat) =
     privateAccess(PlaydateSprite)
-    this.moveToRaw(sprite.resource, x, y)
+    playdate.sprite.moveTo(this.resource, x, y)
 
-proc moveBy*(this: PlaydateSprite, sprite: LCDSprite, x: cfloat, y: cfloat) =
+proc moveBy*(this: LCDSprite, x: cfloat, y: cfloat) =
     privateAccess(PlaydateSprite)
-    this.moveByRaw(sprite.resource, x, y)
+    playdate.sprite.moveBy(this.resource, x, y)
 
 # Sprites memory managament
-proc newSprite*(this: PlaydateSprite): LCDSprite =
+proc newSprite*(this: ptr PlaydateSprite): LCDSprite =
     privateAccess(PlaydateSprite)
-    let spritePtr = this.newSpriteRaw()
-    let sprite = LCDSprite(resource: spritePtr)
-    return sprite
+    let spritePtr = this.newSprite()
+    return LCDSprite(resource: spritePtr)
 
-proc copy*(this: PlaydateSprite, sprite: LCDSprite): LCDSprite =
+proc copy*(this: LCDSprite): LCDSprite =
     privateAccess(PlaydateSprite)
-    let newSpritePtr = this.copyRaw(sprite.resource)
-    return LCDSprite(resource: newSpritePtr, bitmap: sprite.bitmap, stencil: sprite.stencil)
+    let newSpritePtr = playdate.sprite.copy(this.resource)
+    return LCDSprite(resource: newSpritePtr, bitmap: this.bitmap, stencil: this.stencil)
 
-proc addSprite*(this: PlaydateSprite, sprite: LCDSprite) =
+proc add*(this: LCDSprite) =
     privateAccess(PlaydateSprite)
-    if this.getUserdata(sprite.resource) != nil:
+    if playdate.sprite.getUserdata(this.resource) != nil:
         return
-    this.addSpriteRaw(sprite.resource)
-    let dataNode = newDoublyLinkedNode[LCDSprite](sprite)
+    playdate.sprite.addSprite(this.resource)
+    let dataNode = newDoublyLinkedNode[LCDSprite](this)
     spritesData.add(dataNode)
     # let tailAddr = addr(spritesData.tail)
     # playdate.system.logToConsole(fmt"tail addr is {tailAddr.repr}")
-    this.setUserdata(sprite.resource, addr(dataNode[]))
+    playdate.sprite.setUserdata(this.resource, addr(dataNode[]))
 
-proc removeSprite*(this: PlaydateSprite, sprite: LCDSprite) =
+proc remove*(this: LCDSprite) =
     privateAccess(PlaydateSprite)
-    let dataNode = cast[ptr DoublyLinkedNodeObj[LCDSprite]](this.getUserdata(sprite.resource))
+    let dataNode = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(this.resource))
     if dataNode == nil:
         return
-    this.removeSpriteRaw(sprite.resource)
+    playdate.sprite.removeSprite(this.resource)
     if dataNode.prev != nil:
         spritesData.remove(dataNode.prev.next)
     else:
         spritesData.remove(spritesData.head)
     # spritesData.remove(dataNode[])
-    this.setUserdata(sprite.resource, nil)
+    playdate.sprite.setUserdata(this.resource, nil)
 
-proc removeSprites*(this: PlaydateSprite, sprites: seq[LCDSprite]) =
+proc removeSprites*(this: ptr PlaydateSprite, sprites: seq[LCDSprite]) =
     privateAccess(PlaydateSprite)
     let spritePointers = sprites.map(proc(s: LCDSprite): LCDSpritePtr = return s.resource)
-    this.removeSpritesRaw(cast[ptr LCDSpritePtr](unsafeAddr(spritePointers[0])), spritePointers.len.cint)
+    this.removeSprites(cast[ptr LCDSpritePtr](unsafeAddr(spritePointers[0])), spritePointers.len.cint)
     for i, s in sprites:
         let dataNode = cast[ptr DoublyLinkedNodeObj[LCDSprite]](this.getUserdata(s.resource))
         if dataNode == nil:
@@ -96,82 +99,82 @@ proc removeSprites*(this: PlaydateSprite, sprites: seq[LCDSprite]) =
         # spritesData.remove(dataNode[])
         this.setUserdata(s.resource, nil)
 
-proc removeAllSprites*(this: PlaydateSprite) =
+proc removeAllSprites*(this: ptr PlaydateSprite) =
     privateAccess(PlaydateSprite)
-    this.removeAllSpritesRaw()
+    this.removeAllSprites()
     for s in spritesData.mitems:
         this.setUserdata(s.resource, nil)
     spritesData = initDoublyLinkedList[LCDSprite]()
 
-proc setBounds*(this: PlaydateSprite, sprite: LCDSprite, bounds: PDRect) =
+proc `bounds=`*(this: LCDSprite, bounds: PDRect) =
     privateAccess(PlaydateSprite)
-    this.setBoundsRaw(sprite.resource, bounds)
+    playdate.sprite.setBounds(this.resource, bounds)
 
-proc getBounds*(this: PlaydateSprite, sprite: LCDSprite): PDRect =
+proc bounds*(this: LCDSprite): PDRect =
     privateAccess(PlaydateSprite)
-    return this.getBoundsRaw(sprite.resource)
+    return playdate.sprite.getBounds(this.resource)
 
-proc setImage*(this: PlaydateSprite, sprite: LCDSprite, image: LCDBitmap, flip: LCDBitmapFlip) =
+proc setImage*(this: LCDSprite, image: LCDBitmap, flip: LCDBitmapFlip) =
     privateAccess(PlaydateSprite)
     privateAccess(LCDBitmap)
-    this.setImageRaw(sprite.resource, image.resource, flip)
-    sprite.bitmap = image
+    playdate.sprite.setImage(this.resource, image.resource, flip)
+    this.bitmap = image
 
-proc getImage*(this: PlaydateSprite, sprite: LCDSprite): LCDBitmap =
+proc getImage*(this: LCDSprite): LCDBitmap =
     privateAccess(PlaydateSprite)
-    return sprite.bitmap
+    return this.bitmap
 
-proc setSize*(this: PlaydateSprite, sprite: LCDSprite, width: float, height: float) =
+proc setSize*(this: ptr PlaydateSprite, sprite: LCDSprite, width: float, height: float) =
     privateAccess(PlaydateSprite)
-    this.setSizeRaw(sprite.resource, width.cfloat, height.cfloat)
+    this.setSize(sprite.resource, width.cfloat, height.cfloat)
 
-proc setZIndex*(this: PlaydateSprite, sprite: LCDSprite, zIndex: int16) =
+proc `zIndex=`*(this: LCDSprite, zIndex: int16) =
     privateAccess(PlaydateSprite)
-    this.setZIndexRaw(sprite.resource, zIndex)
+    playdate.sprite.setZIndex(this.resource, zIndex)
 
-proc getZIndex*(this: PlaydateSprite, sprite: LCDSprite): int16 =
+proc zIndex*(this: LCDSprite): int16 =
     privateAccess(PlaydateSprite)
-    return this.getZIndexRaw(sprite.resource)
+    return playdate.sprite.getZIndex(this.resource)
 
-proc setDrawMode*(this: PlaydateSprite, sprite: LCDSprite, mode: LCDBitmapDrawMode) =
+proc setDrawMode*(this: LCDSprite, mode: LCDBitmapDrawMode) =
     privateAccess(PlaydateSprite)
-    this.setDrawModeRaw(sprite.resource, mode)
+    playdate.sprite.setDrawMode(this.resource, mode)
 
-proc setImageFlip*(this: PlaydateSprite, sprite: LCDSprite, flip: LCDBitmapFlip) =
+proc `imageFlip=`*(this: LCDSprite, flip: LCDBitmapFlip) =
     privateAccess(PlaydateSprite)
-    this.setImageFlipRaw(sprite.resource, flip)
+    playdate.sprite.setImageFlip(this.resource, flip)
 
-proc getImageFlip*(this: PlaydateSprite, sprite: LCDSprite): LCDBitmapFlip =
+proc imageFlip*(this: LCDSprite): LCDBitmapFlip =
     privateAccess(PlaydateSprite)
-    return this.getImageFlipRaw(sprite.resource)
+    return playdate.sprite.getImageFlip(this.resource)
 
 
 
-proc setCollisionsEnabled*(this: PlaydateSprite, sprite: LCDSprite, flag: bool) =
+proc `collisionsEnabled=`*(this: LCDSprite, flag: bool) =
     privateAccess(PlaydateSprite)
-    this.setCollisionsEnabledRaw(sprite.resource, if flag: 1 else: 0)
+    playdate.sprite.setCollisionsEnabled(this.resource, if flag: 1 else: 0)
 
-proc collisionsEnabled*(this: PlaydateSprite, sprite: LCDSprite): bool =
+proc collisionsEnabled*(this: LCDSprite): bool =
     privateAccess(PlaydateSprite)
-    return this.collisionsEnabledRaw(sprite.resource) == 1
+    return playdate.sprite.collisionsEnabled(this.resource) == 1
 
 
 
-proc setVisible*(this: PlaydateSprite, sprite: LCDSprite, flag: bool) =
+proc `visible=`*(this: LCDSprite, flag: bool) =
     privateAccess(PlaydateSprite)
-    this.setVisibleRaw(sprite.resource, if flag: 1 else: 0)
+    playdate.sprite.setVisible(this.resource, if flag: 1 else: 0)
 
-proc isVisible*(this: PlaydateSprite, sprite: LCDSprite): bool =
+proc visible*(this: LCDSprite): bool =
     privateAccess(PlaydateSprite)
-    return this.isVisibleRaw(sprite.resource) == 1
+    return playdate.sprite.isVisible(this.resource) == 1
 
-proc setOpaque*(this: PlaydateSprite, sprite: LCDSprite, flag: bool) =
+proc setOpaque*(this: LCDSprite, flag: bool) =
     privateAccess(PlaydateSprite)
-    this.setOpaqueRaw(sprite.resource, if flag: 1 else: 0)
+    playdate.sprite.setOpaque(this.resource, if flag: 1 else: 0)
 
-proc markDirty*(this: PlaydateSprite, sprite: LCDSprite) =
+proc markDirty*(this: LCDSprite) =
     privateAccess(PlaydateSprite)
-    this.markDirtyRaw(sprite.resource)
+    playdate.sprite.markDirty(this.resource)
 
 
 # --- Update function.
@@ -180,10 +183,10 @@ proc privateUpdateFunction(sprite: LCDSpritePtr) {.cdecl, exportc, raises: [].} 
     let spriteRef = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(sprite)).value
     spriteRef.updateFunction(spriteRef)
 
-proc setUpdateFunction*(this: PlaydateSprite, sprite: LCDSprite, update: LCDSpriteUpdateFunction) =
+proc setUpdateFunction*(this: LCDSprite, update: LCDSpriteUpdateFunction) =
     privateAccess(PlaydateSprite)
-    sprite.updateFunction = update
-    this.setUpdateFunctionRaw(sprite.resource, if update != nil: privateUpdateFunction else: nil)
+    this.updateFunction = update
+    playdate.sprite.setUpdateFunction(this.resource, if update != nil: privateUpdateFunction else: nil)
 
 # --- Draw function.
 proc privateDrawFunction(sprite: LCDSpritePtr, bounds: PDRect, drawRect: PDRect) {.cdecl, exportc, raises: [].} =
@@ -191,32 +194,32 @@ proc privateDrawFunction(sprite: LCDSpritePtr, bounds: PDRect, drawRect: PDRect)
     let spriteRef = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(sprite)).value
     spriteRef.drawFunction(spriteRef, bounds, drawRect)
 
-proc setDrawFunction*(this: PlaydateSprite, sprite: LCDSprite, draw: LCDSpriteDrawFunction) =
+proc setDrawFunction*(this: LCDSprite, draw: LCDSpriteDrawFunction) =
     privateAccess(PlaydateSprite)
-    sprite.drawFunction = draw
-    this.setDrawFunctionRaw(sprite.resource, if draw != nil: privateDrawFunction else: nil)
+    this.drawFunction = draw
+    playdate.sprite.setDrawFunction(this.resource, if draw != nil: privateDrawFunction else: nil)
 
 
 
 
-proc getPosition*(this: PlaydateSprite, sprite: LCDSprite): tuple[x: float, y: float] =
+proc getPosition*(this: LCDSprite): tuple[x: float, y: float] =
     privateAccess(PlaydateSprite)
     var x, y: cfloat
-    this.getPositionRaw(sprite.resource, addr(x), addr(y))
+    playdate.sprite.getPosition(this.resource, addr(x), addr(y))
     return (x: x.float, y: y.float)
 
 
-proc setCollideRect*(this: PlaydateSprite, sprite: LCDSprite, collideRect: PDRect) =
+proc `collideRect=`*(this: LCDSprite, collideRect: PDRect) =
     privateAccess(PlaydateSprite)
-    this.setCollideRectRaw(sprite.resource, collideRect)
+    playdate.sprite.setCollideRect(this.resource, collideRect)
 
-proc getCollideRect*(this: PlaydateSprite, sprite: LCDSprite): PDRect =
+proc collideRect*(this: LCDSprite): PDRect =
     privateAccess(PlaydateSprite)
-    return this.getCollideRectRaw(sprite.resource)
+    return playdate.sprite.getCollideRect(this.resource)
 
-proc clearCollideRect*(this: PlaydateSprite, sprite: LCDSprite) =
+proc clearCollideRect*(this: LCDSprite) =
     privateAccess(PlaydateSprite)
-    this.clearCollideRectRaw(sprite.resource)
+    playdate.sprite.clearCollideRect(this.resource)
 
 # --- Collisions function.
 proc privateCollisionResponse(sprite: LCDSpritePtr; other: LCDSpritePtr): SpriteCollisionResponseType {.cdecl, exportc, raises: [].} =
@@ -225,10 +228,11 @@ proc privateCollisionResponse(sprite: LCDSpritePtr; other: LCDSpritePtr): Sprite
     let otherRef = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(other)).value
     return spriteRef.collisionFunction(spriteRef, otherRef)
 
-proc setCollisionResponseFunction*(this: PlaydateSprite, sprite: LCDSprite, filter: LCDSpriteCollisionFilterProc) =
+proc setCollisionResponseFunction*(this: LCDSprite, filter: LCDSpriteCollisionFilterProc) =
     privateAccess(PlaydateSprite)
-    sprite.collisionFunction = filter
-    this.setCollisionResponseFunctionRaw(sprite.resource, if filter != nil: privateCollisionResponse else: nil)
+    this.collisionFunction = filter
+    playdate.sprite.setCollisionResponseFunction(this.resource, if filter != nil: privateCollisionResponse else: nil)
+
 
 proc sprite*(this: SpriteCollisionInfo): LCDSprite =
     privateAccess(PlaydateSprite)
@@ -260,37 +264,38 @@ proc other*(this: SpriteCollisionInfo): LCDSprite =
 # proc `=destroy`(this: var SeqSpriteCollisionInfo) =
 #     discard utils.realloc(this.resource, 0)
 
-proc checkCollisions*(this: PlaydateSprite, sprite: LCDSprite, goalX: float, goalY: float):
+proc checkCollisions*(this: LCDSprite, goalX: float, goalY: float):
         tuple[actualX: float, actualY: float, collisions: SDKArray[SpriteCollisionInfo]] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var actualX, actualY: cfloat
     var collisionsCount: cint
-    let collisionPtr = this.checkCollisionsRaw(sprite.resource, goalX.cfloat, goalY.cfloat, addr(actualX), addr(actualY), addr(collisionsCount))
+    let collisionPtr = playdate.sprite.checkCollisions(this.resource, goalX.cfloat, goalY.cfloat, addr(actualX), addr(actualY), addr(collisionsCount))
     let cArray = SDKArray[SpriteCollisionInfo](len: collisionsCount, data: cast[ptr UncheckedArray[SpriteCollisionInfo]](collisionPtr))
     return (actualX: actualX.float,
         actualY: actualY.float,
         collisions: cArray
     )
 
-proc moveWithCollisions*(this: PlaydateSprite, sprite: LCDSprite, goalX: float, goalY: float): tuple[actualX: cfloat, actualY: cfloat, collisions: SDKArray[SpriteCollisionInfo]] =
+proc moveWithCollisions*(this: LCDSprite, goalX: float, goalY: float): tuple[actualX: cfloat, actualY: cfloat, collisions: SDKArray[SpriteCollisionInfo]] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var actualX, actualY: cfloat
     var collisionsCount: cint
-    let collisionPtr = this.moveWithCollisionsRaw(sprite.resource, goalX.cfloat, goalY.cfloat, addr(actualX), addr(actualY), addr(collisionsCount))
+    let collisionPtr = playdate.sprite.moveWithCollisions(this.resource, goalX.cfloat, goalY.cfloat, addr(actualX), addr(actualY), addr(collisionsCount))
     let cArray = SDKArray[SpriteCollisionInfo](len: collisionsCount, data: cast[ptr UncheckedArray[SpriteCollisionInfo]](collisionPtr))
     return (actualX: actualX,
         actualY: actualY,
         collisions: cArray
     )
 
-proc clearStencil*(this: PlaydateSprite, sprite: LCDSprite) =
+proc clearStencil*(this: LCDSprite) =
     privateAccess(PlaydateSprite)
-    this.clearStencilRaw(sprite.resource)
-    sprite.stencil = nil
+    playdate.sprite.clearStencil(this.resource)
+    this.stencil = nil
 
-proc setStencilImage*(this: PlaydateSprite, sprite: LCDSprite, stencil: LCDBitmap, tile: bool) =
+proc setStencilImage*(this: LCDSprite, stencil: LCDBitmap, tile: bool) =
     privateAccess(PlaydateSprite)
     privateAccess(LCDBitmap)
-    this.setStencilImageRaw(sprite.resource, stencil.resource, if tile: 1 else: 0)
+    playdate.sprite.setStencilImage(this.resource, if stencil != nil: stencil.resource else: nil, if tile: 1 else: 0)
+    this.stencil = stencil

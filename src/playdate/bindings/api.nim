@@ -4,11 +4,11 @@ import graphics, system, file, display, sprite, sound
 # export graphics, system, file, display
 
 type PlaydateAPI* {.importc: "PlaydateAPI", header: "pd_api.h".} = object
-    system* {.importc: "system".}: PlaydateSys
-    file* {.importc: "file".}: PlaydateFile
-    graphics* {.importc: "graphics".}: PlaydateGraphics
-    sprite* {.importc: "sprite".}: PlaydateSprite
-    display* {.importc: "display".}: PlaydateDisplay
+    system* {.importc: "system".}: ptr PlaydateSys
+    file* {.importc: "file".}: ptr PlaydateFile
+    graphics* {.importc: "graphics".}: ptr PlaydateGraphics
+    sprite* {.importc: "sprite".}: ptr PlaydateSprite
+    display* {.importc: "display".}: ptr PlaydateDisplay
     sound* {.importc: "sound".}: ptr PlaydateSound
 
 # type PlaydateAPI* = ptr PlaydateAPI

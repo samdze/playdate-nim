@@ -3,8 +3,12 @@
 import std/importutils
 
 import bindings/[api, types]
-import bindings/graphics {.all.}
+import bindings/graphics
+
+# Only export public symbols, then import all
 export graphics
+{.hint[DuplicateModuleImport]: off.}
+import bindings/graphics {.all.}
 
 type LCDBitmapObj = object of RootObj
     resource: LCDBitmapPtr
@@ -12,50 +16,60 @@ type LCDBitmapObj = object of RootObj
 proc `=destroy`(this: var LCDBitmapObj) =
     privateAccess(PlaydateGraphics)
     if this.free:
-        playdate.graphics.freeBitmapRaw(this.resource)
+        playdate.graphics.freeBitmap(this.resource)
 type LCDBitmap* = ref LCDBitmapObj
 
-proc setFont*(this: PlaydateGraphics, font: LCDFont) =
+var currentFont: LCDFont
+
+proc setFont*(this: ptr PlaydateGraphics, font: LCDFont) =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
-    this.setFontRaw(font.resource)
+    this.setFont(if font != nil: font.resource else: nil)
+    currentFont = font
 
-proc pushContext*(this: PlaydateGraphics, target: LCDBitmap) =
+proc getFont*(this: ptr PlaydateGraphics): LCDFont =
+    return currentFont
+
+proc pushContext*(this: ptr PlaydateGraphics, target: LCDBitmap) =
     privateAccess(PlaydateGraphics)
-    this.pushContextRaw(if target != nil: target.resource else: nil)
+    this.pushContext(if target != nil: target.resource else: nil)
 
-proc drawBitmap*(this: PlaydateGraphics, bitmap: LCDBitmap, x: int, y: int, flip: LCDBitmapFlip) =
+proc draw*(this: LCDBitmap, x: int, y: int, flip: LCDBitmapFlip) =
     privateAccess(PlaydateGraphics)
-    this.drawBitmapRaw(bitmap.resource, x, y, flip)
+    playdate.graphics.drawBitmap(this.resource, x, y, flip)
 
-proc tileBitmap*(this: PlaydateGraphics, bitmap: LCDBitmap, x: int, y: int, width: int, height: int, flip: LCDBitmapFlip) =
+proc drawTiled*(this: LCDBitmap, x: int, y: int, width: int, height: int, flip: LCDBitmapFlip) =
     privateAccess(PlaydateGraphics)
-    this.tileBitmapRaw(bitmap.resource, x.cint, y.cint, width.cint, height.cint, flip)
+    playdate.graphics.tileBitmap(this.resource, x.cint, y.cint, width.cint, height.cint, flip)
 
-proc drawScaledBitmap*(this: PlaydateGraphics, bitmap: LCDBitmap, x: int, y: int, xScale: float, yScale: float) =
+proc drawScaled*(this: LCDBitmap, x: int, y: int, xScale: float, yScale: float) =
     privateAccess(PlaydateGraphics)
-    this.drawScaledBitmapRaw(bitmap.resource, x.cint, y.cint, xScale.cfloat, yScale.cfloat)
+    playdate.graphics.drawScaledBitmap(this.resource, x.cint, y.cint, xScale.cfloat, yScale.cfloat)
 
-proc newBitmap*(this: PlaydateGraphics, width: int, height: int, color: LCDColor): LCDBitmap =
+proc drawText*(this: ptr PlaydateGraphics, text: string, x: int, y: int): int {.discardable.} =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.newBitmapRaw(width.cint, height.cint, color), free: true)
+    return playdate.graphics.drawText(text.cstring, len(text).csize_t, kASCIIEncoding, x.cint, y.cint).int
 
-proc loadBitmap*(this: PlaydateGraphics, path: string): LCDBitmap {.raises: [IOError]} =
+proc newBitmap*(this: ptr PlaydateGraphics, width: int, height: int, color: LCDColor): LCDBitmap =
+    privateAccess(PlaydateGraphics)
+    return LCDBitmap(resource: this.newBitmap(width.cint, height.cint, color), free: true)
+
+proc newBitmap*(this: ptr PlaydateGraphics, path: string): LCDBitmap {.raises: [IOError]} =
     privateAccess(PlaydateGraphics)
     var err: ConstChar = nil
-    let bitmap = LCDBitmap(resource: this.loadBitmapRaw(path, addr(err)), free: true)
+    let bitmap = LCDBitmap(resource: this.loadBitmap(path, addr(err)), free: true)
     if bitmap.resource == nil:
         raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
     return bitmap
 
-proc copyBitmap*(this: PlaydateGraphics, bitmap: LCDBitmap): LCDBitmap =
+proc copy*(this: LCDBitmap): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.copyBitmapRaw(bitmap.resource), free: true)
+    return LCDBitmap(resource: playdate.graphics.copyBitmap(this.resource), free: true)
 
-proc loadIntoBitmap*(this: PlaydateGraphics, path: string, bitmap: LCDBitmap) {.raises: [IOError]}  =
+proc load*(this: LCDBitmap, path: string) {.raises: [IOError]}  =
     privateAccess(PlaydateGraphics)
     var err: ConstChar = nil
-    this.loadIntoBitmapRaw(path.cstring, bitmap.resource, addr(err))
+    playdate.graphics.loadIntoBitmap(path.cstring, this.resource, addr(err))
     if err != nil:
         raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
 
@@ -64,34 +78,38 @@ type BitmapData* = ref object
     height*: int
     bytes*: int
 
-proc getBitmapData*(this: PlaydateGraphics, bitmap: LCDBitmap): BitmapData =
+proc getData*(this: LCDBitmap): BitmapData =
     privateAccess(PlaydateGraphics)
     var bitmapData = BitmapData()
     var width, height, bytes: cint
-    this.getBitmapDataRaw(bitmap.resource, addr(width), addr(height), addr(bytes),
+    playdate.graphics.getBitmapData(this.resource, addr(width), addr(height), addr(bytes),
         nil, nil)
     bitmapData.width = width.int
     bitmapData.height = height.int
     bitmapData.bytes = bytes.int
     return bitmapData
 
-proc clearBitmap*(this: PlaydateGraphics, bitmap: LCDBitmap, color: LCDColor) =
+proc clear*(this: LCDBitmap, color: LCDColor) =
     privateAccess(PlaydateGraphics)
-    this.clearBitmapRaw(bitmap.resource, color)
+    playdate.graphics.clearBitmap(this.resource, color)
 
-proc rotatedBitmap*(this: PlaydateGraphics, bitmap: LCDBitmap, rotation: float, xScale: float, yScale: float):
+proc rotated*(this: LCDBitmap, rotation: float, xScale: float, yScale: float):
         tuple[bitmap: LCDBitmap, allocatedSize: int] =
     privateAccess(PlaydateGraphics)
     var allocatedSize: cint
-    let bitmap = LCDBitmap(resource: this.rotatedBitmapRaw(bitmap.resource, rotation.cfloat, xScale.cfloat, yScale.cfloat,
+    let bitmap = LCDBitmap(resource: playdate.graphics.rotatedBitmap(this.resource, rotation.cfloat, xScale.cfloat, yScale.cfloat,
         addr(allocatedSize)), free: true)
     return (bitmap, allocatedSize.int)
+
+proc rotated*(this: LCDBitmap, rotation: float, scale: float):
+        tuple[bitmap: LCDBitmap, allocatedSize: int] {.inline.} =
+    return this.rotated(rotation, scale, scale)
 
 type LCDBitmapTableObj = object
     resource: LCDBitmapTablePtr
 proc `=destroy`(this: var LCDBitmapTableObj) =
     privateAccess(PlaydateGraphics)
-    playdate.graphics.freeBitmapTableRaw(this.resource)
+    playdate.graphics.freeBitmapTable(this.resource)
 type LCDBitmapTable* = ref LCDBitmapTableObj
 
 type LCDTableBitmapObj = object of LCDBitmapObj
@@ -102,131 +120,131 @@ proc `=destroy`(this: var LCDTableBitmapObj) =
     this.table = nil
 type LCDTableBitmap = ref LCDTableBitmapObj
 
-proc newBitmapTable*(this: PlaydateGraphics, count: int, width: int, height: int): LCDBitmapTable =
+proc newBitmapTable*(this: ptr PlaydateGraphics, count: int, width: int, height: int): LCDBitmapTable =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDBitmapTable)
-    return LCDBitmapTable(resource: this.newBitmapTableRaw(count.cint, width.cint, height.cint))
+    return LCDBitmapTable(resource: this.newBitmapTable(count.cint, width.cint, height.cint))
 
-proc loadBitmapTable*(this: PlaydateGraphics, path: string): LCDBitmapTable {.raises: [IOError]} =
+proc newBitmapTable*(this: ptr PlaydateGraphics, path: string): LCDBitmapTable {.raises: [IOError]} =
     privateAccess(PlaydateGraphics)
     var err: ConstChar = nil
-    var bitmapTable = this.loadBitmapTableRaw(path, addr(err))
+    var bitmapTable = this.loadBitmapTable(path, addr(err))
     if bitmapTable == nil:
         raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
     return LCDBitmapTable(resource: bitmapTable)
 
-proc loadIntoBitmapTable*(this: PlaydateGraphics, path: string, table: LCDBitmapTable) {.raises: [IOError]} =
+proc load*(this: LCDBitmapTable, path: string) {.raises: [IOError]} =
     privateAccess(PlaydateGraphics)
     var err: ConstChar = nil
-    this.loadIntoBitmapTableRaw(path, table.resource, addr(err))
+    playdate.graphics.loadIntoBitmapTable(path, this.resource, addr(err))
     if err != nil:
         raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
 
-proc getTableBitmap*(this: PlaydateGraphics, table: LCDBitmapTable, index: int): LCDBitmap =
+proc getBitmap*(this: LCDBitmapTable, index: int): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    let resource = this.getTableBitmapRaw(table.resource, index.cint)
+    let resource = playdate.graphics.getTableBitmap(this.resource, index.cint)
     if resource != nil:
-        return LCDTableBitmap(resource: resource, free: false, table: table)
+        return LCDTableBitmap(resource: resource, free: false, table: this)
     return nil
 
-proc loadFont*(this: PlaydateGraphics, path: string): LCDFont {.raises: [IOError]} =
+proc newFont*(this: ptr PlaydateGraphics, path: string): LCDFont {.raises: [IOError]} =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
     var err: ConstChar = nil
-    var font = this.loadFontRaw(path, addr(err))
+    var font = this.loadFont(path, addr(err))
     if font == nil:
         raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
     return LCDFont(resource: font)
 
-proc getFontPage*(this: PlaydateGraphics, font: LCDFont, c: char): LCDFontPage =
+proc getFontPage*(this: LCDFont, c: char): LCDFontPage =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
     privateAccess(LCDFontPage)
-    let fontPage = this.getFontPageRaw(font.resource, c.uint32)
+    let fontPage = playdate.graphics.getFontPage(this.resource, c.uint32)
     if fontPage == nil:
         return nil
     return LCDFontPage(resource: fontPage)
 
-proc getPageGlyph*(this: PlaydateGraphics, page: LCDFontPage, c: char): LCDFontGlyph =
+proc getPageGlyph*(this: LCDFontPage, c: char): LCDFontGlyph =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFontPage)
     privateAccess(LCDFontGlyph)
-    let glyph = this.getPageGlyphRaw(page.resource, c.uint32, nil, nil)
+    let glyph = playdate.graphics.getPageGlyph(this.resource, c.uint32, nil, nil)
     if glyph == nil:
         return nil
     return LCDFontGlyph(resource: glyph)
 
-proc getGlyphKerning*(this: PlaydateGraphics, glyph: LCDFontGlyph, glyphCode: char, nextCode: char): int =
+proc getGlyphKerning*(this: LCDFontGlyph, glyphCode: char, nextCode: char): int =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFontGlyph)
-    return this.getGlyphKerningRaw(glyph.resource, glyphCode.uint32, nextCode.uint32).int
+    return playdate.graphics.getGlyphKerning(this.resource, glyphCode.uint32, nextCode.uint32).int
 
-proc getTextWidth*(this: PlaydateGraphics, font: LCDFont, text: string, len: int, encoding: PDStringEncoding, tracking: int): int =
+proc getTextWidth*(this: LCDFont, text: string, len: int, encoding: PDStringEncoding, tracking: int): int =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
-    return this.getTextWidthRaw(font.resource, text.cstring, len.csize_t, encoding, tracking.cint)
+    return playdate.graphics.getTextWidth(this.resource, text.cstring, len.csize_t, encoding, tracking.cint)
 
 type DisplayFrame* = ptr array[LCD_ROWSIZE * LCD_ROWS, uint8]
 # type DisplayFrame* = ref DisplayFrameObj
 
-proc getFrame*(this: PlaydateGraphics): DisplayFrame =
+proc getFrame*(this: ptr PlaydateGraphics): DisplayFrame =
     privateAccess(PlaydateGraphics)
-    return cast[DisplayFrame](this.getFrameRaw()) # Who should manage this memory? Not clear. Not auto-managed right now.
+    return cast[DisplayFrame](this.getFrame()) # Who should manage this memory? Not clear. Not auto-managed right now.
 
-proc getDisplayFrame*(this: PlaydateGraphics): DisplayFrame =
+proc getDisplayFrame*(this: ptr PlaydateGraphics): DisplayFrame =
     privateAccess(PlaydateGraphics)
-    return cast[DisplayFrame](this.getDisplayFrameRaw()) # Who should manage this memory? Not clear. Not auto-managed right now.
+    return cast[DisplayFrame](this.getDisplayFrame()) # Who should manage this memory? Not clear. Not auto-managed right now.
 
-proc getDebugBitmap*(this: PlaydateGraphics): LCDBitmap =
+proc getDebugBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.getDebugBitmapRaw(), free: true) # Who should manage this memory? Not clear. Auto-managed.
+    return LCDBitmap(resource: this.getDebugBitmap(), free: true) # Who should manage this memory? Not clear. Auto-managed.
 
-proc copyFrameBufferBitmap*(this: PlaydateGraphics): LCDBitmap =
+proc copyFrameBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.copyFrameBufferBitmapRaw(), free: true)
+    return LCDBitmap(resource: this.copyFrameBufferBitmap(), free: true)
 
-proc createPattern*(this: PlaydateGraphics, bitmap: LCDBitmap, x: int, y: int): LCDColor =
+proc createPattern*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, x: int, y: int): LCDColor =
     privateAccess(PlaydateGraphics)
     var color = 0.LCDColor
-    this.setColorToPatternRaw(addr(color), bitmap.resource, x.cint, y.cint)
+    this.setColorToPattern(addr(color), bitmap.resource, x.cint, y.cint)
     return color
 
 import macros
 
-proc fillPolygon*[Int32x2](this: PlaydateGraphics, points: seq[Int32x2], color: LCDColor, fillRule: LCDPolygonFillRule) =
+proc fillPolygon*[Int32x2](this: ptr PlaydateGraphics, points: seq[Int32x2], color: LCDColor, fillRule: LCDPolygonFillRule) =
     when sizeof(Int32x2) != sizeof(int32) * 2: {.error: "size of points is not sizeof(int32) * 2".}
 
     privateAccess(PlaydateGraphics)
-    this.fillPolygonRaw(points.len.cint, cast[ptr cint](unsafeAddr(points[0])), color, fillRule)
+    this.fillPolygon(points.len.cint, cast[ptr cint](unsafeAddr(points[0])), color, fillRule)
 
-proc getFontHeight*(this: PlaydateGraphics, font: LCDFont): uint =
+proc getFontHeight*(this: LCDFont): uint =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
-    return this.getFontHeightRaw(font.resource)
+    return playdate.graphics.getFontHeight(this.resource)
 
-proc getDisplayBufferBitmap*(this: PlaydateGraphics): LCDBitmap =
+proc getDisplayBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.getDisplayBufferBitmapRaw(), free: false)
+    return LCDBitmap(resource: this.getDisplayBufferBitmap(), free: false)
 
-proc drawRotatedBitmap*(this: PlaydateGraphics, bitmap: LCDBitmap, x: int, y: int, rotation: float, centerX: float, centerY:
+proc drawRotated*(this: LCDBitmap, x: int, y: int, rotation: float, centerX: float, centerY:
         float, xScale: float, yScale: float) =
     privateAccess(PlaydateGraphics)
-    this.drawRotatedBitmapRaw(bitmap.resource, x.cint, y.cint, rotation.cfloat, centerX.cfloat, centerY.cfloat,
+    playdate.graphics.drawRotatedBitmap(this.resource, x.cint, y.cint, rotation.cfloat, centerX.cfloat, centerY.cfloat,
         xScale.cfloat, yScale.cfloat)
 
-proc setBitmapMask*(this: PlaydateGraphics, bitmap: LCDBitmap, mask: LCDBitmap): int =
+proc setBitmapMask*(this: LCDBitmap, mask: LCDBitmap): int =
     privateAccess(PlaydateGraphics)
-    return this.setBitmapMaskRaw(bitmap.resource, mask.resource).int
+    return playdate.graphics.setBitmapMask(this.resource, mask.resource).int
 
-proc getBitmapMask*(this: PlaydateGraphics, bitmap: LCDBitmap): LCDBitmap =
+proc getBitmapMask*(this: LCDBitmap): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.getBitmapMaskRaw(bitmap.resource), free: false) # Who should manage this memory? Not clear. Not auto-managed right now.
+    return LCDBitmap(resource: playdate.graphics.getBitmapMask(this.resource), free: false) # Who should manage this memory? Not clear. Not auto-managed right now.
 
-proc setStencilImage*(this: PlaydateGraphics, bitmap: LCDBitmap, tile: bool) =
+proc setStencilImage*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, tile: bool) =
     privateAccess(PlaydateGraphics)
-    this.setStencilImageRaw(bitmap.resource, if tile: 1 else: 0)
+    this.setStencilImage(bitmap.resource, if tile: 1 else: 0)
 
-proc makeFontFromData*(this: PlaydateGraphics, fontData: LCDFontData, wide: bool): LCDFont =
+proc makeFont*(this: LCDFontData, wide: bool): LCDFont =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
-    return LCDFont(resource: this.makeFontFromDataRaw(fontData, if wide: 1 else: 0))
+    return LCDFont(resource: playdate.graphics.makeFontFromData(this, if wide: 1 else: 0))

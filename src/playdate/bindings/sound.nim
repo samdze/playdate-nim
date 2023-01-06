@@ -93,36 +93,36 @@ type PlaydateSoundSampleplayer {.importc: "const struct playdate_sound_samplepla
         cdecl, raises: [].}
 # type PlaydateSoundSampleplayer* = ptr PlaydateSoundSampleplayerRaw
 
-# sdktype PlaydateSound:
-type PlaydateSound* {.importc: "const struct playdate_sound", header: "pd_api.h".} = object
-    # channel* {.importc: "channel".}: ptr PlaydateSoundChannel
-    fileplayer {.importc: "fileplayer".}: ptr PlaydateSoundFileplayer
-    sample {.importc: "sample".}: ptr PlaydateSoundSample
-    sampleplayer {.importc: "sampleplayer".}: ptr PlaydateSoundSampleplayer
-    # synth* {.importc: "synth".}: ptr PlaydateSoundSynth
-    # sequence* {.importc: "sequence".}: ptr PlaydateSoundSequence
-    # effect* {.importc: "effect".}: ptr PlaydateSoundEffect
-    # lfo* {.importc: "lfo".}: ptr PlaydateSoundLfo
-    # envelope* {.importc: "envelope".}: ptr PlaydateSoundEnvelope
-    # source* {.importc: "source".}: ptr PlaydateSoundSource
-    # controlsignal* {.importc: "controlsignal".}: ptr PlaydateControlSignal
-    # track* {.importc: "track".}: ptr PlaydateSoundTrack
-    # instrument* {.importc: "instrument".}: ptr PlaydateSoundInstrument
-    getCurrentTime* {.importc: "getCurrentTime".}: proc (): uint32 {.cdecl, raises: [].}
-    # addSource* {.importc: "addSource".}: proc (callback: ptr AudioSourceFunction;
-    #     context: pointer; stereo: cint): ptr SoundSource {.cdecl.}
-    # getDefaultChannel* {.importc: "getDefaultChannel".}: proc (): ptr SoundChannel {.
-    #     cdecl.}
-    # addChannel* {.importc: "addChannel".}: proc (channel: ptr SoundChannel) {.cdecl.}
-    # removeChannel* {.importc: "removeChannel".}: proc (channel: ptr SoundChannel) {.
-    #     cdecl.}
-    # setMicCallback* {.importc: "setMicCallback".}: proc (
-    #     callback: ptr RecordCallback; context: pointer; forceInternal: cint) {.cdecl.}
-    getHeadphoneState {.importc: "getHeadphoneState".}: proc (headphone: ptr cint;
-        headsetmic: ptr cint;
-        changeCallback: proc (headphone: cint; mic: cint) {.cdecl, raises: [].}) {.cdecl, raises: [].}
-    setOutputsActive {.importc: "setOutputsActive".}: proc (headphone: cint;
-        speaker: cint) {.cdecl, raises: [].} ##  1.5
-    # removeSource* {.importc: "removeSource".}: proc (source: ptr SoundSource) {.cdecl.} ##  1.12
-    # signal* {.importc: "signal".}: ptr PlaydateSoundSignal
+sdktype:
+    type PlaydateSound* {.importc: "const struct playdate_sound", header: "pd_api.h".} = object
+        # channel* {.importc: "channel".}: ptr PlaydateSoundChannel
+        fileplayer {.importc: "fileplayer".}: ptr PlaydateSoundFileplayer
+        sample {.importc: "sample".}: ptr PlaydateSoundSample
+        sampleplayer {.importc: "sampleplayer".}: ptr PlaydateSoundSampleplayer
+        # synth* {.importc: "synth".}: ptr PlaydateSoundSynth
+        # sequence* {.importc: "sequence".}: ptr PlaydateSoundSequence
+        # effect* {.importc: "effect".}: ptr PlaydateSoundEffect
+        # lfo* {.importc: "lfo".}: ptr PlaydateSoundLfo
+        # envelope* {.importc: "envelope".}: ptr PlaydateSoundEnvelope
+        # source* {.importc: "source".}: ptr PlaydateSoundSource
+        # controlsignal* {.importc: "controlsignal".}: ptr PlaydateControlSignal
+        # track* {.importc: "track".}: ptr PlaydateSoundTrack
+        # instrument* {.importc: "instrument".}: ptr PlaydateSoundInstrument
+        getCurrentTime* {.importsdk.}: proc (): uint32 {.cdecl, raises: [].}
+        # addSource* {.importc: "addSource".}: proc (callback: ptr AudioSourceFunction;
+        #     context: pointer; stereo: cint): ptr SoundSource {.cdecl.}
+        # getDefaultChannel* {.importc: "getDefaultChannel".}: proc (): ptr SoundChannel {.
+        #     cdecl.}
+        # addChannel* {.importc: "addChannel".}: proc (channel: ptr SoundChannel) {.cdecl.}
+        # removeChannel* {.importc: "removeChannel".}: proc (channel: ptr SoundChannel) {.
+        #     cdecl.}
+        # setMicCallback* {.importc: "setMicCallback".}: proc (
+        #     callback: ptr RecordCallback; context: pointer; forceInternal: cint) {.cdecl.}
+        getHeadphoneState {.importc: "getHeadphoneState".}: proc (headphone: ptr cint;
+            headsetmic: ptr cint;
+            changeCallback: proc (headphone: cint; mic: cint) {.cdecl, raises: [].}) {.cdecl, raises: [].}
+        setOutputsActive {.importc: "setOutputsActive".}: proc (headphone: cint;
+            speaker: cint) {.cdecl, raises: [].} ##  1.5
+        # removeSource* {.importc: "removeSource".}: proc (source: ptr SoundSource) {.cdecl.} ##  1.12
+        # signal* {.importc: "signal".}: ptr PlaydateSoundSignal
 # type PlaydateSound* = ptr PlaydateSoundRaw

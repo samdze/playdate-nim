@@ -2,7 +2,7 @@
 
 import utils
 
-type SDFile* = pointer
+type SDFilePtr = pointer
 
 type FileOptions* {.importc: "FileOptions", header: "pd_api.h".} = enum
     kFileRead = (1 shl 0), kFileReadData = (1 shl 1), kFileWrite = (1 shl 2),
@@ -27,23 +27,23 @@ when not defined(SEEK_SET):
         SEEK_CUR* = 1
         SEEK_END* = 2
 
-sdktype PlaydateFile:
-    type PlaydateFile {.importc: "const struct playdate_file", header: "pd_api.h".} = object
+sdktype:
+    type PlaydateFile* {.importc: "const struct playdate_file", header: "pd_api.h".} = object
         geterr {.importc: "geterr".}: proc (): cstring {.cdecl, raises: [].}
-        listfilesRaw {.importc: "listfiles".}: proc (path: cstring;
+        listfiles {.importc: "listfiles".}: proc (path: cstring;
             callback: proc (path: cstring; userdata: pointer) {.cdecl.}; userdata: pointer;
             showhidden: cint): cint {.cdecl, raises: [].}
-        statRaw {.importc: "stat".}: proc (path: cstring; stat: FileStatPtr): cint {.cdecl, raises: [].}
-        mkdirRaw {.importc: "mkdir".}: proc (path: cstring): cint {.cdecl, raises: [].}
-        unlinkRaw {.importc: "unlink".}: proc (name: cstring; recursive: cint): cint {.cdecl, raises: [].}
-        renameRaw {.importc: "rename".}: proc (`from`: cstring; to: cstring): cint {.cdecl, raises: [].}
-        openRaw {.importc: "open".}: proc (name: cstring; mode: FileOptions): SDFile {.cdecl, raises: [].}
-        closeRaw {.importc: "close".}: proc (file: SDFile): cint {.cdecl, raises: [].}
-        readRaw {.importc: "read".}: proc (file: SDFile; buf: pointer; len: cuint): cint {.
+        stat {.importc: "stat".}: proc (path: cstring; stat: FileStatPtr): cint {.cdecl, raises: [].}
+        mkdir {.importc: "mkdir".}: proc (path: cstring): cint {.cdecl, raises: [].}
+        unlink {.importc: "unlink".}: proc (name: cstring; recursive: cint): cint {.cdecl, raises: [].}
+        rename {.importc: "rename".}: proc (`from`: cstring; to: cstring): cint {.cdecl, raises: [].}
+        open {.importc: "open".}: proc (name: cstring; mode: FileOptions): SDFilePtr {.cdecl, raises: [].}
+        close {.importc: "close".}: proc (file: SDFilePtr): cint {.cdecl, raises: [].}
+        read {.importc: "read".}: proc (file: SDFilePtr; buf: pointer; len: cuint): cint {.
             cdecl, raises: [].}
-        writeRaw {.importc: "write".}: proc (file: SDFile; buf: pointer; len: cuint): cint {.
+        write {.importc: "write".}: proc (file: SDFilePtr; buf: pointer; len: cuint): cint {.
             cdecl, raises: [].}
-        flushRaw {.importc: "flush".}: proc (file: SDFile): cint {.cdecl, raises: [].}
-        tellRaw {.importc: "tell".}: proc (file: SDFile): cint {.cdecl, raises: [].}
-        seekRaw {.importc: "seek".}: proc (file: SDFile; pos: cint; whence: cint): cint {.
+        flush {.importc: "flush".}: proc (file: SDFilePtr): cint {.cdecl, raises: [].}
+        tell {.importc: "tell".}: proc (file: SDFilePtr): cint {.cdecl, raises: [].}
+        seek {.importc: "seek".}: proc (file: SDFilePtr; pos: cint; whence: cint): cint {.
             cdecl, raises: [].}

@@ -51,43 +51,43 @@ type LCDSpriteDrawFunctionRaw = proc (sprite: LCDSpritePtr; bounds: PDRect; draw
 type LCDSpriteUpdateFunctionRaw = proc (sprite: LCDSpritePtr): void {.cdecl.}
 type LCDSpriteCollisionFilterProcRaw = proc (sprite: LCDSpritePtr; other: LCDSpritePtr): SpriteCollisionResponseType {.cdecl, raises: [].}
 
-sdktype PlaydateSprite:
-    type PlaydateSprite {.importc: "const struct playdate_sprite", header: "pd_api.h", bycopy.} = object
-        setAlwaysRedrawRaw {.importc: "setAlwaysRedraw".}: proc (flag: cint) {.cdecl, raises: [].}
+sdktype:
+    type PlaydateSprite* {.importc: "const struct playdate_sprite", header: "pd_api.h", bycopy.} = object
+        setAlwaysRedraw {.importc: "setAlwaysRedraw".}: proc (flag: cint) {.cdecl, raises: [].}
         addDirtyRect* {.importc: "addDirtyRect".}: proc (dirtyRect: LCDRect) {.cdecl, raises: [].}
         drawSprites* {.importc: "drawSprites".}: proc () {.cdecl, raises: [].}
         updateAndDrawSprites* {.importc: "updateAndDrawSprites".}: proc () {.cdecl, raises: [].}
-        newSpriteRaw {.importc: "newSprite".}: proc (): LCDSpritePtr {.cdecl, raises: [].}
+        newSprite {.importc: "newSprite".}: proc (): LCDSpritePtr {.cdecl, raises: [].}
 
         freeSprite {.importc: "freeSprite".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
-        copyRaw {.importc: "copy".}: proc (sprite: LCDSpritePtr): LCDSpritePtr {.cdecl, raises: [].}
-        addSpriteRaw {.importc: "addSprite".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
-        removeSpriteRaw {.importc: "removeSprite".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
-        removeSpritesRaw {.importc: "removeSprites".}: proc (sprites: ptr LCDSpritePtr;
+        copy {.importc: "copy".}: proc (sprite: LCDSpritePtr): LCDSpritePtr {.cdecl, raises: [].}
+        addSprite {.importc: "addSprite".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
+        removeSprite {.importc: "removeSprite".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
+        removeSprites {.importc: "removeSprites".}: proc (sprites: ptr LCDSpritePtr;
             count: cint) {.cdecl, raises: [].}
-        removeAllSpritesRaw {.importc: "removeAllSprites".}: proc () {.cdecl, raises: [].}
+        removeAllSprites {.importc: "removeAllSprites".}: proc () {.cdecl, raises: [].}
         getSpriteCount {.importsdk.}: proc (): cint
-        setBoundsRaw {.importc: "setBounds".}: proc (sprite: LCDSpritePtr; bounds: PDRect) {.
+        setBounds {.importc: "setBounds".}: proc (sprite: LCDSpritePtr; bounds: PDRect) {.
             cdecl, raises: [].}
-        getBoundsRaw {.importc: "getBounds".}: proc (sprite: LCDSpritePtr): PDRect {.cdecl, raises: [].}
-        moveToRaw {.importc: "moveTo".}: proc (sprite: LCDSpritePtr; x: cfloat; y: cfloat) {.
+        getBounds {.importc: "getBounds".}: proc (sprite: LCDSpritePtr): PDRect {.cdecl, raises: [].}
+        moveTo {.importc: "moveTo".}: proc (sprite: LCDSpritePtr; x: cfloat; y: cfloat) {.
             cdecl, raises: [].}
-        moveByRaw {.importc: "moveBy".}: proc (sprite: LCDSpritePtr; dx: cfloat; dy: cfloat) {.
+        moveBy {.importc: "moveBy".}: proc (sprite: LCDSpritePtr; dx: cfloat; dy: cfloat) {.
             cdecl, raises: [].}
-        setImageRaw {.importc: "setImage".}: proc (sprite: LCDSpritePtr;
+        setImage {.importc: "setImage".}: proc (sprite: LCDSpritePtr;
             image: LCDBitmapPtr; flip: LCDBitmapFlip) {.cdecl, raises: [].}
-        getImageRaw {.importc: "getImage".}: proc (sprite: LCDSpritePtr): LCDBitmapPtr {.
+        getImage {.importc: "getImage".}: proc (sprite: LCDSpritePtr): LCDBitmapPtr {.
             cdecl, raises: [].}
-        setSizeRaw {.importc: "setSize".}: proc (s: LCDSpritePtr; width: cfloat;
+        setSize {.importc: "setSize".}: proc (s: LCDSpritePtr; width: cfloat;
             height: cfloat) {.cdecl, raises: [].}
-        setZIndexRaw {.importc: "setZIndex".}: proc (sprite: LCDSpritePtr; zIndex: int16) {.
+        setZIndex {.importc: "setZIndex".}: proc (sprite: LCDSpritePtr; zIndex: int16) {.
             cdecl, raises: [].}
-        getZIndexRaw {.importc: "getZIndex".}: proc (sprite: LCDSpritePtr): int16 {.cdecl, raises: [].}
-        setDrawModeRaw {.importc: "setDrawMode".}: proc (sprite: LCDSpritePtr;
+        getZIndex {.importc: "getZIndex".}: proc (sprite: LCDSpritePtr): int16 {.cdecl, raises: [].}
+        setDrawMode {.importc: "setDrawMode".}: proc (sprite: LCDSpritePtr;
             mode: LCDBitmapDrawMode) {.cdecl, raises: [].}
-        setImageFlipRaw {.importc: "setImageFlip".}: proc (sprite: LCDSpritePtr;
+        setImageFlip {.importc: "setImageFlip".}: proc (sprite: LCDSpritePtr;
             flip: LCDBitmapFlip) {.cdecl, raises: [].}
-        getImageFlipRaw {.importc: "getImageFlip".}: proc (sprite: LCDSpritePtr): LCDBitmapFlip {.
+        getImageFlip {.importc: "getImageFlip".}: proc (sprite: LCDSpritePtr): LCDBitmapFlip {.
             cdecl, raises: [].}
         # ### setStencil* {.importc: "setStencil".}: proc (sprite: ptr LCDSprite; stencil: ptr LCDBitmap) {.cdecl.} ##  deprecated in favor of setStencilImage()
         # setClipRect* {.importc: "setClipRect".}: proc (sprite: ptr LCDSprite;
@@ -101,38 +101,38 @@ sdktype PlaydateSprite:
         #     sprite: ptr LCDSprite; flag: cint) {.cdecl.}
         # updatesEnabled* {.importc: "updatesEnabled".}: proc (sprite: ptr LCDSprite): cint {.
         #     cdecl.}
-        setCollisionsEnabledRaw {.importc: "setCollisionsEnabled".}: proc (
+        setCollisionsEnabled {.importc: "setCollisionsEnabled".}: proc (
             sprite: LCDSpritePtr; flag: cint) {.cdecl, raises: [].}
-        collisionsEnabledRaw {.importc: "collisionsEnabled".}: proc (sprite: LCDSpritePtr): cint {.
+        collisionsEnabled {.importc: "collisionsEnabled".}: proc (sprite: LCDSpritePtr): cint {.
             cdecl, raises: [].}
-        setVisibleRaw {.importc: "setVisible".}: proc (sprite: LCDSpritePtr; flag: cint) {.
+        setVisible {.importc: "setVisible".}: proc (sprite: LCDSpritePtr; flag: cint) {.
             cdecl, raises: [].}
-        isVisibleRaw {.importc: "isVisible".}: proc (sprite: LCDSpritePtr): cint {.cdecl, raises: [].}
-        setOpaqueRaw {.importc: "setOpaque".}: proc (sprite: LCDSpritePtr; flag: cint) {.cdecl, raises: [].}
-        markDirtyRaw {.importc: "markDirty".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
+        isVisible {.importc: "isVisible".}: proc (sprite: LCDSpritePtr): cint {.cdecl, raises: [].}
+        setOpaque {.importc: "setOpaque".}: proc (sprite: LCDSpritePtr; flag: cint) {.cdecl, raises: [].}
+        markDirty {.importc: "markDirty".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
         # setTag* {.importc: "setTag".}: proc (sprite: ptr LCDSprite; tag: uint8T) {.cdecl.}
         # getTag* {.importc: "getTag".}: proc (sprite: ptr LCDSprite): uint8T {.cdecl.}
         # setIgnoresDrawOffset* {.importc: "setIgnoresDrawOffset".}: proc (
         #     sprite: ptr LCDSprite; flag: cint) {.cdecl.}
-        setUpdateFunctionRaw {.importc: "setUpdateFunction".}: proc (
+        setUpdateFunction {.importc: "setUpdateFunction".}: proc (
             sprite: LCDSpritePtr; `func`: LCDSpriteUpdateFunctionRaw) {.cdecl, raises: [].}
-        setDrawFunctionRaw {.importc: "setDrawFunction".}: proc (sprite: LCDSpritePtr;
+        setDrawFunction {.importc: "setDrawFunction".}: proc (sprite: LCDSpritePtr;
             `func`: LCDSpriteDrawFunctionRaw) {.cdecl, raises: [].}
-        getPositionRaw {.importc: "getPosition".}: proc (sprite: LCDSpritePtr;
+        getPosition {.importc: "getPosition".}: proc (sprite: LCDSpritePtr;
             x: ptr cfloat; y: ptr cfloat) {.cdecl, raises: [].} ##  Collisions
         resetCollisionWorld* {.importc: "resetCollisionWorld".}: proc () {.cdecl, raises: [].}
-        setCollideRectRaw {.importc: "setCollideRect".}: proc (sprite: LCDSpritePtr;
+        setCollideRect {.importc: "setCollideRect".}: proc (sprite: LCDSpritePtr;
             collideRect: PDRect) {.cdecl, raises: [].}
-        getCollideRectRaw {.importc: "getCollideRect".}: proc (sprite: LCDSpritePtr): PDRect {.
+        getCollideRect {.importc: "getCollideRect".}: proc (sprite: LCDSpritePtr): PDRect {.
             cdecl, raises: [].}
-        clearCollideRectRaw {.importc: "clearCollideRect".}: proc (sprite: LCDSpritePtr) {.
+        clearCollideRect {.importc: "clearCollideRect".}: proc (sprite: LCDSpritePtr) {.
             cdecl, raises: [].}               ##  caller is responsible for freeing the returned array for all collision methods
-        setCollisionResponseFunctionRaw {.importc: "setCollisionResponseFunction".}: proc (
+        setCollisionResponseFunction {.importc: "setCollisionResponseFunction".}: proc (
             sprite: LCDSpritePtr; `func`: LCDSpriteCollisionFilterProcRaw) {.cdecl, raises: [].}
-        checkCollisionsRaw {.importc: "checkCollisions".}: proc (sprite: LCDSpritePtr;
+        checkCollisions {.importc: "checkCollisions".}: proc (sprite: LCDSpritePtr;
             goalX: cfloat; goalY: cfloat; actualX: ptr cfloat; actualY: ptr cfloat;
             len: ptr cint): SpriteCollisionInfoPtr {.cdecl, raises: [].} ##  access results using SpriteCollisionInfo *info = &results[i];
-        moveWithCollisionsRaw {.importc: "moveWithCollisions".}: proc (
+        moveWithCollisions {.importc: "moveWithCollisions".}: proc (
             sprite: LCDSpritePtr; goalX: cfloat; goalY: cfloat; actualX: ptr cfloat;
             actualY: ptr cfloat; len: ptr cint): SpriteCollisionInfoPtr {.cdecl, raises: [].}
         # querySpritesAtPoint* {.importc: "querySpritesAtPoint".}: proc (x: cfloat;
@@ -150,11 +150,11 @@ sdktype PlaydateSprite:
         #     cdecl.}               ##  added in 1.7
         # setStencilPattern* {.importc: "setStencilPattern".}: proc (
         #     sprite: ptr LCDSprite; pattern: array[8, uint8T]) {.cdecl.}
-        clearStencilRaw {.importc: "clearStencil".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
+        clearStencil {.importc: "clearStencil".}: proc (sprite: LCDSpritePtr) {.cdecl, raises: [].}
         setUserdata {.importc: "setUserdata".}: proc (sprite: LCDSpritePtr;
             userdata: pointer) {.cdecl, raises: [].}
         getUserdata {.importc: "getUserdata".}: proc (sprite: LCDSpritePtr): pointer {.
             cdecl, raises: [].}               ##  added in 1.10
-        setStencilImageRaw {.importc: "setStencilImage".}: proc (sprite: LCDSpritePtr;
+        setStencilImage {.importc: "setStencilImage".}: proc (sprite: LCDSpritePtr;
             stencil: LCDBitmapPtr; tile: cint) {.cdecl, raises: [].}
 

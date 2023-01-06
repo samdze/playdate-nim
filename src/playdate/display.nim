@@ -2,13 +2,17 @@
 
 import std/importutils
 
-import bindings/display {.all.}
+import bindings/display
+
+# Only export public symbols, then import all
 export display
+{.hint[DuplicateModuleImport]: off.}
+import bindings/display {.all.}
 
-proc setInverted* (this: PlaydateDisplay, inverted: bool) =
+proc setInverted* (this: ptr PlaydateDisplay, inverted: bool) =
     privateAccess(PlaydateDisplay)
-    this.setInvertedRaw(if inverted: 1 else: 0)
+    this.setInverted(if inverted: 1 else: 0)
 
-proc setFlipped* (this: PlaydateDisplay, x: bool, y: bool) =
+proc setFlipped* (this: ptr PlaydateDisplay, x: bool, y: bool) =
     privateAccess(PlaydateDisplay)
-    this.setFlippedRaw(if x: 1 else: 0, if y: 1 else: 0)
+    this.setFlipped(if x: 1 else: 0, if y: 1 else: 0)

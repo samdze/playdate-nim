@@ -5,24 +5,28 @@ import strformat
 import sequtils
 
 import bindings/[api, types]
-import bindings/system {.all.}
+import bindings/system
+
+# Only export public symbols, then import all
 export system
+{.hint[DuplicateModuleImport]: off.}
+import bindings/system {.all.}
 
 template fmt*(arg: typed): string =
     try: &(arg) except: arg
 
-proc logToConsole*(this: PlaydateSys, str: string) =
+proc logToConsole*(this: ptr PlaydateSys, str: string) =
     privateAccess(PlaydateSys)
-    this.logToConsoleRaw(str.cstring)
+    this.logToConsole(str.cstring)
 
-proc error*(this: PlaydateSys, str: string) =
+proc error*(this: ptr PlaydateSys, str: string) =
     privateAccess(PlaydateSys)
-    this.errorRaw(str.cstring)
+    this.error(str.cstring)
 
-proc getSecondsSinceEpoch* (this: PlaydateSys): tuple[seconds: uint, milliseconds: uint] =
+proc getSecondsSinceEpoch* (this: ptr PlaydateSys): tuple[seconds: uint, milliseconds: uint] =
     privateAccess(PlaydateSys)
     var ms: cuint
-    let sec = this.getSecondsSinceEpochRaw(addr(ms)).uint
+    let sec = this.getSecondsSinceEpoch(addr(ms)).uint
     return (seconds: sec, milliseconds: ms.uint)
 
 # --- Update function
@@ -33,46 +37,46 @@ proc privateUpdate(userdata: pointer): cint {.cdecl.} =
     if updateCallback != nil:
         return updateCallback().cint
     else:
-        let api = cast[PlaydateAPI](userdata)
-        api.system.error("No update callback defined.")
+        playdate.system.error("No update callback defined.")
         return 0
 
-proc setUpdateCallback*(this: PlaydateSys, update: PDCallbackFunction, api: ptr PlaydateAPI) =
+proc setUpdateCallback*(this: ptr PlaydateSys, update: PDCallbackFunction) =
     privateAccess(PlaydateSys)
     updateCallback = update
-    this.setUpdateCallbackRaw(privateUpdate, api)
+    this.setUpdateCallback(privateUpdate, playdate)
 # ---
 
-proc getButtonsState* (this: PlaydateSys): tuple[current: PDButtons, pushed: PDButtons, released: PDButtons] =
+proc getButtonsState* (this: ptr PlaydateSys): tuple[current: PDButtons, pushed: PDButtons, released: PDButtons] =
     privateAccess(PlaydateSys)
     var current, pushed, released: PDButtons
-    this.getButtonStateRaw(cast[ptr PDButton](addr(current)), cast[ptr PDButton](addr(pushed)), cast[ptr PDButton](addr(released)))
+    this.getButtonState(cast[ptr PDButton](addr(current)), cast[ptr PDButton](addr(pushed)), cast[ptr PDButton](addr(released)))
     return (current: current, pushed: pushed, released: released)
 
-proc getAccelerometer* (this: PlaydateSys): tuple[x: float, y: float, z: float] =
+proc getAccelerometer* (this: ptr PlaydateSys): tuple[x: float, y: float, z: float] =
     privateAccess(PlaydateSys)
     var x, y, z: cfloat
-    this.getAccelerometerRaw(addr(x), addr(y), addr(z))
+    this.getAccelerometer(addr(x), addr(y), addr(z))
     return (x: x.float, y: y.float, z: z.float)
 
-proc isCrankDocked* (this: PlaydateSys): bool =
+proc isCrankDocked* (this: ptr PlaydateSys): bool =
     privateAccess(PlaydateSys)
-    return this.isCrankDockedRaw() == 1
+    return this.isCrankDocked() == 1
 
-proc setCrankSoundsEnabled* (this: PlaydateSys, enabled: bool): bool = ##  returns previous setting
+proc setCrankSoundsEnabled* (this: ptr PlaydateSys, enabled: bool): bool = ##  returns previous setting
     privateAccess(PlaydateSys)
-    return this.setCrankSoundsDisabledRaw(if enabled: 0 else: 1) == 0
+    return this.setCrankSoundsDisabled(if enabled: 0 else: 1) == 0
 
-proc getFlipped* (this: PlaydateSys): bool =
+proc getFlipped* (this: ptr PlaydateSys): bool =
     privateAccess(PlaydateSys)
-    return this.getFlippedRaw() == 1
+    return this.getFlipped() == 1
 
-proc setAutoLockEnabled* (this: PlaydateSys, enabled: bool) =
+proc setAutoLockEnabled* (this: ptr PlaydateSys, enabled: bool) =
     privateAccess(PlaydateSys)
-    this.setAutoLockDisabledRaw(if enabled: 0 else: 1)
+    this.setAutoLockDisabled(if enabled: 0 else: 1)
 
 # --- Menu items
-var menuItems = newSeq[PDMenuItem]()
+privateAccess(PDMenuItem)
+var menuItems = newSeq[PDMenuItem](0)#, PDMenuItem(resource: nil, active: false))
 
 func isActive*(this: PDMenuItem): bool =
     privateAccess(PDMenuItem)
@@ -81,19 +85,19 @@ func isActive*(this: PDMenuItem): bool =
 proc `title=`*(this: PDMenuItem, title: string) =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    playdate.system.setMenuItemTitleRaw(this.resource, title.cstring)
+    playdate.system.setMenuItemTitle(this.resource, title.cstring)
 
 proc title*(this: PDMenuItem): string =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    return $cast[cstring](playdate.system.getMenuItemTitleRaw(this.resource)) # Casting avoids compiler warnings.
+    return $cast[cstring](playdate.system.getMenuItemTitle(this.resource)) # Casting avoids compiler warnings.
 
 proc remove*(this: PDMenuItem) =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
     if this.active:
         this.active = false
-        playdate.system.removeMenuItemRaw(this.resource)
+        playdate.system.removeMenuItem(this.resource)
         for i in countdown(menuItems.len - 1, 0):
             if menuItems[i] == this:
                 menuItems.del(i)
@@ -108,22 +112,22 @@ proc remove*(this: PDMenuItem) =
 proc `value=`*(this: PDMenuItemCheckmark, checked: bool) =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    playdate.system.setMenuItemValueRaw(this.resource, if checked: 1 else: 0)
+    playdate.system.setMenuItemValue(this.resource, if checked: 1 else: 0)
 
 proc value*(this: PDMenuItemCheckmark): bool =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    return playdate.system.getMenuItemValueRaw(this.resource) == 1
+    return playdate.system.getMenuItemValue(this.resource) == 1
 
 proc `value=`*(this: PDMenuItemOptions, index: int) =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    playdate.system.setMenuItemValueRaw(this.resource, index.cint)
+    playdate.system.setMenuItemValue(this.resource, index.cint)
 
 proc value*(this: PDMenuItemOptions): int =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    return playdate.system.getMenuItemValueRaw(this.resource).int
+    return playdate.system.getMenuItemValue(this.resource).int
 
 type PDMenuItemButtonCallbackFunction* = proc(menuItem: PDMenuItemButton) {.raises: [].}
 type PDMenuItemCheckmarkCallbackFunction* = proc(menuItem: PDMenuItemCheckmark) {.raises: [].}
@@ -141,51 +145,48 @@ proc privateMenuItemOptionsCallback(userdata: pointer) {.cdecl.} =
     let menuItem = cast[PDMenuItemOptions](userdata)
     menuItem.callback(menuItem)
 
-proc addMenuItem*(this: PlaydateSys, title: string, callback: PDMenuItemButtonCallbackFunction): PDMenuItemButton =
+proc addMenuItem*(this: ptr PlaydateSys, title: string, callback: PDMenuItemButtonCallbackFunction): PDMenuItemButton =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    var menuItem = PDMenuItemButton()
+    var menuItem = PDMenuItemButton(active: true)
     menuItem.callback = callback
-    menuItem.active = true
-    menuItem.resource = this.addMenuItemRaw(title.cstring, privateMenuItemButtonCallback, cast[pointer](menuItem))
+    menuItem.resource = this.addMenuItem(title.cstring, privateMenuItemButtonCallback, cast[pointer](menuItem))
     menuItems.add(menuItem)
     return menuItem
 
-proc addCheckmarkMenuItem*(this: PlaydateSys, title: string, checked: bool, callback: PDMenuItemCheckmarkCallbackFunction): PDMenuItemCheckmark =
+proc addCheckmarkMenuItem*(this: ptr PlaydateSys, title: string, checked: bool, callback: PDMenuItemCheckmarkCallbackFunction): PDMenuItemCheckmark =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    var menuItem = PDMenuItemCheckmark()
+    var menuItem = PDMenuItemCheckmark(active: true)
     menuItem.callback = callback
-    menuItem.active = true
-    menuItem.resource = this.addCheckmarkMenuItemRaw(title.cstring, if checked: 1 else: 0, privateMenuItemCheckmarkCallback, cast[pointer](menuItem))
+    menuItem.resource = this.addCheckmarkMenuItem(title.cstring, if checked: 1 else: 0, privateMenuItemCheckmarkCallback, cast[pointer](menuItem))
     menuItems.add(menuItem)
     return menuItem
 
-proc addOptionsMenuItem*(this: PlaydateSys, title: string, options: seq[string], callback: PDMenuItemOptionsCallbackFunction): PDMenuItemOptions =
+proc addOptionsMenuItem*(this: ptr PlaydateSys, title: string, options: seq[string], callback: PDMenuItemOptionsCallbackFunction): PDMenuItemOptions =
     privateAccess(PDMenuItem)
     privateAccess(PDMenuItemOptions)
     privateAccess(PlaydateSys)
-    var menuItem = PDMenuItemOptions()
+    var menuItem = PDMenuItemOptions(active: true)
     menuItem.callback = callback
-    menuItem.active = true
     let cOptions = options.map(proc(x: string): cstring = return x.cstring)
-    menuItem.resource = this.addOptionsMenuItemRaw(title.cstring, cast[ConstCharPtr](unsafeAddr(cOptions[0])), cOptions.len.cint,
+    menuItem.resource = this.addOptionsMenuItem(title.cstring, cast[ConstCharPtr](unsafeAddr(cOptions[0])), cOptions.len.cint,
         privateMenuItemOptionsCallback, cast[pointer](menuItem))
     menuItems.add(menuItem)
     return menuItem
 
-proc getAllMenuItems*(this: PlaydateSys): seq[PDMenuItem] =
+proc getAllMenuItems*(this: ptr PlaydateSys): seq[PDMenuItem] =
     return menuItems
 
-proc removeAllMenuItems*(this: PlaydateSys) =
+proc removeAllMenuItems*(this: ptr PlaydateSys) =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
     for item in menuItems:
         item.active = false
     menuItems.setLen(0)
-    this.removeAllMenuItemsRaw()
+    this.removeAllMenuItems()
 # ---
 
-proc getReduceFlashing* (this: PlaydateSys): bool =
+proc getReduceFlashing* (this: ptr PlaydateSys): bool =
     privateAccess(PlaydateSys)
-    return this.getReduceFlashingRaw() == 1
+    return this.getReduceFlashing() == 1

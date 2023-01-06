@@ -1,34 +1,8 @@
-# switch("define", "release")
-# switch("define", "debug")
-# switch("define", "useMalloc")
-# switch("define", "checkAbi")
-# switch("cincludes", "/Users/sam/Developer/PlaydateSDK/C_API")
 switch("mm", "arc")
 switch("noMain", "on")
 switch("cc", "gcc")
-# switch("threads", "off")
-
-# switch("threads", "off")
-# switch("stackTrace", "off")
-# switch("lineTrace", "off")
-# switch("assertions", "off")
-# switch("hotCodeReloading", "off")
-# switch("index", "off")
-
 switch("compileOnly", "on")
 switch("nimcache", ".nim")
-
-# switch("threads", "off")
-# switch("define", "useMalloc")
-# switch("define", "nimAllocPagesViaMalloc")
-# switch("checks", "on")
-# switch("os", "any")
-# switch("index", "on")
-# switch("debuginfo", "on")
-# switch("lineTrace", "on")
-# switch("debugger", "native")
-# switch("opt", "none")
-# switch("define", "nimPage512")
 
 when defined(playdate):
     echo "compiling for device"
@@ -60,14 +34,7 @@ when defined(simulator):
     switch("debugger", "native")
     switch("opt", "none")
     switch("define", "nimPage256")
-    # switch("os", "any")
-    # when defined(macosx):
-    #     echo("macos")
-    # switch("cpu", "arm64")
 
-
-# task tests, "run the test":
-#     exec "testament pat \"test*.nim\""
 
 task cdevice, "build project":
     exec "nim -d:playdate c src/main.nim"
@@ -98,7 +65,7 @@ task all, "build all":
     exec "rm -fR .nim"
     exec "nim cdevice"
     exec "make device"
-    exec "${PLAYDATE_SDK_PATH}/bin/pdc Source HelloWorld.pdx"
+    exec "${PLAYDATE_SDK_PATH}/bin/pdc Source PlaydateNim.pdx"
 
 task clean, "clean project":
     exec "rm -fR .nim"

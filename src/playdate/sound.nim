@@ -43,6 +43,7 @@ proc getLength*(this: AudioSample): float =
 # AudioSource
 type SoundSourceObj {.requiresinit.} = object of RootObj
     resource: pointer
+type SoundSource* = ref SoundSourceObj
 
 # FilePlayer
 type
