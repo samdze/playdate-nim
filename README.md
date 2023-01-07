@@ -33,15 +33,15 @@ The bindings will become a Nim package when stable enough.
 
 A pre-compiled pdx is also provided, please test it on your device!
 
-Compile the project for the simulator using:
+Compile the project (pdx) for the simulator using:
 ```sh
 nim simulator
 ```
-For the device:
+For the device (compile only, no pdx):
 ```sh
-nim simulator
+nim device
 ```
-For simulator + device:
+For simulator + device (pdx):
 ```sh
 nim all
 ```
