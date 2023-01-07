@@ -31,6 +31,8 @@ The bindings will become a Nim package when stable enough.
 
 `src/main.nim` contains a basic example of the bindings utilization.
 
+A pre-compiled pdx is also provided, please test it on your device!
+
 Compile the project for the simulator using:
 ```sh
 nim simulator

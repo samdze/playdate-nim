@@ -45,8 +45,10 @@ proc update(): int =
 
     playdate.sprite.drawSprites()
     playdate.system.drawFPS(0, 0)
+
     playdate.graphics.setDrawMode(kDrawModeNXOR)
     playdate.graphics.drawText("Playdate Nim!", 1, 12)
+    
     playdate.graphics.setDrawMode(kDrawModeCopy)
     playdateNimBitmap.draw(22, 65, kBitmapUnflipped)
 
