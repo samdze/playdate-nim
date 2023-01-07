@@ -47,3 +47,12 @@ nim all
 ```
 
 The template also has a VSCode launch configuration file to build, start and debug the Nim application from the editor.
+
+---
+This is still a work in progress, here's what is available right now:
+- playdate.system (inputs, menu items, log, etc.)
+- playdate.graphics (draw stuff)
+- playdate.display (general screen stuff)
+- playdate.file (read, write and create files and folders)
+- (partial) playdate.sprite (draw sprites and handle collisions)
+- (partial) playdate.sound (play sounds and music)
