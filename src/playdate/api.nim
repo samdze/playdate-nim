@@ -2,16 +2,19 @@
 
 import macros
 
-import library
-export library
+import bindings/api
+export api
+
+import graphics, system, file, sprite, display, sound, utils, types
+export graphics, system, file, sprite, display, sound, utils, types
 
 macro initSDK*() =
     return quote do:
         proc NimMain() {.importc.}
 
-        proc eventHandler(api: ptr PlaydateAPI, event: PDSystemEvent, arg: uint32): cint {.cdecl, exportc.} =
+        proc eventHandler(playdateAPI: ptr PlaydateAPI, event: PDSystemEvent, arg: uint32): cint {.cdecl, exportc.} =
             if event == kEventInit:
                 NimMain()
-                library.playdate = api
+                api.playdate = playdateAPI
             handler(event, arg)
             return 0
