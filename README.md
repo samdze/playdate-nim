@@ -61,3 +61,4 @@ This is still a work in progress, here's what is available right now:
 - playdate.file (read, write and create files and folders)
 - (partial) playdate.sprite (draw sprites and handle collisions)
 - (partial) playdate.sound (play sounds and music)
+- json encoding/decoding, through Nim std/json
