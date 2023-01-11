@@ -90,7 +90,7 @@ proc `title=`*(this: PDMenuItem, title: string) =
 proc title*(this: PDMenuItem): string =
     privateAccess(PDMenuItem)
     privateAccess(PlaydateSys)
-    return $cast[cstring](playdate.system.getMenuItemTitle(this.resource)) # Casting avoids compiler warnings.
+    return $playdate.system.getMenuItemTitle(this.resource)
 
 proc remove*(this: PDMenuItem) =
     privateAccess(PDMenuItem)

@@ -5,8 +5,8 @@ import macros
 import bindings/api
 export api
 
-import graphics, system, file, sprite, display, sound, utils, types
-export graphics, system, file, sprite, display, sound, utils, types
+import graphics, system, file, sprite, display, sound, json, utils, types
+export graphics, system, file, sprite, display, sound, json, utils, types
 
 macro initSDK*() =
     return quote do:

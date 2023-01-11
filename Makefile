@@ -30,7 +30,7 @@ UINCDIR = src/playdate/include
 UASRC = 
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS = -Wno-strict-aliasing -Wno-parentheses -fsingle-precision-constant
+UDEFS = -Wno-strict-aliasing -Wno-parentheses -Wno-discarded-qualifiers -fsingle-precision-constant
 
 # Define ASM defines here
 UADEFS = 

@@ -1,0 +1,15 @@
+{
+    "name": "goblin",
+    "enemy": true,
+    health: 50,
+    "equip": [
+        {
+            "name": "sword",
+            "damage": 20
+        },
+        {
+            "name": "dagger",
+            "damage": 10
+        }
+    ]
+}

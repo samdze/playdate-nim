@@ -14,6 +14,7 @@ import bindings/file {.all.}
 type
     SDFileObj {.requiresinit.} = object
         resource: SDFilePtr
+        path: string
     SDFile* = ref SDFileObj 
 
 proc `=destroy`(this: var SDFileObj) =
@@ -30,7 +31,7 @@ proc listFiles*(this: ptr PlaydateFile, path: string, showHidden: bool = false):
     var files = newSeq[string]()
     var res = this.listfiles(toC(path.cstring), fileCallback, addr(files), if showHidden: 1 else: 0)
     if res != 0:
-        raise newException(IOError, $this.geterr())
+        raise newException(IOError, $playdate.file.geterr())
     return files
 
 proc stat*(this: ptr PlaydateFile, path: string): FileStat {.raises: [IOError]} =
@@ -38,26 +39,26 @@ proc stat*(this: ptr PlaydateFile, path: string): FileStat {.raises: [IOError]} 
     var info: FileStat = FileStat()
     let res = this.stat(path.cstring, addr(info[]))
     if res != 0:
-        raise newException(IOError, $this.geterr())
+        raise newException(IOError, $playdate.file.geterr())
     return info
 
 proc unlink*(this: ptr PlaydateFile, path: string, recursive: bool) {.raises: [IOError]} =
     privateAccess(PlaydateFile)
     let res = this.unlink(path.cstring, if recursive: 1 else: 0)
     if res != 0:
-        raise newException(IOError, $this.geterr())
+        raise newException(IOError, $playdate.file.geterr())
 
 proc mkdir*(this: ptr PlaydateFile, path: string) {.raises: [IOError]} =
     privateAccess(PlaydateFile)
     let res = this.mkdir(path.cstring)
     if res != 0:
-        raise newException(IOError, $this.geterr())
+        raise newException(IOError, $playdate.file.geterr())
 
 proc rename*(this: ptr PlaydateFile, fromName: string, to: string) {.raises: [IOError]} =
     privateAccess(PlaydateFile)
     let res = this.rename(fromName.cstring, to.cstring)
     if res != 0:
-        raise newException(IOError, $this.geterr())
+        raise newException(IOError, $playdate.file.geterr())
 
 proc close*(this: SDFile) {.raises: [IOError]} =
     privateAccess(PlaydateFile)
@@ -76,16 +77,34 @@ proc open*(this: ptr PlaydateFile, path: string, mode: FileOptions): SDFile {.ra
     privateAccess(PlaydateFile)
     let res = this.open(path.cstring, mode)
     if res == nil:
-        raise newException(IOError, $this.geterr())
-    return SDFile(resource: res)
+        raise newException(IOError, $playdate.file.geterr())
+    return SDFile(resource: res, path: path)
 
-proc read*(this: SDFile, length: uint): (seq[byte], int) {.raises: [IOError]} =
+proc read*(this: SDFile, length: uint): tuple[bytes: seq[byte], length: int] {.raises: [IOError]} =
     privateAccess(PlaydateFile)
     var buffer = newSeq[byte](length)
     let res = playdate.file.read(this.resource, addr(buffer[0]), length.cuint)
     if res < 0:
         raise newException(IOError, $playdate.file.geterr())
-    return (buffer, res.int)
+    return (bytes: buffer, length: res.int)
+
+proc read*(this: SDFile): seq[byte] {.raises: [IOError]} =
+    let size = playdate.file.stat(this.path).size
+    privateAccess(PlaydateFile)
+    var buffer = newSeq[byte](size)
+    let res = playdate.file.read(this.resource, addr(buffer[0]), size.cuint)
+    if res < 0:
+        raise newException(IOError, $playdate.file.geterr())
+    return buffer
+
+proc readString*(this: SDFile): string {.raises: [IOError].} =
+    let size = playdate.file.stat(this.path).size
+    privateAccess(PlaydateFile)
+    var str = newString(size)
+    let res = playdate.file.read(this.resource, addr(str[0]), size.cuint)
+    if res < 0:
+        raise newException(IOError, $playdate.file.geterr())
+    return str
 
 proc seek*(this: SDFile, pos: int, whence: int) {.raises: [IOError]} =
     privateAccess(PlaydateFile)

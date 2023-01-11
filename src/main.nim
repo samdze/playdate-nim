@@ -48,11 +48,23 @@ proc update(): int =
 
     playdate.graphics.setDrawMode(kDrawModeNXOR)
     playdate.graphics.drawText("Playdate Nim!", 1, 12)
-    
+
     playdate.graphics.setDrawMode(kDrawModeCopy)
     playdateNimBitmap.draw(22, 65, kBitmapUnflipped)
 
     return 1
+
+
+import std/json
+type
+    Equip = ref object
+        name: string
+        damage: int
+    Entity = ref object
+        name: string
+        enemy: bool
+        health: int
+        equip: seq[Equip]
 
 # This is the application entrypoint and event handler
 proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
@@ -115,6 +127,20 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
         sprite4.add()
         sprite4.moveTo(0, 240)
         sprite4.collideRect = PDRect(x: 0, y: 0, width: 400, height: 1)
+        
+        try:
+            # Decode a JSON string to an object, type safe!
+            let jsonString = playdate.file.open("/json/data.json", kFileRead).readString()
+            let obj = parseJson(jsonString).to(Entity)
+            playdate.system.logToConsole(fmt"json decoded: {obj.repr}")
+            # Encode an object to a JSON string, %* is the encode operator
+            playdate.system.logToConsole(fmt"json encoded: {(%* obj).pretty}")
+
+            let faultyString = playdate.file.open("/json/error.json", kFileRead).readString()
+            # This generates an exception
+            discard parseJson(faultyString).to(Entity)
+        except:
+            playdate.system.logToConsole(getCurrentExceptionMsg())
 
         # Set the update callback
         playdate.system.setUpdateCallback(update)

@@ -59,7 +59,7 @@ proc newBitmap*(this: ptr PlaydateGraphics, path: string): LCDBitmap {.raises: [
     var err: ConstChar = nil
     let bitmap = LCDBitmap(resource: this.loadBitmap(path, addr(err)), free: true)
     if bitmap.resource == nil:
-        raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
+        raise newException(IOError, $err)
     return bitmap
 
 proc copy*(this: LCDBitmap): LCDBitmap =
@@ -71,7 +71,7 @@ proc load*(this: LCDBitmap, path: string) {.raises: [IOError]}  =
     var err: ConstChar = nil
     playdate.graphics.loadIntoBitmap(path.cstring, this.resource, addr(err))
     if err != nil:
-        raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
+        raise newException(IOError, $err)
 
 type BitmapData* = ref object
     width*: int
@@ -130,7 +130,7 @@ proc newBitmapTable*(this: ptr PlaydateGraphics, path: string): LCDBitmapTable {
     var err: ConstChar = nil
     var bitmapTable = this.loadBitmapTable(path, addr(err))
     if bitmapTable == nil:
-        raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
+        raise newException(IOError, $err)
     return LCDBitmapTable(resource: bitmapTable)
 
 proc load*(this: LCDBitmapTable, path: string) {.raises: [IOError]} =
@@ -138,7 +138,7 @@ proc load*(this: LCDBitmapTable, path: string) {.raises: [IOError]} =
     var err: ConstChar = nil
     playdate.graphics.loadIntoBitmapTable(path, this.resource, addr(err))
     if err != nil:
-        raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
+        raise newException(IOError, $err)
 
 proc getBitmap*(this: LCDBitmapTable, index: int): LCDBitmap =
     privateAccess(PlaydateGraphics)
@@ -153,7 +153,7 @@ proc newFont*(this: ptr PlaydateGraphics, path: string): LCDFont {.raises: [IOEr
     var err: ConstChar = nil
     var font = this.loadFont(path, addr(err))
     if font == nil:
-        raise newException(IOError, $cast[cstring](err)) # Casting avoids compiler warnings.
+        raise newException(IOError, $err)
     return LCDFont(resource: font)
 
 proc getFontPage*(this: LCDFont, c: char): LCDFontPage =
