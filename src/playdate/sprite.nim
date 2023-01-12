@@ -148,7 +148,29 @@ proc imageFlip*(this: LCDSprite): LCDBitmapFlip =
     privateAccess(PlaydateSprite)
     return playdate.sprite.getImageFlip(this.resource)
 
+proc setClipRect*(this: LCDSprite, clipRect: LCDRect) =
+    privateAccess(PlaydateSprite)
+    playdate.sprite.setClipRect(this.resource, clipRect)
 
+proc clearClipRect*(this: LCDSprite) =
+    privateAccess(PlaydateSprite)
+    playdate.sprite.clearClipRect(this.resource)
+
+proc setClipRectsInRange*(clipRect: LCDRect, startZ: int, endZ: int) =
+    privateAccess(PlaydateSprite)
+    playdate.sprite.setClipRectsInRange(clipRect, startZ.cint, endZ.cint)
+
+proc clearClipRectsInRange*(startZ: int, endZ: int)=
+    privateAccess(PlaydateSprite)
+    playdate.sprite.clearClipRectsInRange(startZ.cint, endZ.cint)
+
+proc `updatesEnabled=`*(this: LCDSprite, enabled: bool) =
+    privateAccess(PlaydateSprite)
+    playdate.sprite.setUpdatesEnabled(this.resource, if enabled: 1 else: 0)
+
+proc updatesEnabled*(this: LCDSprite): bool =
+    privateAccess(PlaydateSprite)
+    return playdate.sprite.updatesEnabled(this.resource) > 0
 
 proc `collisionsEnabled=`*(this: LCDSprite, flag: bool) =
     privateAccess(PlaydateSprite)
@@ -157,8 +179,6 @@ proc `collisionsEnabled=`*(this: LCDSprite, flag: bool) =
 proc collisionsEnabled*(this: LCDSprite): bool =
     privateAccess(PlaydateSprite)
     return playdate.sprite.collisionsEnabled(this.resource) == 1
-
-
 
 proc `visible=`*(this: LCDSprite, flag: bool) =
     privateAccess(PlaydateSprite)
@@ -176,6 +196,17 @@ proc markDirty*(this: LCDSprite) =
     privateAccess(PlaydateSprite)
     playdate.sprite.markDirty(this.resource)
 
+proc `tag=`*(this: LCDSprite, tag: uint8) =
+    privateAccess(PlaydateSprite)
+    playdate.sprite.setTag(this.resource, tag)
+
+proc tag*(this: LCDSprite): uint8 =
+    privateAccess(PlaydateSprite)
+    return playdate.sprite.getTag(this.resource)
+
+proc setIgnoresDrawOffset*(this: LCDSprite, flag: bool) =
+    privateAccess(PlaydateSprite)
+    playdate.sprite.setIgnoresDrawOffset(this.resource, if flag: 1 else: 0)
 
 # --- Update function.
 proc privateUpdateFunction(sprite: LCDSpritePtr) {.cdecl, exportc, raises: [].} =
@@ -288,6 +319,77 @@ proc moveWithCollisions*(this: LCDSprite, goalX: float, goalY: float): tuple[act
         actualY: actualY,
         collisions: cArray
     )
+
+proc querySpritesAtPoint*(this: ptr PlaydateSprite, x, y: float): seq[LCDSprite] =
+    privateAccess(PlaydateSprite)
+    privateAccess(SDKArray)
+    var length: cint
+    let sprites = playdate.sprite.querySpritesAtPoint(x.cfloat, y.cfloat, addr(length))
+    let cArray = SDKArray[LCDSpritePtr](len: length, data: cast[ptr UncheckedArray[LCDSpritePtr]](sprites))
+    result = newSeq[LCDSprite](length)
+    var i = 0
+    for spr in cArray:
+        result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
+        i *= 1
+
+proc querySpritesInRect*(this: ptr PlaydateSprite, x, y, width, height: float): seq[LCDSprite] =
+    privateAccess(PlaydateSprite)
+    privateAccess(SDKArray)
+    var length: cint
+    let sprites = playdate.sprite.querySpritesInRect(x.cfloat, y.cfloat, width.cfloat, height.cfloat, addr(length))
+    let cArray = SDKArray[LCDSpritePtr](len: length, data: cast[ptr UncheckedArray[LCDSpritePtr]](sprites))
+    result = newSeq[LCDSprite](length)
+    var i = 0
+    for spr in cArray:
+        result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
+        i *= 1
+
+proc querySpritesAlongLine*(this: ptr PlaydateSprite, x1, y1, x2, y2: float): seq[LCDSprite] =
+    privateAccess(PlaydateSprite)
+    privateAccess(SDKArray)
+    var length: cint
+    let sprites = playdate.sprite.querySpritesAlongLine(x1.cfloat, y1.cfloat, x2.cfloat, y2.cfloat, addr(length))
+    let cArray = SDKArray[LCDSpritePtr](len: length, data: cast[ptr UncheckedArray[LCDSpritePtr]](sprites))
+    result = newSeq[LCDSprite](length)
+    var i = 0
+    for spr in cArray:
+        result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
+        i *= 1
+
+proc querySpriteInfoAlongLine*(this: ptr PlaydateSprite, x1, y1, x2, y2: float): SDKArray[SpriteQueryInfo] =
+    privateAccess(PlaydateSprite)
+    privateAccess(SDKArray)
+    var length: cint
+    let queriesPtr = playdate.sprite.querySpriteInfoAlongLine(x1.cfloat, y1.cfloat, x2.cfloat, y2.cfloat, addr(length))
+    return SDKArray[SpriteQueryInfo](len: length, data: cast[ptr UncheckedArray[SpriteQueryInfo]](queriesPtr))
+
+proc overlappingSprites*(this: LCDSprite): seq[LCDSprite] =
+    privateAccess(PlaydateSprite)
+    privateAccess(SDKArray)
+    var length: cint
+    let sprites = playdate.sprite.overlappingSprites(this.resource, addr(length))
+    let cArray = SDKArray[LCDSpritePtr](len: length, data: cast[ptr UncheckedArray[LCDSpritePtr]](sprites))
+    result = newSeq[LCDSprite](length)
+    var i = 0
+    for spr in cArray:
+        result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
+        i *= 1
+
+proc allOverlappingSprites*(this: ptr PlaydateSprite): seq[LCDSprite] =
+    privateAccess(PlaydateSprite)
+    privateAccess(SDKArray)
+    var length: cint
+    let sprites = playdate.sprite.allOverlappingSprites(addr(length))
+    let cArray = SDKArray[LCDSpritePtr](len: length, data: cast[ptr UncheckedArray[LCDSpritePtr]](sprites))
+    result = newSeq[LCDSprite](length)
+    var i = 0
+    for spr in cArray:
+        result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
+        i *= 1
+
+proc setStencilPattern*(this: LCDSprite, pattern: array[8, uint8]) =
+    privateAccess(PlaydateSprite)
+    playdate.sprite.setStencilPattern(this.resource, pattern)
 
 proc clearStencil*(this: LCDSprite) =
     privateAccess(PlaydateSprite)

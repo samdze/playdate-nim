@@ -4,4 +4,4 @@ description=A small demo of the Playdate Nim API
 bundleID=com.samdze.playdatenim
 imagePath=
 pdxversion=11200
-buildtime=726792440
+buildtime=726873678
