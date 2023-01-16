@@ -9,16 +9,16 @@ Playdate Nim bindings, aiming to provide:
 - Automatic memory management
 
 Here's a quick comparison between the main languages usable on the Playdate:
-Feature | C | Lua | Nim  |
----- | ---- | ---- | ----
-Performance | ✔ Great | Decent | ✔ Great
-Memory Management | ✖ No management | ✔ Garbage collected | ✔ Reference counted
-Memory usage | ✔ Lowest | Acceptable | ✔ Low
-Typing | Static | Dynamic | Static
-API | Low level | High level | Mixed
-Syntax | Quite easy | ✔ Easiest & concise | ✔ Easy & concise
-Error checking | Basic compile + runtime | ✖ Mostly runtime | ✔ Compile time + runtime
-OOP | ✖ Not supported | ✔ Supported | ✔ Supported
+Language | C | Lua | Nim  |
+:---- | ---- | ---- | ----
+**Performance** | ✔ Great | Decent | ✔ Great
+**Memory Management** | ✖ No management | ✔ Garbage collected | ✔ Reference counted
+**Memory usage** | ✔ Lowest | Acceptable | ✔ Low
+**Typing** | Static | Dynamic | Static
+**API** | Low level | High level | Mixed
+**Syntax** | Quite easy | ✔ Easiest & concise | ✔ Easy & concise
+**Error checking** | Basic compile + runtime | ✖ Mostly runtime | ✔ Compile time + runtime
+**OOP** | ✖ Not supported | ✔ Supported | ✔ Supported
 
 ## Getting Started
 
