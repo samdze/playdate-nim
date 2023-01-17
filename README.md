@@ -36,6 +36,27 @@ The bindings will become a Nim package when stable enough.
 
 `src/main.nim` contains a basic example of the bindings utilization.
 
+Here's also a minimal snippet to make a Nim application:
+```nim
+import playdate/api
+
+var nimLogoBitmap: LCDBitmap
+
+proc update(): int {.raises: [].} =
+    nimLogoBitmap.draw(168, 88, kBitmapUnflipped)
+
+# This is the application entrypoint and event handler
+proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
+    if event == kEventInit:
+        # Errors are handled through exceptions, this is an inline try/except
+        nimLogoBitmap = try: playdate.graphics.newBitmap("/images/nim_logo") except: nil
+        # playdate is the global PlaydateAPI instance, available when playdate/api is imported 
+        playdate.system.setUpdateCallback(update)
+
+# Used to setup the SDK entrypoint
+initSDK()
+```
+
 A pre-compiled pdx is also provided, please test it on your device!
 
 Compile the project (pdx) for the simulator using:
