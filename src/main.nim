@@ -132,14 +132,15 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
             # Decode a JSON string to an object, type safe!
             let jsonString = playdate.file.open("/json/data.json", kFileRead).readString()
             let obj = parseJson(jsonString).to(Entity)
-            playdate.system.logToConsole(fmt"json decoded: {obj.repr}")
+            playdate.system.logToConsole(fmt"JSON decoded: {obj.repr}")
             # Encode an object to a JSON string, %* is the encode operator
-            playdate.system.logToConsole(fmt"json encoded: {(%* obj).pretty}")
+            playdate.system.logToConsole(fmt"JSON encoded: {(%* obj).pretty}")
 
             let faultyString = playdate.file.open("/json/error.json", kFileRead).readString()
             # This generates an exception
             discard parseJson(faultyString).to(Entity)
         except:
+            playdate.system.logToConsole("This below is an expected error:")
             playdate.system.logToConsole(getCurrentExceptionMsg())
 
         # Set the update callback

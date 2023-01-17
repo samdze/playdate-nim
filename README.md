@@ -57,6 +57,7 @@ The template also has a VSCode launch configuration file to build, start and deb
 This is still a work in progress, here's what is available right now:
 - playdate.system (inputs, menu items, log, etc.)
 - playdate.graphics (draw stuff)
+- playdate.graphics.video (video playback)
 - playdate.display (general screen stuff)
 - playdate.file (read, write and create files and folders)
 - playdate.sprite (draw sprites and handle collisions)

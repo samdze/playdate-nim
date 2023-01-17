@@ -80,10 +80,23 @@ proc `=destroy`(this: var LCDFontGlyphObj) =
 type LCDFontGlyph* = ref LCDFontGlyphObj
 
 type LCDVideoPlayerRaw {.importc: "LCDVideoPlayer", header: "pd_api.h".} = object
-type LCDVideoPlayer* = ptr LCDVideoPlayerRaw
+type LCDVideoPlayerPtr = ptr LCDVideoPlayerRaw
 
 # Video
-type PlaydateVideo* {.importc: "struct playdate_video", header: "pd_api.h".} = object
+type PlaydateVideo* {.importc: "const struct playdate_video", header: "pd_api.h".} = object
+    loadVideo {.importc: "loadVideo".}: proc (path: cstring): LCDVideoPlayerPtr {.cdecl, raises: [].}
+    freePlayer {.importc: "freePlayer".}: proc (p: LCDVideoPlayerPtr) {.cdecl, raises: [].}
+    setContext {.importc: "setContext".}: proc (p: LCDVideoPlayerPtr;
+        context: LCDBitmapPtr): cint {.cdecl, raises: [].}
+    useScreenContext {.importc: "useScreenContext".}: proc (p: LCDVideoPlayerPtr) {.cdecl, raises: [].}
+    renderFrame {.importc: "renderFrame".}: proc (p: LCDVideoPlayerPtr; n: cint): cint {.cdecl, raises: [].}
+    getError {.importc: "getError".}: proc (p: LCDVideoPlayerPtr): cstring {.cdecl, raises: [].}
+    getInfo {.importc: "getInfo".}: proc (p: LCDVideoPlayerPtr; outWidth: ptr cint;
+                                    outHeight: ptr cint;
+                                    outFrameRate: ptr cfloat;
+                                    outFrameCount: ptr cint;
+                                    outCurrentFrame: ptr cint) {.cdecl, raises: [].}
+    getContext {.importc: "getContext".}: proc (p: LCDVideoPlayerPtr): LCDBitmapPtr {.cdecl, raises: [].}
 
 # Graphics
 sdktype:

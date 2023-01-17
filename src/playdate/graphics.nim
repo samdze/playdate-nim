@@ -2,6 +2,7 @@
 
 import std/importutils
 
+import system
 import bindings/[api, types]
 import bindings/graphics
 
@@ -11,13 +12,60 @@ export graphics
 import bindings/graphics {.all.}
 
 type LCDBitmapObj = object of RootObj
-    resource: LCDBitmapPtr
+    resource {.requiresinit.}: LCDBitmapPtr
     free: bool
 proc `=destroy`(this: var LCDBitmapObj) =
     privateAccess(PlaydateGraphics)
     if this.free:
         playdate.graphics.freeBitmap(this.resource)
 type LCDBitmap* = ref LCDBitmapObj
+
+type LCDVideoPlayerObj = object of RootObj
+    resource {.requiresinit.}: LCDVideoPlayerPtr
+    context: LCDBitmap
+proc `=destroy`(this: var LCDVideoPlayerObj) =
+    privateAccess(PlaydateVideo)
+    playdate.graphics.video.freePlayer(this.resource)
+    this.context = nil
+type LCDVideoPlayer* = ref LCDVideoPlayerObj
+
+proc newVideoPlayer*(this: ptr PlaydateVideo, path: string): LCDVideoPlayer {.raises: [IOError]} =
+    privateAccess(PlaydateVideo)
+    let videoPlayer = this.loadVideo(path.cstring)
+    if videoPlayer == nil:
+        raise newException(IOError, $this.getError(videoPlayer))
+    return LCDVideoPlayer(resource: videoPlayer)
+
+proc setContext*(this: LCDVideoPlayer, context: LCDBitmap) {.raises: [CatchableError]} =
+    privateAccess(PlaydateVideo)
+    if playdate.graphics.video.setContext(this.resource, if context != nil: context.resource else: nil) == 0:
+        raise newException(CatchableError, $playdate.graphics.video.getError(this.resource))
+    this.context = context
+
+proc useScreenContext*(this: LCDVideoPlayer) =
+    privateAccess(PlaydateVideo)
+    playdate.graphics.video.useScreenContext(this.resource)
+    this.context = nil
+
+proc renderFrame*(this: LCDVideoPlayer, index: int) {.raises: [CatchableError]} =
+    privateAccess(PlaydateVideo)
+    if playdate.graphics.video.renderFrame(this.resource, index.cint) == 0:
+        raise newException(CatchableError, $playdate.graphics.video.getError(this.resource))
+
+proc getInfo*(this: LCDVideoPlayer): tuple[width: int, height: int, frameRate: float, frameCount: int, currentFrame: int] =
+    privateAccess(PlaydateVideo)
+    var width, height, frameCount, currentFrame: cint
+    var frameRate: cfloat
+    playdate.graphics.video.getInfo(this.resource, addr(width), addr(height), addr(frameRate), addr(frameCount), addr(currentFrame))
+    return (width: width.int, height: height.int, frameRate: frameRate.float, frameCount: frameCount.int, currentFrame: currentFrame.int)
+
+proc getContext*(this: LCDVideoPlayer): LCDBitmap =
+    privateAccess(PlaydateVideo)
+    let bitmapPtr = playdate.graphics.video.getContext(this.resource)
+    playdate.system.logToConsole(fmt"video context: {bitmapPtr.repr}")
+    if this.context == nil or this.context.resource != bitmapPtr:
+        this.context = LCDBitmap(resource: bitmapPtr, free: false)
+    return this.context
 
 var currentFont: LCDFont
 
