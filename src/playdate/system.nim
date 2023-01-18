@@ -76,7 +76,7 @@ proc setAutoLockEnabled* (this: ptr PlaydateSys, enabled: bool) =
 
 # --- Menu items
 privateAccess(PDMenuItem)
-var menuItems = newSeq[PDMenuItem](0)#, PDMenuItem(resource: nil, active: false))
+var menuItems = newSeq[PDMenuItem](0)
 
 func isActive*(this: PDMenuItem): bool =
     privateAccess(PDMenuItem)

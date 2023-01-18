@@ -75,12 +75,8 @@ nim all
 The template also has a VSCode launch configuration file to build, start and debug the Nim application from the editor.
 
 ---
-This is still a work in progress, here's what is available right now:
-- playdate.system (inputs, menu items, log, etc.)
-- playdate.graphics (draw stuff)
-- playdate.graphics.video (video playback)
-- playdate.display (general screen stuff)
-- playdate.file (read, write and create files and folders)
-- playdate.sprite (draw sprites and handle collisions)
-- (partial) playdate.sound (play sounds and music)
-- json encoding/decoding, through Nim std/json
+This is still a work in progress, here's what is still missing right now:
+- various playdate.sound funcionalities (but FilePlayer and SamplePlayer are available)
+- playdate.json, but you can use Nim std/json, which is very convenient
+- playdate.lua, interfacing with Lua and providing classes/functions
+- playdate.scoreboards, undocumented even in the official C API docs
