@@ -9,7 +9,7 @@ switch("mm", "arc")
 switch("noMain", "on")
 switch("cc", "gcc")
 switch("compileOnly", "on")
-switch("nimcache", ".nim")
+switch("nimcache", nimcacheDir())
 
 when defined(playdate):
     echo "compiling for device"

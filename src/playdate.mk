@@ -16,10 +16,10 @@ endif
 # ex: VPATH += src1:src2
 ######
 
-VPATH += .nim
+VPATH += $(NIM_CACHE_DIR)
 
 # List C source files here
-SRC = $(wildcard .nim/*.nim.c)
+SRC = $(wildcard $(NIM_CACHE_DIR)/*.nim.c)
 
 # List user asm files
 UASRC = 

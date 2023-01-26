@@ -53,6 +53,7 @@ proc make(target: string) =
         raise BuildFail.newException("Could not find playdate Makefile: " & makefile)
 
     putEnv(SDK_ENV_VAR, sdkPath())
+    putEnv("NIM_CACHE_DIR", nimcacheDir())
     putEnv("PRODUCT", pdxName())
     putEnv("UINCDIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
 
@@ -83,13 +84,13 @@ task all, "build all":
     nimble "clean"
     nimble "csim"
     make "simulator"
-    exec "rm -fR .nim"
+    exec "rm -fR " & nimcacheDir()
     nimble "cdevice"
     make "device"
     exec(sdkPath() & "/bin/pdc Source " & pdxName())
 
 task clean, "clean project":
-    exec "rm -fR .nim"
+    exec "rm -fR " & nimcacheDir()
     make "clean"
 
 task setup, "Initializes the build structure":
