@@ -1,0 +1,30 @@
+name: Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: nimlang/nim
+    steps:
+    - name: Install dependencies
+      run: apt-get install -y make libpng16-16 gcc-arm-none-eabi
+    - uses: actions/checkout@v1
+    - name: Download playdate SDK
+      run: wget https://download.panic.com/playdate_sdk/Linux/PlaydateSDK-latest.tar.gz
+    - name: Extract playdate SDK
+      run: tar -xvzf PlaydateSDK-latest.tar.gz
+    - name: Local publish playdate
+      run: nimble develop
+    - name: Setup
+      run: |
+        export PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d));
+        cd playdate_example;
+        nimble setup;
+    - name: Install dependencies
+      working-directory: ./playdate_example
+      run: nimble install --depsOnly --accept
+    - name: Simulator
+      working-directory: ./playdate_example
+      run: nimble simulator
+    - name: Device
+      working-directory: ./playdate_example
+      run: nimble device
