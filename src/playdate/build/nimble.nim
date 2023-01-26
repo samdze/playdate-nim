@@ -1,4 +1,4 @@
-import sequtils, strutils
+import sequtils, strutils, os
 
 # This file is designed to be `included` directly from a nimble file, which will make `switch` and `task`
 # implicitly available. This block just fixes auto-complete in IDEs
@@ -24,6 +24,27 @@ proc pdxName(): string =
     ## The name of the pdx file to generate
     projectName() & ".pdx"
 
+const SDK_ENV_VAR = "PLAYDATE_SDK_PATH"
+
+proc sdkPath(): string =
+    ## Returns the path of the playdate SDK
+    let fromEnv = getEnv(SDK_ENV_VAR)
+    let sdkPathCache = getConfigDir() / projectName() / SDK_ENV_VAR
+
+    if fromEnv != "":
+        mkDir(sdkPathCache.parentDir)
+        writeFile(sdkPathCache, fromEnv)
+        return fromEnv
+
+    if fileExists(sdkPathCache):
+        let fromFile = readFile(sdkPathCache)
+        if fromFile != "":
+            echo "Read SDK path from file: " & sdkPathCache
+            echo "SDK Path: " & fromFile
+            return fromFile
+
+    raise BuildFail.newException("SDK environment variable is not set: " & SDK_ENV_VAR)
+
 proc make(target: string) =
     ## Executes a make target
 
@@ -31,6 +52,7 @@ proc make(target: string) =
     if not makefile.fileExists:
         raise BuildFail.newException("Could not find playdate Makefile: " & makefile)
 
+    putEnv(SDK_ENV_VAR, sdkPath())
     putEnv("PRODUCT", pdxName())
     putEnv("UINCDIR", playdatePath() & "/playdate/include")
 
@@ -60,7 +82,7 @@ task all, "build all":
     exec "rm -fR .nim"
     nimble "cdevice"
     make "device"
-    exec(getEnv("PLAYDATE_SDK_PATH") & "/bin/pdc Source " & pdxName())
+    exec(sdkPath() & "/bin/pdc Source " & pdxName())
 
 task clean, "clean project":
     exec "rm -fR .nim"
