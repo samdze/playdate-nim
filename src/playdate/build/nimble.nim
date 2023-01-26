@@ -20,6 +20,10 @@ proc playdatePath(): string =
         raise BuildFail.newException("Playdate nimble module is not a directory: " & path)
     return path
 
+proc pdxName(): string =
+    ## The name of the pdx file to generate
+    projectName() & ".pdx"
+
 proc make(target: string) =
     ## Executes a make target
 
@@ -27,6 +31,7 @@ proc make(target: string) =
     if not makefile.fileExists:
         raise BuildFail.newException("Could not find playdate Makefile: " & makefile)
 
+    putEnv("PRODUCT", pdxName())
     putEnv("UINCDIR", playdatePath() & "/playdate/include")
 
     let arch = if defined(macosx): "arch -arm64 " else: ""
@@ -55,7 +60,7 @@ task all, "build all":
     exec "rm -fR .nim"
     nimble "cdevice"
     make "device"
-    exec(getEnv("PLAYDATE_SDK_PATH") & "/bin/pdc Source PlaydateNim.pdx")
+    exec(getEnv("PLAYDATE_SDK_PATH") & "/bin/pdc Source " & pdxName())
 
 task clean, "clean project":
     exec "rm -fR .nim"
