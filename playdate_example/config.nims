@@ -1,0 +1,1 @@
+include playdate/build/config
