@@ -70,6 +70,10 @@ task simulator, "build project":
     nimble "-d:simulator", "build"
     make "pdc"
 
+task simulate, "build project the project and run the simulator":
+    nimble "simulator"
+    exec( (sdkPath() / "bin" / "PlaydateSimulator") & " " & pdxName())
+
 task device, "build project":
     nimble "clean"
     nimble "-d:playdate", "build"
