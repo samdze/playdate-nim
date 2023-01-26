@@ -23,9 +23,6 @@ VPATH += .nim
 # List C source files here
 SRC = $(wildcard .nim/*.nim.c)
 
-# List all user directories here
-UINCDIR = src/playdate/include
-
 # List user asm files
 UASRC = 
 

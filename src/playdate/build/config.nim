@@ -1,3 +1,10 @@
+import os
+
+# This file is designed to be `included` directly from a `config.nims` file, which will make `switch` and `task`
+# implicitly available. This block just fixes auto-complete in IDEs
+when not compiles(task):
+    import system/nimscript
+
 switch("mm", "arc")
 switch("noMain", "on")
 switch("cc", "gcc")
@@ -34,39 +41,3 @@ when defined(simulator):
     switch("debugger", "native")
     switch("opt", "none")
     switch("define", "nimPage256")
-
-
-task cdevice, "build project":
-    exec "nim -d:playdate c src/main.nim"
-
-task csim, "build project":
-    exec "nim -d:simulator c src/main.nim"
-
-task simulator, "build project":
-    exec "nim clean"
-    exec "nim -d:simulator c src/main.nim"
-    var arch = ""
-    if defined(macosx):
-        arch = "arch -arm64 "
-    exec arch & "make pdc"
-
-task device, "build project":
-    exec "nim clean"
-    exec "nim -d:playdate c src/main.nim"
-    exec "make device"
-
-task all, "build all":
-    exec "nim clean"
-    exec "nim csim"
-    var arch = ""
-    if defined(macosx):
-        arch = "arch -arm64 "
-    exec arch & "make simulator"
-    exec "rm -fR .nim"
-    exec "nim cdevice"
-    exec "make device"
-    exec "${PLAYDATE_SDK_PATH}/bin/pdc Source PlaydateNim.pdx"
-
-task clean, "clean project":
-    exec "rm -fR .nim"
-    exec "make clean"

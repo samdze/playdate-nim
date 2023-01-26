@@ -22,15 +22,27 @@ Language | C | Lua | Nim  |
 
 ## Getting Started
 
-At the moment, this is just a template that contains the required code to wrap and use the Playdate SDK in Nim.
-
-The bindings will become a Nim package when stable enough.
-
 ### Prerequisites
 
 - Playdate SDK
 - Nim 1.6.10+
 - `PLAYDATE_SDK_PATH` environment variable
+
+### Installation
+
+If you haven't run it already, start by setting up your nimble package:
+
+```
+nimble init
+```
+
+Add a dependency on `playdate` package, and configure the build tasks by running the following:
+
+```
+echo 'requires "playdate"' >> *.nimble;
+echo 'include playdate/build/nimble' >> *.nimble;
+echo 'include playdate/build/config' > config.nims;
+```
 
 ## Usage
 
