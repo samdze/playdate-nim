@@ -54,7 +54,7 @@ proc make(target: string) =
 
     putEnv(SDK_ENV_VAR, sdkPath())
     putEnv("PRODUCT", pdxName())
-    putEnv("UINCDIR", playdatePath() & "/playdate/include")
+    putEnv("UINCDIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
 
     let arch = if defined(macosx): "arch -arm64 " else: ""
     exec(arch & "make " & target & " -f " & makefile)
