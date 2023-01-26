@@ -87,3 +87,30 @@ task all, "build all":
 task clean, "clean project":
     exec "rm -fR .nim"
     make "clean"
+
+task setup, "Initializes the build structure":
+    ## Creates a default source directory if it doesn't already exist
+
+    # Calling `sdkPath` will ensure the SDK environment variable is saved
+    # to the config path
+    discard sdkPath()
+
+    if not dirExists("Source"):
+        mkDir "Source"
+
+    if not fileExists("Source/pdxinfo"):
+        writeFile(
+            "Source/pdxinfo",
+            [
+                "name=" & projectName(),
+                "author=" & author,
+                "description=" & description,
+                "bundleId=com." & author & "." & projectName()
+            ].join("\n")
+        )
+
+    if not fileExists( ".gitignore"):
+        ".gitignore".writeFile([
+            pdxName(),
+            "Source/pdex.*"
+        ].join("\n"))

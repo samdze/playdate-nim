@@ -30,7 +30,7 @@ Language | C | Lua | Nim  |
 
 ### Installation
 
-If you haven't run it already, start by setting up your nimble package:
+If you haven't run it already, start by initializing your nimble package:
 
 ```
 nimble init
@@ -42,6 +42,13 @@ Add a dependency on `playdate` package, and configure the build tasks by running
 echo 'requires "playdate"' >> *.nimble;
 echo 'include playdate/build/nimble' >> *.nimble;
 echo 'include playdate/build/config' > config.nims;
+```
+
+Finally, setup the structure of the package, which requires passing in
+the path to the playdate SDK installation:
+
+```
+PLAYDATE_SDK_PATH=[PATH TO PLAYDATE SDK] nimble setup
 ```
 
 ## Usage
