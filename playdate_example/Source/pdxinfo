@@ -1,0 +1,4 @@
+name=playdate_example
+author=samdze
+description=An example package using the Playdate nim bindings
+bundleId=com.samdze.playdate_example
