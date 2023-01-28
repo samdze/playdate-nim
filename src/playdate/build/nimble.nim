@@ -104,13 +104,28 @@ task setup, "Initializes the build structure":
         mkDir "Source"
 
     if not fileExists("Source/pdxinfo"):
+        let cartridgeName = projectName()
+            .replace("_", " ")
+            .split(" ")
+            .map(proc(s: string): string = s.capitalizeAscii())
+            .join(" ")
+        let bundleAuthor = author
+            .toLower()
+            .replace(" ", "")
+            .replace("-", "")
+            .replace("_", "")
+        let bundleProjectName = projectName()
+            .toLower()
+            .replace(" ", "")
+            .replace("-", "")
+            .replace("_", "")
         writeFile(
             "Source/pdxinfo",
             [
-                "name=" & projectName(),
+                "name=" & cartridgeName,
                 "author=" & author,
                 "description=" & description,
-                "bundleId=com." & author & "." & projectName()
+                "bundleId=com." & bundleAuthor & "." & bundleProjectName
             ].join("\n")
         )
 

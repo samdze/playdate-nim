@@ -36,6 +36,7 @@ If you haven't run it already, start by initializing your nimble package:
 nimble init
 ```
 
+Move into your package directory.
 Add a dependency on `playdate` package, and configure the build tasks by running the following:
 
 ```
@@ -44,16 +45,16 @@ echo 'include playdate/build/nimble' >> *.nimble;
 echo 'include playdate/build/config' > config.nims;
 ```
 
-Finally, setup the structure of the package, which requires passing in
-the path to the playdate SDK installation:
+Finally, setup the structure of the package, which prepares your application to be compiled and bundled correctly:
 
 ```
-PLAYDATE_SDK_PATH=[PATH TO PLAYDATE SDK] nimble setup
+nimble setup
 ```
 
 ## Usage
 
-`src/main.nim` contains a basic example of the bindings utilization.
+`playdate_example` contains a basic example of the bindings utilization.
+The example code is in `playdate_example/src/playdate_example.nim`
 
 Here's also a minimal snippet to make a Nim application:
 ```nim

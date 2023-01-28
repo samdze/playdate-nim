@@ -1,8 +1,8 @@
 # Package
 
-version       = "0.1.0"
-author        = "samdze"
-description   = "An example package using the Playdate nim bindings"
+version       = "0.7.0"
+author        = "Samuele Zolfanelli"
+description   = "An example application using the Playdate Nim bindings"
 license       = "MIT"
 srcDir        = "src"
 bin           = @["playdate_example"]

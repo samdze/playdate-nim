@@ -1,8 +1,8 @@
 # Package
 
-version       = "0.1.0"
-author        = "samdze"
-description   = "Playdate nim bindings"
+version       = "0.7.0"
+author        = "Samuele Zolfanelli"
+description   = "Playdate Nim bindings with extra features."
 license       = "MIT"
 srcDir        = "src"
 
