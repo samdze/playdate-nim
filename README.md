@@ -1,4 +1,4 @@
-# Nim Playdate
+# Nim Playdate ![build workflow](https://github.com/samdze/playdate-nim/actions/workflows/build.yml/badge.svg)
 ![Playdate Simulator 2023-01-06 at 19 41 01](https://user-images.githubusercontent.com/19392104/211077589-09d1c9ee-02a4-4804-8c2b-6a8ad1850ec3.png)
 
 ## About
