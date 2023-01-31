@@ -243,6 +243,39 @@ proc getDisplayFrame*(this: ptr PlaydateGraphics): DisplayFrame =
     privateAccess(PlaydateGraphics)
     return cast[DisplayFrame](this.getDisplayFrame()) # Who should manage this memory? Not clear. Not auto-managed right now.
 
+proc frameIndex(x, y: int): int {.inline.} =
+    ## Returns the index of a coordinate within a DisplayFrame.
+    y * LCD_ROWSIZE + x div 8
+
+proc frameBit(x: int): uint8 {.inline.} =
+    ## Returns the specific packed bit that is used to represent an `x` coordinate.
+    1'u8 shl uint8(7 - (x mod 8))
+
+proc isInFrame(x, y: int): bool {.inline.} =
+    ## Returns whether a point is within the frame.
+    x >= 0 and y >= 0 and x < LCD_COLUMNS and y < LCD_ROWS
+
+proc get*(frame: DisplayFrame, x, y: int): LCDSolidColor =
+    ## Returns the color ofa pixel at the given coordinate.
+    if not isInFrame(x, y) or (frame[frameIndex(x, y)] and frameBit(x)) != 0:
+        kColorWhite
+    else:
+        kColorBlack
+
+proc set*(frame: DisplayFrame, x, y: int) =
+    ## Sets the pixel at x, y to black.
+    if isInFrame(x, y):
+        frame[frameIndex(x, y)] = frame[frameIndex(x, y)] and not frameBit(x)
+
+proc clear*(frame: DisplayFrame, x, y: int) =
+    ## Clears the color from a pixel at the given coordinate.
+    if isInFrame(x, y):
+        frame[frameIndex(x, y)] = frame[frameIndex(x, y)] or frameBit(x)
+
+proc set*(frame: DisplayFrame, x, y: int, color: LCDSolidColor) =
+    ## Sets the specific color of a pixel at the given coordinate.
+    if (color == kColorBlack): set(frame, x, y) else: clear(frame, x, y)
+
 proc getDebugBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
     return LCDBitmap(resource: this.getDebugBitmap(), free: true) # Who should manage this memory? Not clear. Auto-managed.
