@@ -20,6 +20,8 @@ Language | C | Lua | Nim  |
 **Error checking** | Basic compile + runtime | ✖ Mostly runtime | ✔ Compile time + runtime
 **OOP** | ✖ Not supported | ✔ Supported | ✔ Supported
 
+This package is an independent bindings library, not affiliated with Panic.
+
 ## Getting Started
 
 ### Prerequisites

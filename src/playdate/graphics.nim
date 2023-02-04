@@ -256,7 +256,7 @@ proc isInFrame(x, y: int): bool {.inline.} =
     x >= 0 and y >= 0 and x < LCD_COLUMNS and y < LCD_ROWS
 
 proc get*(frame: DisplayFrame, x, y: int): LCDSolidColor =
-    ## Returns the color ofa pixel at the given coordinate.
+    ## Returns the color of a pixel at the given coordinate.
     if not isInFrame(x, y) or (frame[frameIndex(x, y)] and frameBit(x)) != 0:
         kColorWhite
     else:
