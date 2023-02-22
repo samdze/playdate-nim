@@ -26,7 +26,7 @@ proc pdxName(): string =
 
 const SDK_ENV_VAR = "PLAYDATE_SDK_PATH"
 
-proc sdkPath(): string =
+proc sdkPath*(): string =
     ## Returns the path of the playdate SDK
     let fromEnv = getEnv(SDK_ENV_VAR)
     let sdkPathCache = getConfigDir() / projectName() / SDK_ENV_VAR

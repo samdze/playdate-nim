@@ -50,3 +50,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Ignore test binaries
+tests/t_*
+!tests/t_*.*
