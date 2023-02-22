@@ -21,16 +21,16 @@ proc update(): int =
     # playdate is the global PlaydateAPI instance, available when playdate/api is imported
     let buttonsState = playdate.system.getButtonsState()
 
-    if buttonsState.current.check(kButtonRight):
+    if kButtonRight in buttonsState.current:
         x += 10
-    if buttonsState.current.check(kButtonLeft):
+    if kButtonLeft in buttonsState.current:
         x -= 10
-    if buttonsState.current.check(kButtonUp):
+    if kButtonUp in buttonsState.current:
         y -= 10
-    if buttonsState.current.check(kButtonDown):
+    if kButtonDown in buttonsState.current:
         y += 10
 
-    if buttonsState.pushed.check(kButtonA):
+    if kButtonA in buttonsState.pushed:
         samplePlayer.play(1, 1.0)
 
     let goalX = x.toFloat

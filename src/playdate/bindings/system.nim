@@ -4,11 +4,10 @@ import utils
 import types
 
 type PDButton* {.importc: "PDButtons", header: "pd_api.h", size: sizeof(uint32).} = enum
-    kButtonLeft = (1 shl 0), kButtonRight = (1 shl 1), kButtonUp = (1 shl 2),
-    kButtonDown = (1 shl 3), kButtonB = (1 shl 4), kButtonA = (1 shl 5)
+    kButtonLeft = 1, kButtonRight = 2, kButtonUp = 3,
+    kButtonDown = 4, kButtonB = 5, kButtonA = 6
+
 type PDButtons* = set[PDButton]
-proc check*(this: PDButtons, button: PDButton): bool =
-    return (cast[uint32](this) and cast[uint32](button)) != 0
 
 type PDLanguage* {.importc: "PDLanguage", header: "pd_api.h".} = enum
     kPDLanguageEnglish, kPDLanguageJapanese, kPDLanguageUnknown
@@ -46,8 +45,8 @@ sdktype:
         getSecondsSinceEpoch {.importc: "getSecondsSinceEpoch".}: proc (milliseconds: ptr cuint): cuint {.cdecl, raises: [].}
         drawFPS {.importsdk.}: proc (x: cint; y: cint)
         setUpdateCallback {.importc: "setUpdateCallback".}: proc (update: PDCallbackFunctionRaw, userdata: pointer) {.cdecl, raises: [].}
-        getButtonState {.importc: "getButtonState".}: proc (current: ptr PDButton;
-            pushed: ptr PDButton; released: ptr PDButton) {.cdecl, raises: [].}
+        getButtonState {.importc: "getButtonState".}: proc (current: ptr uint32;
+            pushed: ptr uint32; released: ptr uint32) {.cdecl, raises: [].}
         setPeripheralsEnabled* {.importc.}: proc (mask: PDPeripherals) {.cdecl, raises: [].}
         getAccelerometer {.importc: "getAccelerometer".}: proc (outx: ptr cfloat;
             outy: ptr cfloat; outz: ptr cfloat) {.cdecl, raises: [].}

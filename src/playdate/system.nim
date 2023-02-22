@@ -48,9 +48,9 @@ proc setUpdateCallback*(this: ptr PlaydateSys, update: PDCallbackFunction) =
 
 proc getButtonsState* (this: ptr PlaydateSys): tuple[current: PDButtons, pushed: PDButtons, released: PDButtons] =
     privateAccess(PlaydateSys)
-    var current, pushed, released: PDButtons
-    this.getButtonState(cast[ptr PDButton](addr(current)), cast[ptr PDButton](addr(pushed)), cast[ptr PDButton](addr(released)))
-    return (current: current, pushed: pushed, released: released)
+    var current, pushed, released: uint32
+    this.getButtonState(addr(current), addr(pushed), addr(released))
+    return (current: cast[PDButtons](current), pushed: cast[PDButtons](pushed), released: cast[PDButtons](released))
 
 proc getAccelerometer* (this: ptr PlaydateSys): tuple[x: float, y: float, z: float] =
     privateAccess(PlaydateSys)
