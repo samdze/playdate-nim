@@ -36,9 +36,8 @@ proc update(): int =
     let goalX = x.toFloat
     let goalY = y.toFloat
     let res = sprite.moveWithCollisions(goalX, goalY)
-    # + 32 to account for the C SDK ignoring the sprite center point (bug)
-    x = (res.actualX + 32).int
-    y = (res.actualY + 32).int
+    x = res.actualX.int
+    y = res.actualY.int
     if res.collisions.len > 0:
         # fmt allows the "{variable}" syntax for formatting strings
         playdate.system.logToConsole(fmt"{res.collisions.len} collision(s) occurred!")

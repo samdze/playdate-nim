@@ -13,9 +13,12 @@ type BuildFail = object of Defect
 
 proc playdatePath(): string =
     ## Returns the path of the playdate nim module
-    let (path, exitCode) = gorgeEx("nimble path playdate")
+    let (paths, exitCode) = gorgeEx("nimble path playdate")
     if exitCode != 0:
         raise BuildFail.newException("Could not find the playdate nimble module!")
+    let pathsSeq = paths.split("\n")
+    # If multiple package paths are found, use the last one
+    let path = pathsSeq[pathsSeq.len - 1]
     if path.strip == "" or not path.strip.dirExists:
         raise BuildFail.newException("Playdate nimble module is not a directory: " & path)
     return path
@@ -60,27 +63,31 @@ proc make(target: string) =
     let arch = if defined(macosx): "arch -arm64 " else: ""
     exec(arch & "make " & target & " -f " & makefile)
 
-task cdevice, "build project":
+task clean, "Clean the project folders":
+    exec "rm -fR " & nimcacheDir()
+    make "clean"
+
+task cdevice, "Generate C files for the device":
     nimble "-d:playdate", "build"
 
-task csim, "build project":
+task csim, "Generate C files for the simulator":
     nimble "-d:simulator", "build"
 
-task simulator, "build project":
+task simulator, "Build for the simulator":
     nimble "clean"
     nimble "-d:simulator", "build"
     make "pdc"
 
-task simulate, "build project the project and run the simulator":
+task simulate, "Build and run in the simulator":
     nimble "simulator"
     exec( (sdkPath() / "bin" / "PlaydateSimulator") & " " & pdxName())
 
-task device, "build project":
+task device, "Build for the device":
     nimble "clean"
     nimble "-d:playdate", "build"
     make "device"
 
-task all, "build all":
+task all, "Build for both the simulator and the device":
     nimble "clean"
     nimble "csim"
     make "simulator"
@@ -89,11 +96,7 @@ task all, "build all":
     make "device"
     exec(sdkPath() & "/bin/pdc Source " & pdxName())
 
-task clean, "clean project":
-    exec "rm -fR " & nimcacheDir()
-    make "clean"
-
-task setup, "Initializes the build structure":
+task setup, "Initialize the build structure":
     ## Creates a default source directory if it doesn't already exist
 
     # Calling `sdkPath` will ensure the SDK environment variable is saved
