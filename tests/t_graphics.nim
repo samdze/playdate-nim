@@ -5,7 +5,7 @@ proc execGraphicsTests*(runnable: bool) =
 
     suite "Graphics API":
 
-        template frameTests(create: untyped) =
+        template bitviewTests(create: untyped) =
             if runnable:
                 var value = create
                 discard value.get(1, 1)
@@ -15,10 +15,13 @@ proc execGraphicsTests*(runnable: bool) =
                 value.set(0, 0, kColorBlack)
 
         test "Setting Frame bits should compile":
-            frameTests(playdate.graphics.getFrame())
+            bitviewTests(playdate.graphics.getFrame())
 
         test "Setting DisplayFrame bits should compile":
-            frameTests(playdate.graphics.getDisplayFrame())
+            bitviewTests(playdate.graphics.getDisplayFrame())
+
+        test "Setting Bitmap bits should compile":
+            bitviewTests(playdate.graphics.newBitmap(10, 10, kColorWhite).getData)
 
         template colorTests(colorOrPattern: untyped) =
             if runnable:
