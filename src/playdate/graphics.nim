@@ -3,7 +3,7 @@
 import std/importutils
 
 import system
-import bindings/[api, types]
+import bindings/[api, types, utils]
 import bindings/graphics
 
 # Only export public symbols, then import all
@@ -19,6 +19,9 @@ proc `=destroy`(this: var LCDBitmapObj) =
     if this.free:
         playdate.graphics.freeBitmap(this.resource)
 type LCDBitmap* = ref LCDBitmapObj
+
+proc toLCDBitmapPtr*(this: LCDBitmap): auto =
+    if this != nil: this.resource else: nil
 
 type LCDVideoPlayerObj = object of RootObj
     resource {.requiresinit.}: LCDVideoPlayerPtr
@@ -78,21 +81,15 @@ proc setFont*(this: ptr PlaydateGraphics, font: LCDFont) =
 proc getFont*(this: ptr PlaydateGraphics): LCDFont =
     return currentFont
 
-proc pushContext*(this: ptr PlaydateGraphics, target: LCDBitmap) =
-    privateAccess(PlaydateGraphics)
-    this.pushContext(if target != nil: target.resource else: nil)
+proc pushContext*(this: ptr PlaydateGraphics, target: LCDBitmap) {.wrapApi(PlaydateGraphics).}
 
-proc draw*(this: LCDBitmap, x: int, y: int, flip: LCDBitmapFlip) =
-    privateAccess(PlaydateGraphics)
-    playdate.graphics.drawBitmap(this.resource, x, y, flip)
+proc draw*(this: LCDBitmap, x: int, y: int, flip: LCDBitmapFlip) {.wrapApi(PlaydateGraphics, drawBitmap).}
 
-proc drawTiled*(this: LCDBitmap, x: int, y: int, width: int, height: int, flip: LCDBitmapFlip) =
-    privateAccess(PlaydateGraphics)
-    playdate.graphics.tileBitmap(this.resource, x.cint, y.cint, width.cint, height.cint, flip)
+proc drawTiled*(this: LCDBitmap, x: int, y: int, width: int, height: int, flip: LCDBitmapFlip)
+    {.wrapApi(PlaydateGraphics, tileBitmap).}
 
-proc drawScaled*(this: LCDBitmap, x: int, y: int, xScale: float, yScale: float) =
-    privateAccess(PlaydateGraphics)
-    playdate.graphics.drawScaledBitmap(this.resource, x.cint, y.cint, xScale.cfloat, yScale.cfloat)
+proc drawScaled*(this: LCDBitmap, x: int, y: int, xScale: float, yScale: float)
+    {.wrapApi(PlaydateGraphics, drawScaledBitmap).}
 
 proc drawText*(this: ptr PlaydateGraphics, text: string, x: int, y: int): int {.discardable.} =
     privateAccess(PlaydateGraphics)
@@ -137,9 +134,7 @@ proc getData*(this: LCDBitmap): BitmapData =
     bitmapData.bytes = bytes.int
     return bitmapData
 
-proc clear*(this: LCDBitmap, color: LCDColor) =
-    privateAccess(PlaydateGraphics)
-    playdate.graphics.clearBitmap(this.resource, color)
+proc clear*(this: LCDBitmap, color: LCDColor) {.wrapApi(PlaydateGraphics, clearBitmap).}
 
 proc rotated*(this: LCDBitmap, rotation: float, xScale: float, yScale: float):
         tuple[bitmap: LCDBitmap, allocatedSize: int] =
@@ -222,30 +217,28 @@ proc getPageGlyph*(this: LCDFontPage, c: char): LCDFontGlyph =
         return nil
     return LCDFontGlyph(resource: glyph)
 
-proc getGlyphKerning*(this: LCDFontGlyph, glyphCode: char, nextCode: char): int =
-    privateAccess(PlaydateGraphics)
-    privateAccess(LCDFontGlyph)
-    return playdate.graphics.getGlyphKerning(this.resource, glyphCode.uint32, nextCode.uint32).int
+proc getGlyphKerning*(this: LCDFontGlyph, glyphCode: char, nextCode: char): int
+    {.wrapApi([PlaydateGraphics, LCDFontGlyph]).}
 
-proc getTextWidth*(this: LCDFont, text: string, len: int, encoding: PDStringEncoding, tracking: int): int =
+proc getTextwidth*(this: LCDFont, text: string, len: int, encoding: PDStringEncoding, tracking: int): int =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
-    return playdate.graphics.getTextWidth(this.resource, text.cstring, len.csize_t, encoding, tracking.cint)
+    return playdate.graphics.getTextwidth(this.resource, text.cstring, len.csize_t, encoding, tracking.cint)
 
-type DisplayFrame* = ptr array[LCD_ROWSIZE * LCD_ROWS, uint8]
+type DisplayFrame* = ptr array[LCD_ROwSIZE * LCD_ROwS, uint8]
 # type DisplayFrame* = ref DisplayFrameObj
 
 proc getFrame*(this: ptr PlaydateGraphics): DisplayFrame =
     privateAccess(PlaydateGraphics)
-    return cast[DisplayFrame](this.getFrame()) # Who should manage this memory? Not clear. Not auto-managed right now.
+    return cast[DisplayFrame](this.getFrame()) # who should manage this memory? Not clear. Not auto-managed right now.
 
 proc getDisplayFrame*(this: ptr PlaydateGraphics): DisplayFrame =
     privateAccess(PlaydateGraphics)
-    return cast[DisplayFrame](this.getDisplayFrame()) # Who should manage this memory? Not clear. Not auto-managed right now.
+    return cast[DisplayFrame](this.getDisplayFrame()) # who should manage this memory? Not clear. Not auto-managed right now.
 
 proc frameIndex(x, y: int): int {.inline.} =
     ## Returns the index of a coordinate within a DisplayFrame.
-    y * LCD_ROWSIZE + x div 8
+    y * LCD_ROwSIZE + x div 8
 
 proc frameBit(x: int): uint8 {.inline.} =
     ## Returns the specific packed bit that is used to represent an `x` coordinate.
@@ -253,12 +246,12 @@ proc frameBit(x: int): uint8 {.inline.} =
 
 proc isInFrame(x, y: int): bool {.inline.} =
     ## Returns whether a point is within the frame.
-    x >= 0 and y >= 0 and x < LCD_COLUMNS and y < LCD_ROWS
+    x >= 0 and y >= 0 and x < LCD_COLUMNS and y < LCD_ROwS
 
 proc get*(frame: DisplayFrame, x, y: int): LCDSolidColor =
     ## Returns the color of a pixel at the given coordinate.
     if not isInFrame(x, y) or (frame[frameIndex(x, y)] and frameBit(x)) != 0:
-        kColorWhite
+        kColorwhite
     else:
         kColorBlack
 
@@ -278,7 +271,7 @@ proc set*(frame: DisplayFrame, x, y: int, color: LCDSolidColor) =
 
 proc getDebugBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.getDebugBitmap(), free: true) # Who should manage this memory? Not clear. Auto-managed.
+    return LCDBitmap(resource: this.getDebugBitmap(), free: true) # who should manage this memory? Not clear. Auto-managed.
 
 proc copyFrameBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
@@ -298,32 +291,22 @@ proc fillPolygon*[Int32x2](this: ptr PlaydateGraphics, points: seq[Int32x2], col
     privateAccess(PlaydateGraphics)
     this.fillPolygon(points.len.cint, cast[ptr cint](unsafeAddr(points[0])), color, fillRule)
 
-proc getFontHeight*(this: LCDFont): uint =
-    privateAccess(PlaydateGraphics)
-    privateAccess(LCDFont)
-    return playdate.graphics.getFontHeight(this.resource)
+proc getFontHeight*(this: LCDFont): uint {.wrapApi([PlaydateGraphics, LCDFont], getFontHeight).}
 
 proc getDisplayBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
     return LCDBitmap(resource: this.getDisplayBufferBitmap(), free: false)
 
-proc drawRotated*(this: LCDBitmap, x: int, y: int, rotation: float, centerX: float, centerY:
-        float, xScale: float, yScale: float) =
-    privateAccess(PlaydateGraphics)
-    playdate.graphics.drawRotatedBitmap(this.resource, x.cint, y.cint, rotation.cfloat, centerX.cfloat, centerY.cfloat,
-        xScale.cfloat, yScale.cfloat)
+proc drawRotated*(this: LCDBitmap; x, y: int; rotation, centerX, centerY, xScale, yScale: float)
+    {.wrapApi([PlaydateGraphics], drawRotatedBitmap).}
 
-proc setBitmapMask*(this: LCDBitmap, mask: LCDBitmap): int =
-    privateAccess(PlaydateGraphics)
-    return playdate.graphics.setBitmapMask(this.resource, mask.resource).int
+proc setBitmapMask*(this: LCDBitmap, mask: LCDBitmap): int {.wrapApi([PlaydateGraphics]).}
 
 proc getBitmapMask*(this: LCDBitmap): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: playdate.graphics.getBitmapMask(this.resource), free: false) # Who should manage this memory? Not clear. Not auto-managed right now.
+    return LCDBitmap(resource: playdate.graphics.getBitmapMask(this.resource), free: false) # who should manage this memory? Not clear. Not auto-managed right now.
 
-proc setStencilImage*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, tile: bool) =
-    privateAccess(PlaydateGraphics)
-    this.setStencilImage(bitmap.resource, if tile: 1 else: 0)
+proc setStencilImage*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, tile: bool) {.wrapApi(PlaydateGraphics).}
 
 proc makeFont*(this: LCDFontData, wide: bool): LCDFont =
     privateAccess(PlaydateGraphics)

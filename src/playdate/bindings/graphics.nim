@@ -218,3 +218,7 @@ sdktype:
             tile: cint) {.cdecl, raises: [].}   ##  1.12
         makeFontFromData {.importc: "makeFontFromData".}: proc (data: LCDFontDataPtr;
             wide: cint): LCDFontPtr {.cdecl, raises: [].}
+
+proc toLCDFontGlyphPtr*(this: LCDFontGlyph): auto = this.resource
+
+proc toLCDFontPtr*(this: LCDFont): auto = this.resource

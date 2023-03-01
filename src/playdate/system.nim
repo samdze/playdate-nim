@@ -4,7 +4,7 @@ import std/importutils
 import strformat
 import sequtils
 
-import bindings/[api, types]
+import bindings/[api, types, utils]
 import bindings/system
 
 # Only export public symbols, then import all
@@ -15,13 +15,9 @@ import bindings/system {.all.}
 template fmt*(arg: typed): string =
     try: &(arg) except: arg
 
-proc logToConsole*(this: ptr PlaydateSys, str: string) =
-    privateAccess(PlaydateSys)
-    this.logToConsole(str.cstring)
+proc logToConsole*(this: ptr PlaydateSys, str: string) {.wrapApi(PlaydateSys).}
 
-proc error*(this: ptr PlaydateSys, str: string) =
-    privateAccess(PlaydateSys)
-    this.error(str.cstring)
+proc error*(this: ptr PlaydateSys, str: string) {.wrapApi(PlaydateSys).}
 
 proc getSecondsSinceEpoch* (this: ptr PlaydateSys): tuple[seconds: uint, milliseconds: uint] =
     privateAccess(PlaydateSys)
@@ -58,21 +54,14 @@ proc getAccelerometer* (this: ptr PlaydateSys): tuple[x: float, y: float, z: flo
     this.getAccelerometer(addr(x), addr(y), addr(z))
     return (x: x.float, y: y.float, z: z.float)
 
-proc isCrankDocked* (this: ptr PlaydateSys): bool =
-    privateAccess(PlaydateSys)
-    return this.isCrankDocked() == 1
+proc isCrankDocked* (this: ptr PlaydateSys): bool {.wrapApi(PlaydateSys).}
 
-proc setCrankSoundsEnabled* (this: ptr PlaydateSys, enabled: bool): bool = ##  returns previous setting
-    privateAccess(PlaydateSys)
-    return this.setCrankSoundsDisabled(if enabled: 0 else: 1) == 0
+proc setCrankSoundsEnabled* (this: ptr PlaydateSys, enabled: bool): bool {.wrapApi(PlaydateSys, setCrankSoundsDisabled).}
+    ## returns previous setting
 
-proc getFlipped* (this: ptr PlaydateSys): bool =
-    privateAccess(PlaydateSys)
-    return this.getFlipped() == 1
+proc getFlipped* (this: ptr PlaydateSys): bool {.wrapApi(PlaydateSys).}
 
-proc setAutoLockEnabled* (this: ptr PlaydateSys, enabled: bool) =
-    privateAccess(PlaydateSys)
-    this.setAutoLockDisabled(if enabled: 0 else: 1)
+proc setAutoLockEnabled* (this: ptr PlaydateSys, enabled: bool) {.wrapApi(PlaydateSys, setAutoLockDisabled).}
 
 # --- Menu items
 privateAccess(PDMenuItem)
@@ -82,15 +71,9 @@ func isActive*(this: PDMenuItem): bool =
     privateAccess(PDMenuItem)
     return this.active
 
-proc `title=`*(this: PDMenuItem, title: string) =
-    privateAccess(PDMenuItem)
-    privateAccess(PlaydateSys)
-    playdate.system.setMenuItemTitle(this.resource, title.cstring)
+proc `title=`*(this: PDMenuItem, title: string) {.wrapApi(PlaydateSys, setMenuItemTitle).}
 
-proc title*(this: PDMenuItem): string =
-    privateAccess(PDMenuItem)
-    privateAccess(PlaydateSys)
-    return $playdate.system.getMenuItemTitle(this.resource)
+proc title*(this: PDMenuItem): string {.wrapApi(PlaydateSys, getMenuItemTitle).}
 
 proc remove*(this: PDMenuItem) =
     privateAccess(PDMenuItem)
@@ -109,25 +92,13 @@ proc remove*(this: PDMenuItem) =
 #     this.callback = nil
 #     this.PDMenuItem.remove()
 
-proc `value=`*(this: PDMenuItemCheckmark, checked: bool) =
-    privateAccess(PDMenuItem)
-    privateAccess(PlaydateSys)
-    playdate.system.setMenuItemValue(this.resource, if checked: 1 else: 0)
+proc `value=`*(this: PDMenuItemCheckmark, checked: bool) {.wrapApi(PlaydateSys, setMenuItemValue).}
 
-proc value*(this: PDMenuItemCheckmark): bool =
-    privateAccess(PDMenuItem)
-    privateAccess(PlaydateSys)
-    return playdate.system.getMenuItemValue(this.resource) == 1
+proc value*(this: PDMenuItemCheckmark): bool {.wrapApi(PlaydateSys, getMenuItemValue).}
 
-proc `value=`*(this: PDMenuItemOptions, index: int) =
-    privateAccess(PDMenuItem)
-    privateAccess(PlaydateSys)
-    playdate.system.setMenuItemValue(this.resource, index.cint)
+proc `value=`*(this: PDMenuItemOptions, index: int) {.wrapApi(PlaydateSys, setMenuItemValue).}
 
-proc value*(this: PDMenuItemOptions): int =
-    privateAccess(PDMenuItem)
-    privateAccess(PlaydateSys)
-    return playdate.system.getMenuItemValue(this.resource).int
+proc value*(this: PDMenuItemOptions): int {.wrapApi(PlaydateSys, getMenuItemValue).}
 
 type PDMenuItemButtonCallbackFunction* = proc(menuItem: PDMenuItemButton) {.raises: [].}
 type PDMenuItemCheckmarkCallbackFunction* = proc(menuItem: PDMenuItemCheckmark) {.raises: [].}
@@ -187,6 +158,4 @@ proc removeAllMenuItems*(this: ptr PlaydateSys) =
     this.removeAllMenuItems()
 # ---
 
-proc getReduceFlashing* (this: ptr PlaydateSys): bool =
-    privateAccess(PlaydateSys)
-    return this.getReduceFlashing() == 1
+proc getReduceFlashing* (this: ptr PlaydateSys): bool {.wrapApi(PlaydateSys).}

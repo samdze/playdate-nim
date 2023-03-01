@@ -1,8 +1,7 @@
 {.push raises: [].}
 
 import std/importutils
-import bindings/sound
-import bindings/api
+import bindings/[sound, api, utils]
 import system
 
 # Only export public symbols, then import all
@@ -11,15 +10,14 @@ export sound
 import bindings/sound {.all.}
 
 # AudioSample
-type 
+type
     AudioSampleObj {.requiresinit.} = object
         resource: AudioSamplePtr
     AudioSample* = ref AudioSampleObj
 
-proc `=destroy`(this: var AudioSampleObj) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSample)
-    playdate.sound.sample.freeSample(this.resource)
+proc toAudioSamplePtr(this: AudioSampleObj | AudioSample): auto = this.resource
+
+proc `=destroy`(this: var AudioSampleObj) {.wrapApi([PlaydateSoundSample, PlaydateSound], freeSample).}
 
 proc newAudioSample*(this: ptr PlaydateSound, bytes: int32): AudioSample =
     privateAccess(PlaydateSound)
@@ -34,15 +32,9 @@ proc newAudioSample*(this: ptr PlaydateSound, path: string): AudioSample {.raise
         raise newException(IOError, fmt"file {path} not found: No such file")
     result = AudioSample(resource: resource)
 
-proc load*(this: AudioSample, path: string) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSample)
-    discard playdate.sound.sample.loadIntoSample(this.resource, path.cstring)
+proc load*(this: AudioSample, path: string) {.wrapApi([PlaydateSoundSample, PlaydateSound], loadIntoSample).}
 
-proc getLength*(this: AudioSample): float =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSample)
-    return playdate.sound.sample.getLength(this.resource).float
+proc getLength*(this: AudioSample): float {.wrapApi([PlaydateSoundSample, PlaydateSound]).}
 
 # AudioSource
 type SoundSourceObj {.requiresinit.} = object of RootObj
@@ -54,10 +46,9 @@ type
     FilePlayerObj = object of SoundSourceObj
     FilePlayer* = ref FilePlayerObj
 
-proc `=destroy`(this: var FilePlayerObj) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    playdate.sound.fileplayer.freePlayer(this.resource)
+proc toFilePlayerPtr(this: FilePlayer | FilePlayerObj): auto = this.resource
+
+proc `=destroy`(this: var FilePlayerObj) {.wrapApi([PlaydateSoundFileplayer, PlaydateSound], freePlayer).}
 
 proc newFilePlayer*(this: ptr PlaydateSound): FilePlayer =
     privateAccess(PlaydateSound)
@@ -77,25 +68,13 @@ proc load*(this: FilePlayer, path: string) {.raises: [IOError].} =
     if playdate.sound.fileplayer.loadIntoPlayer(this.resource, path.cstring) == 0:
         raise newException(IOError, fmt"file {path} not found: No such file")
 
-proc play*(this: FilePlayer, repeat: int) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    discard playdate.sound.fileplayer.play(this.resource, repeat.cint)
+proc play*(this: FilePlayer, repeat: int) {.wrapApi([PlaydateSoundFileplayer, PlaydateSound]).}
 
-proc isPlaying*(this: FilePlayer): bool =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    return playdate.sound.fileplayer.isPlaying(this.resource) == 1
+proc isPlaying*(this: FilePlayer): bool {.wrapApi([PlaydateSoundFileplayer, PlaydateSound]).}
 
-proc pause*(this: FilePlayer) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    playdate.sound.fileplayer.pause(this.resource)
+proc pause*(this: FilePlayer) {.wrapApi([PlaydateSoundFileplayer, PlaydateSound]).}
 
-proc stop*(this: FilePlayer) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    playdate.sound.fileplayer.stop(this.resource)
+proc stop*(this: FilePlayer) {.wrapApi([PlaydateSoundFileplayer, PlaydateSound]).}
 
 proc volume*(this: FilePlayer): tuple[left: float, right: float] =
     privateAccess(PlaydateSound)
@@ -104,36 +83,24 @@ proc volume*(this: FilePlayer): tuple[left: float, right: float] =
     playdate.sound.fileplayer.getVolume(this.resource, addr left, addr right)
     return (left: left.float, right: right.float)
 
-proc `volume=`*(this: FilePlayer, volume: float) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    playdate.sound.fileplayer.setVolume(this.resource, volume.cfloat, volume.cfloat)
+proc setVolume*(this: FilePlayer; left: float; right: float)
+    {.wrapApi([PlaydateSoundFileplayer, PlaydateSound], setVolume).}
 
-proc setVolume*(this: FilePlayer, left: float, right: float) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    playdate.sound.fileplayer.setVolume(this.resource, left.cfloat, right.cfloat)
+proc `volume=`*(this: FilePlayer, volume: float) = setVolume(this, volume, volume)
 
-proc getLength*(this: FilePlayer): float =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    return playdate.sound.fileplayer.getLength(this.resource).float
+proc getLength*(this: FilePlayer): float {.wrapApi([PlaydateSoundFileplayer, PlaydateSound]).}
 
-proc offset*(this: FilePlayer): float =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    return playdate.sound.fileplayer.getOffset(this.resource).float
+proc offset*(this: FilePlayer): float {.wrapApi([PlaydateSoundFileplayer, PlaydateSound], getOffset).}
 
-proc `offset=`*(this: FilePlayer, offset: float) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundFileplayer)
-    playdate.sound.fileplayer.setOffset(this.resource, offset.cfloat)
+proc `offset=`*(this: FilePlayer, offset: float) {.wrapApi([PlaydateSoundFileplayer, PlaydateSound], setOffset).}
 
 # SamplePlayer
 type
     SamplePlayerObj = object of SoundSourceObj
         sample: AudioSample
     SamplePlayer* = ref SamplePlayerObj
+
+proc toSamplePlayerPtr(this: SamplePlayer): auto = this.resource
 
 proc `=destroy`(this: var SamplePlayerObj) =
     privateAccess(PlaydateSound)
@@ -168,35 +135,18 @@ proc volume*(this: SamplePlayer): tuple[left: float, right: float] =
     playdate.sound.sampleplayer.getVolume(this.resource, addr left, addr right)
     return (left: left.float, right: right.float)
 
-proc `volume=`*(this: SamplePlayer, volume: float) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSampleplayer)
-    playdate.sound.sampleplayer.setVolume(this.resource, volume.cfloat, volume.cfloat)
+proc setVolume*(this: SamplePlayer, left: float, right: float)
+    {.wrapApi([PlaydateSoundSampleplayer, PlaydateSound]).}
 
-proc setVolume*(this: SamplePlayer, left: float, right: float) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSampleplayer)
-    playdate.sound.sampleplayer.setVolume(this.resource, left.cfloat, right.cfloat)
+proc `volume=`*(this: SamplePlayer, volume: float) = setVolume(this, volume, volume)
 
-proc play*(this: SamplePlayer, repeat: int, rate: float) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSampleplayer)
-    discard playdate.sound.sampleplayer.play(this.resource, repeat.cint, rate.cfloat)
+proc play*(this: SamplePlayer, repeat: int, rate: float) {.wrapApi([PlaydateSoundSampleplayer, PlaydateSound]).}
 
-proc stop*(this: SamplePlayer) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSampleplayer)
-    playdate.sound.sampleplayer.stop(this.resource)
+proc stop*(this: SamplePlayer) {.wrapApi([PlaydateSoundSampleplayer, PlaydateSound]).}
 
-proc isPlaying*(this: SamplePlayer): bool =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSampleplayer)
-    return playdate.sound.sampleplayer.isPlaying(this.resource) == 1
+proc isPlaying*(this: SamplePlayer): bool {.wrapApi([PlaydateSoundSampleplayer, PlaydateSound]).}
 
-proc setPaused*(this: SamplePlayer, paused: bool) =
-    privateAccess(PlaydateSound)
-    privateAccess(PlaydateSoundSampleplayer)
-    playdate.sound.sampleplayer.setPaused(this.resource, if paused: 1 else: 0)
+proc setPaused*(this: SamplePlayer, paused: bool) {.wrapApi([PlaydateSoundSampleplayer, PlaydateSound]).}
 
 # PlaydateSound
 var headphoneChanged: proc(headphone: bool, microphone: bool) = nil
@@ -219,6 +169,4 @@ proc getHeadphoneState*(this: ptr PlaydateSound): tuple[headphone: bool, microph
     this.getHeadphoneState(addr headphone, addr mic, nil)
     return (headphone: headphone == 1, microphone: mic == 1)
 
-proc setOutputsActive*(this: ptr PlaydateSound, headphone: bool, speaker: bool) =
-    privateAccess(PlaydateSound)
-    this.setOutputsActive(if headphone: 1 else: 0, if speaker: 1 else: 0)
+proc setOutputsActive*(this: ptr PlaydateSound, headphone: bool, speaker: bool) {.wrapApi([PlaydateSound]).}

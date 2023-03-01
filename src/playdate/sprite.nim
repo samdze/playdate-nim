@@ -26,6 +26,8 @@ type
     LCDSpriteDrawFunction* = proc (sprite: LCDSprite; bounds: PDRect; drawRect: PDRect) {.closure, raises: [].}
     LCDSpriteUpdateFunction* = proc (sprite: LCDSprite) {.closure, raises: [].}
 
+proc toLCDSpritePtr(this: LCDSprite): auto = this.resource
+
 proc `=destroy`(this: var LCDSpriteObj) =
     privateAccess(PlaydateSprite)
     playdate.sprite.freeSprite(this.resource)
@@ -37,17 +39,11 @@ proc `=destroy`(this: var LCDSpriteObj) =
 
 var spritesData = initDoublyLinkedList[LCDSprite]()
 
-proc setAlwaysRedraw*(this: ptr PlaydateSprite, flag: bool) =
-    privateAccess(PlaydateSprite)
-    this.setAlwaysRedraw(if flag: 1 else: 0)
+proc setAlwaysRedraw*(this: ptr PlaydateSprite, flag: bool) {.wrapApi(PlaydateSprite).}
 
-proc moveTo*(this: LCDSprite, x: cfloat, y: cfloat) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.moveTo(this.resource, x, y)
+proc moveTo*(this: LCDSprite, x: cfloat, y: cfloat) {.wrapApi(PlaydateSprite).}
 
-proc moveBy*(this: LCDSprite, x: cfloat, y: cfloat) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.moveBy(this.resource, x, y)
+proc moveBy*(this: LCDSprite, x: cfloat, y: cfloat) {.wrapApi(PlaydateSprite).}
 
 # Sprites memory managament
 proc newSprite*(this: ptr PlaydateSprite): LCDSprite =
@@ -106,13 +102,9 @@ proc removeAllSprites*(this: ptr PlaydateSprite) =
         this.setUserdata(s.resource, nil)
     spritesData = initDoublyLinkedList[LCDSprite]()
 
-proc `bounds=`*(this: LCDSprite, bounds: PDRect) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setBounds(this.resource, bounds)
+proc `bounds=`*(this: LCDSprite, bounds: PDRect) {.wrapApi(PlaydateSprite, setBounds).}
 
-proc bounds*(this: LCDSprite): PDRect =
-    privateAccess(PlaydateSprite)
-    return playdate.sprite.getBounds(this.resource)
+proc bounds*(this: LCDSprite): PDRect {.wrapApi(PlaydateSprite, getBounds).}
 
 proc setImage*(this: LCDSprite, image: LCDBitmap, flip: LCDBitmapFlip) =
     privateAccess(PlaydateSprite)
@@ -124,89 +116,50 @@ proc getImage*(this: LCDSprite): LCDBitmap =
     privateAccess(PlaydateSprite)
     return this.bitmap
 
-proc setSize*(this: ptr PlaydateSprite, sprite: LCDSprite, width: float, height: float) =
-    privateAccess(PlaydateSprite)
-    this.setSize(sprite.resource, width.cfloat, height.cfloat)
+proc setSize*(this: ptr PlaydateSprite, sprite: LCDSprite, width: float, height: float)
+    {.wrapApi(PlaydateSprite).}
 
-proc `zIndex=`*(this: LCDSprite, zIndex: int16) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setZIndex(this.resource, zIndex)
+proc `zIndex=`*(this: LCDSprite, zIndex: int16) {.wrapApi(PlaydateSprite, setZIndex).}
 
-proc zIndex*(this: LCDSprite): int16 =
-    privateAccess(PlaydateSprite)
-    return playdate.sprite.getZIndex(this.resource)
+proc zIndex*(this: LCDSprite): int16 {.wrapApi(PlaydateSprite, getZIndex).}
 
-proc setDrawMode*(this: LCDSprite, mode: LCDBitmapDrawMode) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setDrawMode(this.resource, mode)
+proc setDrawMode*(this: LCDSprite, mode: LCDBitmapDrawMode) {.wrapApi(PlaydateSprite).}
 
-proc `imageFlip=`*(this: LCDSprite, flip: LCDBitmapFlip) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setImageFlip(this.resource, flip)
+proc `imageFlip=`*(this: LCDSprite, flip: LCDBitmapFlip) {.wrapApi(PlaydateSprite, setImageFlip).}
 
-proc imageFlip*(this: LCDSprite): LCDBitmapFlip =
-    privateAccess(PlaydateSprite)
-    return playdate.sprite.getImageFlip(this.resource)
+proc imageFlip*(this: LCDSprite): LCDBitmapFlip {.wrapApi(PlaydateSprite, getImageFlip).}
 
-proc setClipRect*(this: LCDSprite, clipRect: LCDRect) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setClipRect(this.resource, clipRect)
+proc setClipRect*(this: LCDSprite, clipRect: LCDRect) {.wrapApi(PlaydateSprite, setClipRect).}
 
-proc clearClipRect*(this: LCDSprite) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.clearClipRect(this.resource)
+proc clearClipRect*(this: LCDSprite) {.wrapApi(PlaydateSprite, clearClipRect).}
 
-proc setClipRectsInRange*(clipRect: LCDRect, startZ: int, endZ: int) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setClipRectsInRange(clipRect, startZ.cint, endZ.cint)
+proc setClipRectsInRange*(clipRect: LCDRect, startZ: int, endZ: int) {.wrapApi(PlaydateSprite).}
 
-proc clearClipRectsInRange*(startZ: int, endZ: int)=
-    privateAccess(PlaydateSprite)
-    playdate.sprite.clearClipRectsInRange(startZ.cint, endZ.cint)
+proc clearClipRectsInRange*(startZ: int, endZ: int) {.wrapApi(PlaydateSprite).}
 
-proc `updatesEnabled=`*(this: LCDSprite, enabled: bool) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setUpdatesEnabled(this.resource, if enabled: 1 else: 0)
+proc `updatesEnabled=`*(this: LCDSprite, enabled: bool) {.wrapApi(PlaydateSprite, setUpdatesEnabled).}
 
 proc updatesEnabled*(this: LCDSprite): bool =
     privateAccess(PlaydateSprite)
     return playdate.sprite.updatesEnabled(this.resource) > 0
 
-proc `collisionsEnabled=`*(this: LCDSprite, flag: bool) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setCollisionsEnabled(this.resource, if flag: 1 else: 0)
+proc `collisionsEnabled=`*(this: LCDSprite, flag: bool) {.wrapApi(PlaydateSprite, setCollisionsEnabled).}
 
-proc collisionsEnabled*(this: LCDSprite): bool =
-    privateAccess(PlaydateSprite)
-    return playdate.sprite.collisionsEnabled(this.resource) == 1
+proc collisionsEnabled*(this: LCDSprite): bool {.wrapApi(PlaydateSprite).}
 
-proc `visible=`*(this: LCDSprite, flag: bool) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setVisible(this.resource, if flag: 1 else: 0)
+proc `visible=`*(this: LCDSprite, flag: bool) {.wrapApi(PlaydateSprite, setVisible).}
 
-proc visible*(this: LCDSprite): bool =
-    privateAccess(PlaydateSprite)
-    return playdate.sprite.isVisible(this.resource) == 1
+proc visible*(this: LCDSprite): bool {.wrapApi(PlaydateSprite, isVisible).}
 
-proc setOpaque*(this: LCDSprite, flag: bool) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setOpaque(this.resource, if flag: 1 else: 0)
+proc setOpaque*(this: LCDSprite, flag: bool) {.wrapApi(PlaydateSprite).}
 
-proc markDirty*(this: LCDSprite) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.markDirty(this.resource)
+proc markDirty*(this: LCDSprite) {.wrapApi(PlaydateSprite).}
 
-proc `tag=`*(this: LCDSprite, tag: uint8) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setTag(this.resource, tag)
+proc `tag=`*(this: LCDSprite, tag: uint8) {.wrapApi(PlaydateSprite, setTag).}
 
-proc tag*(this: LCDSprite): uint8 =
-    privateAccess(PlaydateSprite)
-    return playdate.sprite.getTag(this.resource)
+proc tag*(this: LCDSprite): uint8 {.wrapApi(PlaydateSprite, getTag).}
 
-proc setIgnoresDrawOffset*(this: LCDSprite, flag: bool) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setIgnoresDrawOffset(this.resource, if flag: 1 else: 0)
+proc setIgnoresDrawOffset*(this: LCDSprite, flag: bool) {.wrapApi(PlaydateSprite).}
 
 # --- Update function.
 proc privateUpdateFunction(sprite: LCDSpritePtr) {.cdecl, exportc, raises: [].} =
@@ -240,17 +193,11 @@ proc getPosition*(this: LCDSprite): tuple[x: float, y: float] =
     return (x: x.float, y: y.float)
 
 
-proc `collideRect=`*(this: LCDSprite, collideRect: PDRect) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setCollideRect(this.resource, collideRect)
+proc `collideRect=`*(this: LCDSprite, collideRect: PDRect) {.wrapApi(PlaydateSprite, setCollideRect).}
 
-proc collideRect*(this: LCDSprite): PDRect =
-    privateAccess(PlaydateSprite)
-    return playdate.sprite.getCollideRect(this.resource)
+proc collideRect*(this: LCDSprite): PDRect {.wrapApi(PlaydateSprite, getCollideRect).}
 
-proc clearCollideRect*(this: LCDSprite) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.clearCollideRect(this.resource)
+proc clearCollideRect*(this: LCDSprite) {.wrapApi(PlaydateSprite, clearCollideRect).}
 
 # --- Collisions function.
 proc privateCollisionResponse(sprite: LCDSpritePtr; other: LCDSpritePtr): SpriteCollisionResponseType {.cdecl, exportc, raises: [].} =
@@ -387,9 +334,7 @@ proc allOverlappingSprites*(this: ptr PlaydateSprite): seq[LCDSprite] =
         result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
         i *= 1
 
-proc setStencilPattern*(this: LCDSprite, pattern: array[8, uint8]) =
-    privateAccess(PlaydateSprite)
-    playdate.sprite.setStencilPattern(this.resource, pattern)
+proc setStencilPattern*(this: LCDSprite, pattern: array[8, uint8]) {.wrapApi(PlaydateSprite).}
 
 proc clearStencil*(this: LCDSprite) =
     privateAccess(PlaydateSprite)

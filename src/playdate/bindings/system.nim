@@ -24,6 +24,8 @@ type
     PDMenuItemOptions* = ref object of PDMenuItem
         callback*: proc(menuItem: PDMenuItemOptions) {.raises: [].}
 
+proc toPDMenuItemPtr*(this: PDMenuItem): auto = this.resource
+
 type PDPeripherals* {.importc: "PDPeripherals", header: "pd_api.h".} = enum
     kNone = 0, kAccelerometer = (1 shl 0), kAllPeripherals = 0xffff
 
