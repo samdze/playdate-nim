@@ -53,7 +53,6 @@ proc update(): int =
 
     return 1
 
-
 import std/json
 type
     Equip = ref object
