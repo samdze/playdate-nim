@@ -1,31 +1,52 @@
 import unittest, playdate/api
 
-suite "Graphics API":
 
-    template colorTests(value: untyped) =
-        # We can't run these methods from the tests, so we're only interested in
-        # whether they compile
-        if false:
-            let img = playdate.graphics.newBitmap(10, 10, value)
-            img.clear(value)
+proc execGraphicsTests*(runnable: bool) =
 
-            playdate.graphics.clear(value)
-            playdate.graphics.drawLine(0, 0, 10, 10, 2, value)
-            playdate.graphics.fillTriangle(0, 0, 10, 10, 0, 10, value)
-            playdate.graphics.drawRect(0, 0, 10, 10, value)
-            playdate.graphics.fillRect(0, 0, 10, 10, value)
-            playdate.graphics.drawEllipse(0, 0, 10, 10, 2, 0.0, 90.0, value)
-            playdate.graphics.fillEllipse(0, 0, 10, 10, 2, 0.0, value)
-            playdate.graphics.fillPolygon(@[0, 0, 10, 10, 0, 10], value, kPolygonFillEvenOdd)
+    suite "Graphics API":
 
-    test "Color methods could compile given a solid color":
-        colorTests(kColorWhite)
+        template frameTests(create: untyped) =
+            if runnable:
+                var value = create
+                discard value.get(1, 1)
+                value.set(0, 0)
+                value.clear(0, 0)
+                value.set(0, 0, kColorWhite)
+                value.set(0, 0, kColorBlack)
 
-    test "Color methods could compile given a pattern":
-        let pattern = makeLCDPattern(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
-        colorTests(pattern)
+        test "Setting Frame bits should compile":
+            frameTests(playdate.graphics.getFrame())
 
-    test "Pattern creation should compile":
-        if false:
-            let img = playdate.graphics.newBitmap(10, 10, kColorWhite)
-            discard playdate.graphics.createPattern(img, 0, 0)
+        test "Setting DisplayFrame bits should compile":
+            frameTests(playdate.graphics.getDisplayFrame())
+
+        template colorTests(colorOrPattern: untyped) =
+            if runnable:
+                let img = playdate.graphics.newBitmap(10, 10, colorOrPattern)
+                img.clear(colorOrPattern)
+
+                playdate.graphics.clear(colorOrPattern)
+                playdate.graphics.drawLine(0, 0, 10, 10, 2, colorOrPattern)
+                playdate.graphics.fillTriangle(0, 0, 10, 10, 0, 10, colorOrPattern)
+                playdate.graphics.drawRect(0, 0, 10, 10, colorOrPattern)
+                playdate.graphics.fillRect(0, 0, 10, 10, colorOrPattern)
+                playdate.graphics.drawEllipse(0, 0, 10, 10, 2, 0.0, 90.0, colorOrPattern)
+                playdate.graphics.fillEllipse(0, 0, 10, 10, 2, 0.0, colorOrPattern)
+                playdate.graphics.fillPolygon(@[0, 0, 10, 10, 0, 10], colorOrPattern, kPolygonFillEvenOdd)
+
+        test "Color methods could compile given a solid color":
+            colorTests(kColorWhite)
+
+        test "Color methods could compile given a pattern":
+            let pattern = makeLCDPattern(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+            colorTests(pattern)
+
+        test "Pattern creation should compile":
+            if runnable:
+                let img = playdate.graphics.newBitmap(10, 10, kColorWhite)
+                discard playdate.graphics.createPattern(img, 0, 0)
+
+when isMainModule:
+    # We can't run these methods from the tests, so we're only interested in
+    # whether they compile
+    execGraphicsTests(runnable = false)

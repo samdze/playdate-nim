@@ -5,6 +5,8 @@ nimcache/
 nimblecache/
 htmldocs/
 src/tests/
+pdex.bin
+*.pdx
 
 # macOS general
 .DS_Store
@@ -54,3 +56,4 @@ $RECYCLE.BIN/
 # Ignore test binaries
 tests/t_*
 !tests/t_*.*
+tests/playdate_tests
