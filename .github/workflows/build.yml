@@ -32,3 +32,70 @@ jobs:
     - name: Device
       working-directory: ./playdate_example
       run: nimble device
+
+  simulate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    container: nimlang/nim
+    env:
+      HOME: /config
+    steps:
+
+      # Some of the apt dependencies require input from the installer. This disables those
+      # prompts so we can do a headless install
+    - name: Force non-interactive apt installations
+      run: echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+
+    - name: Update apt dependencies
+      run: apt-get update
+    - name: Install apt dependencies
+      run: apt-get install -y make libpng16-16 gcc-arm-none-eabi xvfb libgtk-3-0 sudo libwebkit2gtk-4.0 libwebkit2gtk-4.0-dev libsdl2-dev pulseaudio
+
+      # Because we are headless there is no audio driver to interact with by default, which causes a set
+      # of warnings to be emitted. This set of commands sets up a dummy audio sink that silences those warnings.
+    - name: Setup audio sink
+      run: |
+        pulseaudio -D --exit-idle-time=-1
+        pactl load-module module-null-sink sink_name=SpeakerOutput sink_properties=device.description="Dummy_Output"
+
+    - name: Checkout commit
+      uses: actions/checkout@v1
+
+    - name: Download playdate SDK
+      run: wget https://download.panic.com/playdate_sdk/Linux/PlaydateSDK-latest.tar.gz
+    - name: Extract playdate SDK
+      run: tar -xvzf PlaydateSDK-latest.tar.gz
+
+    - name: Local publish playdate
+      run: nimble develop
+
+    - name: Install dependencies
+      working-directory: ./tests
+      run: nimble install --depsOnly --accept
+
+      # The tests need to be told where the SDK is. Running `setup` with the SDK path configured
+      # will fill that in
+    - name: Setup tests
+      run: |
+        export PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d));
+        cd tests;
+        nimble setup;
+
+    - name: Compile for simulator
+      working-directory: ./tests
+      run: nimble simulator
+
+      # The first time the simulator runs, it prompts the user with an alert. Obviously, we're running headless,
+      # so this prevents the tests from running without closing that alert. Creating this ini file will stop that
+      # alert from showing in the first place
+    - name: Create simulator ini
+      run: |
+        export PD_INI_DIR="$HOME/.Playdate Simulator"
+        mkdir -p "$PD_INI_DIR"
+        export PD_INI_FILE="$PD_INI_DIR/Playdate Simulator.ini"
+        echo "ShowPerfWarning=0" > $PD_INI_FILE
+        echo "LastRelease=$(cat PlaydateSDK-*/VERSION.txt)" >> $PD_INI_FILE
+
+    - name: Run headless test
+      working-directory: ./tests
+      run: xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator playdate_tests.pdx
