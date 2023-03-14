@@ -14,6 +14,8 @@ func toNimSymbol(typeSymbol: string): string =
             return "float"
         of "csize_t":
             return "uint"
+        of "RawLCDColor":
+            return "LCDColor"
     return typeSymbol
 
 func toNimReturn(typeSymbol: string, call: NimNode): seq[NimNode] =
@@ -31,14 +33,21 @@ func toNimReturn(typeSymbol: string, call: NimNode): seq[NimNode] =
         else:
             return @[call]
 
+func unwrapType(typ: NimNode): NimNode =
+    ## Extracts the underlying type if it is wrapped in annotations (like `ptr` or `var`)
+    case typ.kind
+    of nnkIdent, nnkSym: return typ
+    of nnkPtrTy, nnkVarTy: return typ[0].unwrapType
+    else: error("Unable to extract type of " & typ.lispRepr, typ)
+
 func adjustRawProcIdentDef(identDef: NimNode, rawProcName: string, procName: string): NimNode =
     let identDef = identDef.copy()
-    
+
     var pragmas = identDef.findChild(it.kind == nnkProcTy)
         .findChild(it.kind == nnkPragma)
     if pragmas == nil:
         pragmas = nnkPragma.newTree()
-    
+
     var toAddPragmas = newSeq[NimNode]()
     for pragma in pragmas:
         # Removing invalid pragmas.
@@ -90,7 +99,7 @@ proc generateSDKPtrProcDef*(rawProcDef: NimNode, rawProcName: string, typeName: 
             newIdentNode(rawProcName)
         )
     )
-    
+
     let fromPragmas = rawProcDef[1].findChild(it.kind == nnkPragma)
     if fromPragmas != nil:
         for pragma in fromPragmas.items:
@@ -106,7 +115,7 @@ proc generateSDKPtrProcDef*(rawProcDef: NimNode, rawProcName: string, typeName: 
         newProcPragmas = newEmptyNode()
 
     let fromParams = rawProcDef[1].findChild(it.kind == nnkFormalParams)
-        
+
     # Prepare arguments and return type of the new proc and of the inner call.
     for param in fromParams.items:
         if param.kind == nnkEmpty:
@@ -137,24 +146,25 @@ proc generateSDKPtrProcDef*(rawProcDef: NimNode, rawProcName: string, typeName: 
                 )
             )
         elif param.kind == nnkIdentDefs:
-            let oldTypeSymbol = param[1].strVal
+            let oldTypeSymbol = param[1].unwrapType.strVal
             let typeSymbol = toNimSymbol(oldTypeSymbol)
             let argumentName = param[0].strVal
-            var argExpr = newIdentNode(argumentName)
 
             # TODO: Have to check if the parameter is a value, a ptr or a ref.
 
-            if typeSymbol != oldTypeSymbol:
-                argExpr = nnkDotExpr.newTree(
-                    newIdentNode(argumentName),
-                    newIdentNode(oldTypeSymbol)
-                )
+            let argExpr = if oldTypeSymbol == typeSymbol:
+                newIdentNode(argumentName)
+            elif oldTypeSymbol == "RawLCDColor":
+                newCall(newIdentNode("convert"), newIdentNode(argumentName))
+            else:
+                nnkDotExpr.newTree(newIdentNode(argumentName), newIdentNode(oldTypeSymbol))
+
             let identDefs = nnkIdentDefs.newTree(
                 newIdentNode(param[0].strVal),
                 newIdentNode(typeSymbol),
                 newEmptyNode()
             )
-            
+
             newCall.add(argExpr)
             newProcParams.add(identDefs)
 
@@ -213,7 +223,7 @@ proc processSDKType(ast: NimNode): NimNode =
     var recList = newAst[0][0]
         .findChild(it.kind == nnkObjectTy)
         .findChild(it.kind == nnkRecList)
-    
+
     for index, identDef in recList:
         # echo "id ", index, " first child type ", identDef[0].kind
         if identDef[0].kind == nnkPragmaExpr:

@@ -39,15 +39,30 @@ type LCDFontLanguage* {.importc: "LCDFontLanguage", header: "pd_api.h".} = enum
 type PDStringEncoding* {.importc: "PDStringEncoding", header: "pd_api.h".} = enum
     kASCIIEncoding, kUTF8Encoding, k16BitLEEncoding
 
-# type LCDPattern* = array[16, cuint]
-type LCDPattern* = array[16, uint8]
-type LCDColor* {.importc: "LCDColor", header: "pd_api.h".} = cuint # LCDSolidColor or pointer to a LCDPattern
+
+type
+    LCDPattern* = ref object
+        ## An 8x8 pattern used for drawing. A pattern is an array of 8 numbers describing the
+        ## bitmap for each row; for example, { 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55 } specifies a
+        ## checkerboard pattern. An additional 8 numbers can be specified for an alpha mask bitmap.
+        pattern: array[16, uint8]
+
+    LCDPatternPtr = ptr array[16, uint8]
+
+    RawLCDColor {.importc: "LCDColor", header: "pd_api.h".} = cuint # LCDSolidColor or pointer to a LCDPattern
+
+    LCDColor* = LCDSolidColor | LCDPattern
+        ## Either a solid color or a pattern.
+
+proc convert(color: LCDColor): RawLCDColor =
+    when color is LCDSolidColor: return cast[RawLCDColor](color)
+    elif color is LCDPattern: return cast[RawLCDColor](addr color.pattern)
 
 proc makeLCDPattern*(r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, ra, rb, rc, rd, re, rf: uint8): LCDPattern =
-    return [r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, ra, rb, rc, rd, re, rf]
+    return LCDPattern(pattern: [r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, ra, rb, rc, rd, re, rf])
 
 proc makeLCDOpaquePattern*(r0, r1, r2, r3, r4, r5, r6, r7: uint8): LCDPattern =
-    return [r0, r1, r2, r3, r4, r5, r6, r7, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]
+    return makeLCDPattern(r0, r1, r2, r3, r4, r5, r6, r7, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff)
 
 type LCDPolygonFillRule* {.importc: "LCDPolygonFillRule", header: "pd_api.h".} = enum
     kPolygonFillNonZero, kPolygonFillEvenOdd
@@ -102,7 +117,7 @@ type PlaydateVideo* {.importc: "const struct playdate_video", header: "pd_api.h"
 sdktype:
     type PlaydateGraphics* {.importc: "const struct playdate_graphics", header: "pd_api.h".} = object
         video* {.importc: "video".}: ptr PlaydateVideo
-        clear* {.importc: "clear".}: proc (color: LCDColor) {.cdecl, raises: [].}
+        clear {.importsdk.}: proc (color: RawLCDColor) {.cdecl, raises: [].}
 
         setBackgroundColor* {.importc: "setBackgroundColor".}: proc (
             color: LCDSolidColor) {.cdecl, raises: [].}
@@ -121,22 +136,22 @@ sdktype:
         popContext* {.importc: "popContext".}: proc () {.cdecl, raises: [].}
         drawBitmap {.importc: "drawBitmap".}: proc (bitmap: LCDBitmapPtr; x: int; y: int;
             flip: LCDBitmapFlip) {.cdecl, raises: [].}
-        
+
         tileBitmap {.importc: "tileBitmap".}: proc (bitmap: LCDBitmapPtr; x: cint; y: cint;
             width: cint; height: cint; flip: LCDBitmapFlip) {.cdecl, raises: [].}
         drawLine {.importsdk.}: proc (x1: cint; y1: cint; x2: cint; y2: cint;
-            width: cint; color: LCDColor)
+            width: cint; color: RawLCDColor)
         fillTriangle {.importsdk.}: proc (x1: cint; y1: cint; x2: cint;
-            y2: cint; x3: cint; y3: cint; color: LCDColor)
+            y2: cint; x3: cint; y3: cint; color: RawLCDColor)
         drawRect {.importsdk.}: proc (x: cint; y: cint; width: cint; height: cint;
-            color: LCDColor)
+            color: RawLCDColor)
         fillRect {.importsdk.}: proc (x: cint; y: cint; width: cint; height: cint;
-            color: LCDColor)
+            color: RawLCDColor)
         drawEllipse {.importsdk.}: proc (x: cint; y: cint; width: cint;
             height: cint; lineWidth: cint; startAngle: cfloat; endAngle: cfloat;
-            color: LCDColor) ##  stroked inside the rect
+            color: RawLCDColor) ##  stroked inside the rect
         fillEllipse {.importsdk.}: proc (x: cint; y: cint; width: cint;
-            height: cint; startAngle: cfloat; endAngle: cfloat; color: LCDColor)
+            height: cint; startAngle: cfloat; endAngle: cfloat; color: RawLCDColor)
         drawScaledBitmap {.importc: "drawScaledBitmap".}: proc (bitmap: LCDBitmapPtr;
             x: cint; y: cint; xscale: cfloat; yscale: cfloat) {.cdecl, raises: [].}
 
@@ -144,7 +159,7 @@ sdktype:
             encoding: PDStringEncoding, x: cint, y: cint): cint {.discardable.}
 
         newBitmap {.importc: "newBitmap".}: proc (width: cint; height: cint;
-            bgcolor: LCDColor): LCDBitmapPtr {.cdecl, raises: [].}
+            bgcolor: RawLCDColor): LCDBitmapPtr {.cdecl, raises: [].}
         freeBitmap {.importc: "freeBitmap".}: proc (bitmap: LCDBitmapPtr) {.cdecl, raises: [].}
         loadBitmap {.importc: "loadBitmap".}: proc (path: cstring; outerr: ptr cstring): LCDBitmapPtr {.
             cdecl, raises: [].}
@@ -156,12 +171,11 @@ sdktype:
         getBitmapData {.importc: "getBitmapData".}: proc (bitmap: LCDBitmapPtr;
             width: ptr cint; height: ptr cint; rowbytes: ptr cint; mask: ptr ptr uint8;
             data: ptr ptr uint8) {.cdecl, raises: [].}
-        clearBitmap {.importc: "clearBitmap".}: proc (bitmap: LCDBitmapPtr;
-            bgcolor: LCDColor) {.cdecl, raises: [].}
+        clearBitmap {.importsdk.}: proc (bitmap: LCDBitmapPtr; bgcolor: RawLCDColor) {.cdecl, raises: [].}
         rotatedBitmap {.importc: "rotatedBitmap".}: proc (bitmap: LCDBitmapPtr;
             rotation: cfloat; xscale: cfloat; yscale: cfloat; allocedSize: ptr cint): LCDBitmapPtr {.
             cdecl, raises: [].}
-        
+
         newBitmapTable {.importc: "newBitmapTable".}: proc (count: cint; width: cint;
             height: cint): LCDBitmapTablePtr {.cdecl, raises: [].}
         freeBitmapTable {.importc: "freeBitmapTable".}: proc (table: LCDBitmapTablePtr) {.
@@ -171,7 +185,7 @@ sdktype:
         loadIntoBitmapTable {.importc: "loadIntoBitmapTable".}: proc (path: cstring;
             table: LCDBitmapTablePtr; outerr: ptr cstring) {.cdecl, raises: [].}
         getTableBitmap {.importc: "getTableBitmap".}: proc (table: LCDBitmapTablePtr;
-            idx: cint): LCDBitmapPtr {.cdecl, raises: [].}        
+            idx: cint): LCDBitmapPtr {.cdecl, raises: [].}
 
         loadFont {.importc: "loadFont".}: proc (path: cstring, outErr: ptr cstring): LCDFontPtr {.cdecl, raises: [].}
 
@@ -192,8 +206,8 @@ sdktype:
             cdecl, raises: [].}
         markUpdatedRows {.importsdk.}: proc (start: cint; to: cint)
         display* {.importsdk.}: proc () ##  misc util.
-        
-        setColorToPattern {.importc: "setColorToPattern".}: proc (color: ptr LCDColor;
+
+        setColorToPattern {.importsdk.}: proc (color: LCDPatternPtr;
             bitmap: LCDBitmapPtr; x: cint; y: cint) {.cdecl, raises: [].}
         checkMaskCollision {.importsdk.}: proc (
             bitmap1: LCDBitmapPtr; x1: cint; y1: cint; flip1: LCDBitmapFlip;
@@ -201,7 +215,7 @@ sdktype:
         setScreenClipRect {.importsdk.}: proc (x: cint; y: cint;
             width: cint; height: cint) ##  1.1.1
         fillPolygon {.importc: "fillPolygon".}: proc (nPoints: cint; coords: ptr cint;
-            color: LCDColor; fillrule: LCDPolygonFillRule) {.cdecl, raises: [].}
+            color: RawLCDColor; fillrule: LCDPolygonFillRule) {.cdecl, raises: [].}
         getFontHeight {.importc: "getFontHeight".}: proc (font: LCDFontPtr): uint8 {.
             cdecl, raises: [].}               ##  1.7
         getDisplayBufferBitmap {.importc: "getDisplayBufferBitmap".}: proc (): LCDBitmapPtr {.

@@ -100,7 +100,7 @@ proc drawText*(this: ptr PlaydateGraphics, text: string, x: int, y: int): int {.
 
 proc newBitmap*(this: ptr PlaydateGraphics, width: int, height: int, color: LCDColor): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.newBitmap(width.cint, height.cint, color), free: true)
+    return LCDBitmap(resource: this.newBitmap(width.cint, height.cint, color.convert), free: true)
 
 proc newBitmap*(this: ptr PlaydateGraphics, path: string): LCDBitmap {.raises: [IOError]} =
     privateAccess(PlaydateGraphics)
@@ -139,7 +139,7 @@ proc getData*(this: LCDBitmap): BitmapData =
 
 proc clear*(this: LCDBitmap, color: LCDColor) =
     privateAccess(PlaydateGraphics)
-    playdate.graphics.clearBitmap(this.resource, color)
+    playdate.graphics.clearBitmap(this.resource, color.convert)
 
 proc rotated*(this: LCDBitmap, rotation: float, xScale: float, yScale: float):
         tuple[bitmap: LCDBitmap, allocatedSize: int] =
@@ -284,10 +284,11 @@ proc copyFrameBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
     return LCDBitmap(resource: this.copyFrameBufferBitmap(), free: true)
 
-proc createPattern*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, x: int, y: int): LCDColor =
+proc createPattern*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, x: int, y: int): LCDPattern =
     privateAccess(PlaydateGraphics)
-    var color = 0.LCDColor
-    this.setColorToPattern(addr(color), bitmap.resource, x.cint, y.cint)
+    privateAccess(LCDPattern)
+    var color = new(LCDPattern)
+    this.setColorToPattern(addr color.pattern, bitmap.resource, x.cint, y.cint)
     return color
 
 import macros
@@ -296,7 +297,7 @@ proc fillPolygon*[Int32x2](this: ptr PlaydateGraphics, points: seq[Int32x2], col
     when sizeof(Int32x2) != sizeof(int32) * 2: {.error: "size of points is not sizeof(int32) * 2".}
 
     privateAccess(PlaydateGraphics)
-    this.fillPolygon(points.len.cint, cast[ptr cint](unsafeAddr(points[0])), color, fillRule)
+    this.fillPolygon(points.len.cint, cast[ptr cint](unsafeAddr(points[0])), color.convert, fillRule)
 
 proc getFontHeight*(this: LCDFont): uint =
     privateAccess(PlaydateGraphics)
