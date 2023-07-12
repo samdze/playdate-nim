@@ -124,17 +124,31 @@ proc load*(this: LCDBitmap, path: string) {.raises: [IOError]}  =
 type BitmapData* = ref object
     width*: int
     height*: int
-    bytes*: int
+    rowbytes: int
+    data: ptr UncheckedArray[uint8]
+
+proc index(x, y, rowbytes: int): int = y * rowbytes + x div 8
+    ## Returns the index of an (x, y) coordinate in a flattened array.
+
+template read(bitmap: BitmapData, x, y: int): untyped =
+    ## Read a pixel from a bitmap.
+    assert(bitmap.data != nil)
+    bitmap.data[index(x, y, bitmap.rowbytes)]
 
 proc getData*(this: LCDBitmap): BitmapData =
+    ## Fetch the underlying bitmap data for an image.
     privateAccess(PlaydateGraphics)
+    assert(this != nil)
+    assert(this.resource != nil)
     var bitmapData = BitmapData()
-    var width, height, bytes: cint
-    playdate.graphics.getBitmapData(this.resource, addr(width), addr(height), addr(bytes),
-        nil, nil)
-    bitmapData.width = width.int
-    bitmapData.height = height.int
-    bitmapData.bytes = bytes.int
+    playdate.graphics.getBitmapData(
+        this.resource,
+        cast[ptr cint](addr(bitmapData.width)),
+        cast[ptr cint](addr(bitmapData.height)),
+        cast[ptr cint](addr(bitmapData.rowbytes)),
+        nil,
+        cast[ptr ptr uint8](addr(bitmapData.data))
+    )
     return bitmapData
 
 proc clear*(this: LCDBitmap, color: LCDColor) =
@@ -232,8 +246,12 @@ proc getTextWidth*(this: LCDFont, text: string, len: int, encoding: PDStringEnco
     privateAccess(LCDFont)
     return playdate.graphics.getTextWidth(this.resource, text.cstring, len.csize_t, encoding, tracking.cint)
 
-type DisplayFrame* = ptr array[LCD_ROWSIZE * LCD_ROWS, uint8]
-# type DisplayFrame* = ref DisplayFrameObj
+type
+    DisplayFrame* = distinct ptr array[LCD_ROWSIZE * LCD_ROWS, uint8]
+        ## The raw bytes in a display frame buffer.
+
+    BitmapView* = DisplayFrame | BitmapData
+        ## Types that allow the manipulation of individual pixels.
 
 proc getFrame*(this: ptr PlaydateGraphics): DisplayFrame =
     privateAccess(PlaydateGraphics)
@@ -243,38 +261,45 @@ proc getDisplayFrame*(this: ptr PlaydateGraphics): DisplayFrame =
     privateAccess(PlaydateGraphics)
     return cast[DisplayFrame](this.getDisplayFrame()) # Who should manage this memory? Not clear. Not auto-managed right now.
 
-proc frameIndex(x, y: int): int {.inline.} =
-    ## Returns the index of a coordinate within a DisplayFrame.
-    y * LCD_ROWSIZE + x div 8
+proc width*(frame: DisplayFrame): auto {.inline.} = LCD_COLUMNS
+    ## Return the width of the display frame buffer.
 
-proc frameBit(x: int): uint8 {.inline.} =
+proc height*(frame: DisplayFrame): auto {.inline.} = LCD_ROWS
+    ## Return the height of the display frame buffer.
+
+template read(frame: DisplayFrame, x, y: int): untyped =
+    ## Read a pixel from a display frame buffer
+    assert(cast[pointer](frame) != nil)
+    cast[ptr array[LCD_ROWSIZE * LCD_ROWS, uint8]](frame)[index(x, y, LCD_ROWSIZE)]
+
+proc viewBit(x: int): uint8 {.inline.} =
     ## Returns the specific packed bit that is used to represent an `x` coordinate.
     1'u8 shl uint8(7 - (x mod 8))
 
-proc isInFrame(x, y: int): bool {.inline.} =
+proc isInView(view: BitmapView, x, y: int): bool {.inline.} =
     ## Returns whether a point is within the frame.
-    x >= 0 and y >= 0 and x < LCD_COLUMNS and y < LCD_ROWS
+    x >= 0 and y >= 0 and x < view.width and y < view.height
 
-proc get*(frame: DisplayFrame, x, y: int): LCDSolidColor =
+proc get*(view: BitmapView, x, y: int): LCDSolidColor =
     ## Returns the color of a pixel at the given coordinate.
-    if not isInFrame(x, y) or (frame[frameIndex(x, y)] and frameBit(x)) != 0:
+    if not view.isInView(x, y) or (view.read(x, y) and viewBit(x)) != 0:
         kColorWhite
     else:
         kColorBlack
 
-proc set*(frame: DisplayFrame, x, y: int) =
+proc set*(view: var BitmapView, x, y: int) =
     ## Sets the pixel at x, y to black.
-    if isInFrame(x, y):
-        frame[frameIndex(x, y)] = frame[frameIndex(x, y)] and not frameBit(x)
+    if view.isInView(x, y):
+        view.read(x, y) = view.read(x, y) and not viewBit(x)
 
-proc clear*(frame: DisplayFrame, x, y: int) =
+proc clear*(view: var BitmapView, x, y: int) =
     ## Clears the color from a pixel at the given coordinate.
-    if isInFrame(x, y):
-        frame[frameIndex(x, y)] = frame[frameIndex(x, y)] or frameBit(x)
+    if view.isInView(x, y):
+        view.read(x, y) = view.read(x, y) or viewBit(x)
 
-proc set*(frame: DisplayFrame, x, y: int, color: LCDSolidColor) =
+proc set*(view: var BitmapView, x, y: int, color: LCDSolidColor) =
     ## Sets the specific color of a pixel at the given coordinate.
-    if (color == kColorBlack): set(frame, x, y) else: clear(frame, x, y)
+    if (color == kColorBlack): set(view, x, y) else: clear(view, x, y)
 
 proc getDebugBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
