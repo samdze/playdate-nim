@@ -41,3 +41,4 @@ when defined(simulator):
     switch("debugger", "native")
     switch("opt", "none")
     switch("define", "nimPage256")
+    switch("define", "simulator")

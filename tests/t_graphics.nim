@@ -9,10 +9,12 @@ proc execGraphicsTests*(runnable: bool) =
             if runnable:
                 var value = create
                 discard value.get(1, 1)
-                value.set(0, 0)
+                # Using graphics.set to disambiguate.
+                # Otherwise, Nim complains in cases like this when we are inside a template.
+                graphics.set(value, 0, 0)
                 value.clear(0, 0)
-                value.set(0, 0, kColorWhite)
-                value.set(0, 0, kColorBlack)
+                graphics.set(value, 0, 0, kColorWhite)
+                graphics.set(value, 0, 0, kColorBlack)
 
         test "Setting Frame bits should compile":
             frameTests(playdate.graphics.getFrame())
@@ -48,5 +50,5 @@ proc execGraphicsTests*(runnable: bool) =
 
 when isMainModule:
     # We can't run these methods from the tests, so we're only interested in
-    # whether they compile
+    # whether they compile.
     execGraphicsTests(runnable = false)

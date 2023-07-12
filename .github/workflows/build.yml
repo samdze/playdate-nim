@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     container: nimlang/nim
     steps:
+    - name: Update dependencies
+      run: apt-get update
     - name: Install dependencies
       run: apt-get install -y make libpng16-16 gcc-arm-none-eabi
     - uses: actions/checkout@v1
@@ -46,9 +48,9 @@ jobs:
     - name: Force non-interactive apt installations
       run: echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-    - name: Update apt dependencies
+    - name: Update dependencies
       run: apt-get update
-    - name: Install apt dependencies
+    - name: Install dependencies
       run: apt-get install -y make libpng16-16 gcc-arm-none-eabi xvfb libgtk-3-0 sudo libwebkit2gtk-4.0 libwebkit2gtk-4.0-dev libsdl2-dev pulseaudio
 
       # Because we are headless there is no audio driver to interact with by default, which causes a set

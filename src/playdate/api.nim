@@ -18,3 +18,7 @@ macro initSDK*() =
                 api.playdate = playdateAPI
             handler(event, arg)
             return 0
+
+when not defined(simulator):
+    proc fini() {.cdecl, exportc: "_fini".} =
+        discard

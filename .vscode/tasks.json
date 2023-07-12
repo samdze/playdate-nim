@@ -6,17 +6,17 @@
         {
             "label": "Build Universal PDX",
             "type": "shell",
-            "command": "nim all"
+            "command": "nimble all",
         },
         {
             "label": "Build Simulator PDX",
             "type": "shell",
-            "command": "nim simulator"
+            "command": "nimble simulator"
         },
         {
             "label": "Build Device PDX",
             "type": "shell",
-            "command": "nim device"
+            "command": "nimble device"
         }
     ]
 }

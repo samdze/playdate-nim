@@ -83,15 +83,15 @@ A pre-compiled pdx is also provided, please test it on your device!
 
 Compile the project (pdx) for the simulator using:
 ```sh
-nim simulator
+nimble simulator
 ```
-For the device (compile only, no pdx):
+For the device (elf only, use pdc to create a pdx):
 ```sh
-nim device
+nimble device
 ```
 For simulator + device (pdx):
 ```sh
-nim all
+nimble all
 ```
 
 The template also has a VSCode launch configuration file to build, start and debug the Nim application from the editor.
