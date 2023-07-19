@@ -31,22 +31,30 @@ This package is an independent bindings library, not affiliated with Panic.
 ### Prerequisites
 
 - Playdate SDK
-- Nim 1.6.10+
-- Nimble 0.13.1
+- Nim 1.6.10+ (check with `nim -v`)
+- Nimble 0.13.1 (check with `nimble -v`)
 - `PLAYDATE_SDK_PATH` environment variable
+- Linux or macOS (Windows support is still WIP)
+- [SDK Prerequisites](https://sdk.play.date/Inside%20Playdate%20with%20C.html#_prerequisites) based on OS
 
 ### Installation
 
 You can quickly start using the bindings opening the `playdate_example` project included in this repository.<br>
 If you want to start from scratch, here are the steps to follow:
 
-1. If you haven't run it already, start by initializing your nimble package:
+1. If you haven't run it already, start by initializing your nimble package and follow the instructions:
 
 ```
 nimble init
 ```
 
-2. Move into your package directory.<br>
+2. Install the `playdate` package:
+
+```
+nimble install playdate
+```
+
+3. Move into your package directory.<br>
 Add the `playdate` package as a dependency and configure the build tasks by running the following:
 
 ```
@@ -55,7 +63,7 @@ echo 'include playdate/build/nimble' >> *.nimble;
 echo 'include playdate/build/config' > config.nims;
 ```
 
-3. Finally, run this command to setup the structure of the project, which prepares your application to be compiled and bundled correctly:
+4. Finally, run this command to setup the structure of the project, which prepares your application to be compiled and bundled correctly:
 
 ```
 nimble setup
@@ -100,7 +108,7 @@ For simulator + device (pdx):
 nimble all
 ```
 
-The repository also contains VSCode launch configurations to build, start and debug your Nim application from the editor.
+The example project `playdate_example` also contains VSCode launch configurations to build, start and debug your Nim application from the editor.
 
 ---
 This project is perfectly usable but do note that it's still a work in progress, here's what is missing right now:

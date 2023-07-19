@@ -1,0 +1,89 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "cppdbg",
+            "request": "launch",
+            "name": "Debug PDX",
+            "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator",
+            "args": ["${workspaceFolder}/playdate_example.pdx"],
+            "cwd": "${workspaceFolder}",
+            "osx": {
+                "MIMode": "lldb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator.app"
+            },
+            "linux": {
+                "MIMode": "gdb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator"
+            },
+            "windows": {
+                "MIMode": "gdb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator.exe"
+            }
+        },
+        {
+            "type": "cppdbg",
+            "request": "launch",
+            "name": "Build & Debug PDX",
+            "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator",
+            "preLaunchTask": "Build Universal PDX",
+            "args": ["${workspaceFolder}/playdate_example.pdx"],
+            "cwd": "${workspaceFolder}",
+            "osx": {
+                "MIMode": "lldb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator.app"
+            },
+            "linux": {
+                "MIMode": "gdb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator"
+            },
+            "windows": {
+                "MIMode": "gdb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator.exe"
+            }
+        },
+        {
+            "type": "cppdbg",
+            "request": "launch",
+            "name": "Build Sim. & Debug PDX",
+            "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator",
+            "preLaunchTask": "Build Simulator PDX",
+            "args": ["${workspaceFolder}/playdate_example.pdx"],
+            "cwd": "${workspaceFolder}",
+            "osx": {
+                "MIMode": "lldb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator.app"
+            },
+            "linux": {
+                "MIMode": "gdb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator"
+            },
+            "windows": {
+                "MIMode": "gdb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator.exe"
+            }
+        },
+        {
+            "type": "cppdbg",
+            "request": "attach",
+            "name": "Build Sim. + Attach & Debug PDX",
+            "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator",
+            "preLaunchTask": "Build Simulator PDX",
+            "osx": {
+                "MIMode": "lldb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator.app"
+            },
+            "linux": {
+                "MIMode": "gdb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator"
+            },
+            "windows": {
+                "MIMode": "gdb",
+                "program": "${env:PLAYDATE_SDK_PATH}/bin/PlaydateSimulator.exe"
+            }
+        }
+    ]
+}

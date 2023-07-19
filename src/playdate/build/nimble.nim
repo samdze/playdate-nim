@@ -64,7 +64,8 @@ proc make(target: string) =
     exec(arch & "make " & target & " -f " & makefile)
 
 task clean, "Clean the project folders":
-    exec "rm -fR " & nimcacheDir()
+    if dirExists(nimcacheDir()):
+        exec "rm -fR " & nimcacheDir()
     make "clean"
 
 task cdevice, "Generate C files for the device":
