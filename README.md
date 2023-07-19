@@ -8,6 +8,10 @@ Playdate Nim bindings, aiming to provide:
 - More ergonomic API over the C API
 - Automatic memory management
 
+The main takeaway is that, while this is to some extent a 1 to 1 mapping of the C API, it also adds extra features such as reference counted memory, OOP syntax, many other nice to haves and enhanced developer experience.
+
+<hr>
+
 Here's a quick comparison between the main languages usable on the Playdate:
 Language | C | Lua | Nim  |
 :---- | ---- | ---- | ----
@@ -28,18 +32,22 @@ This package is an independent bindings library, not affiliated with Panic.
 
 - Playdate SDK
 - Nim 1.6.10+
+- Nimble 0.13.1
 - `PLAYDATE_SDK_PATH` environment variable
 
 ### Installation
 
-If you haven't run it already, start by initializing your nimble package:
+You can quickly start using the bindings opening the `playdate_example` project included in this repository.<br>
+If you want to start from scratch, here are the steps to follow:
+
+1. If you haven't run it already, start by initializing your nimble package:
 
 ```
 nimble init
 ```
 
-Move into your package directory.
-Add a dependency on `playdate` package, and configure the build tasks by running the following:
+2. Move into your package directory.<br>
+Add the `playdate` package as a dependency and configure the build tasks by running the following:
 
 ```
 echo 'requires "playdate"' >> *.nimble;
@@ -47,7 +55,7 @@ echo 'include playdate/build/nimble' >> *.nimble;
 echo 'include playdate/build/config' > config.nims;
 ```
 
-Finally, setup the structure of the package, which prepares your application to be compiled and bundled correctly:
+3. Finally, run this command to setup the structure of the project, which prepares your application to be compiled and bundled correctly:
 
 ```
 nimble setup
@@ -79,8 +87,6 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
 initSDK()
 ```
 
-A pre-compiled pdx is also provided, please test it on your device!
-
 Compile the project (pdx) for the simulator using:
 ```sh
 nimble simulator
@@ -94,10 +100,10 @@ For simulator + device (pdx):
 nimble all
 ```
 
-The template also has a VSCode launch configuration file to build, start and debug the Nim application from the editor.
+The repository also contains VSCode launch configurations to build, start and debug your Nim application from the editor.
 
 ---
-This is still a work in progress, here's what is still missing right now:
+This project is perfectly usable but do note that it's still a work in progress, here's what is missing right now:
 - various playdate.sound funcionalities (but FilePlayer and SamplePlayer are available)
 - playdate.json, but you can use Nim std/json, which is very convenient
 - playdate.lua, interfacing with Lua and providing classes/functions
