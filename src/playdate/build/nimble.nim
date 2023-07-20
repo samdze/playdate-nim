@@ -13,10 +13,11 @@ type BuildFail = object of Defect
 
 proc playdatePath(): string =
     ## Returns the path of the playdate nim module
-    let (paths, exitCode) = gorgeEx("nimble path playdate")
+    var (paths, exitCode) = gorgeEx("nimble path playdate")
+    paths.stripLineEnd()
     if exitCode != 0:
         raise BuildFail.newException("Could not find the playdate nimble module!")
-    let pathsSeq = paths.split("\n")
+    let pathsSeq = paths.splitLines(false)
     # If multiple package paths are found, use the last one
     let path = pathsSeq[pathsSeq.len - 1]
     if path.strip == "" or not path.strip.dirExists:
