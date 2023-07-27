@@ -51,22 +51,42 @@ proc sdkPath*(): string =
 
 proc make(target: string) =
     ## Executes a make target
-
-    let makefile = playdatePath() & "/playdate.mk"
-    if not makefile.fileExists:
-        raise BuildFail.newException("Could not find playdate Makefile: " & makefile)
-
     putEnv(SDK_ENV_VAR, sdkPath())
-    putEnv("NIM_CACHE_DIR", nimcacheDir())
+    putEnv("NIM_CACHE_DIR", nimcacheDir().replace(DirSep, '/'))
+    putEnv("PLAYDATE_MODULE", playdatePath())
     putEnv("PRODUCT", pdxName())
+    putEnv("PROJECT", projectName())
     putEnv("UINCDIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
+    
+    if defined(windows):
+        # Handle Windows differently for now, needs CMake
+        if target == "clean":
+            rmDir("build", false)
+            return
+        if not fileExists("CMakeLists.txt"):
+            cpFile(os.joinPath(playdatePath(), "CMakeLists.txt"), "CMakeLists.txt")
+        mkDir("build")
+        cd("build")
+        if target == "simulator" or target == "pdc":
+            exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Debug" & " -G \"MinGW Makefiles\"")
+            exec("make")
+        elif target == "device":
+            exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Release" & " -G \"Unix Makefiles\" --toolchain=" & os.joinPath(sdkPath(), "C_API", "buildsupport", "arm.cmake"))
+            exec("make")
+        cd("..")
+    else:
+        let makefile = playdatePath() & "/playdate.mk"
+        if not makefile.fileExists:
+            raise BuildFail.newException("Could not find playdate Makefile: " & makefile)
+        let arch = if defined(macosx): "arch -arm64 " else: ""
+        exec(arch & "make " & target & " -f " & makefile)
 
-    let arch = if defined(macosx): "arch -arm64 " else: ""
-    exec(arch & "make " & target & " -f " & makefile)
+proc cleanCache() =
+    rmDir(nimcacheDir())
+
 
 task clean, "Clean the project folders":
-    if dirExists(nimcacheDir()):
-        exec "rm -fR " & nimcacheDir()
+    cleanCache()
     make "clean"
 
 task cdevice, "Generate C files for the device":
@@ -93,7 +113,7 @@ task all, "Build for both the simulator and the device":
     nimble "clean"
     nimble "csim"
     make "simulator"
-    exec "rm -fR " & nimcacheDir()
+    cleanCache()
     nimble "cdevice"
     make "device"
     exec(sdkPath() & "/bin/pdc Source " & pdxName())
