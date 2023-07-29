@@ -102,7 +102,7 @@ Compile the project (pdx) for the simulator using:
 ```sh
 nimble simulator
 ```
-For the device (elf only, use pdc to create a pdx):
+For the device (pdx):
 ```sh
 nimble device
 ```
@@ -112,6 +112,8 @@ nimble all
 ```
 
 The example project `playdate_example` also contains VSCode launch configurations to build, start and debug your Nim application from the editor.
+
+Each project also contains a simple CMakeLists.txt as a starting point in case you'd want to add libraries or other external code.
 
 ---
 This project is perfectly usable but do note that it's still a work in progress, here's what is missing right now:
