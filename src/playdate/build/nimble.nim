@@ -5,6 +5,10 @@ import sequtils, strutils, os
 when not compiles(task):
     import system/nimscript
 
+type Target = enum
+    simulator = "simulator"
+    device = "device"
+
 proc nimble(args: varargs[string]) =
     ## Executes nimble with the given set of arguments
     exec @["nimble"].concat(args.toSeq).join(" ")
@@ -49,28 +53,27 @@ proc sdkPath*(): string =
 
     raise BuildFail.newException("SDK environment variable is not set: " & SDK_ENV_VAR)
 
-proc build(target: string) =
+proc build(target: Target) =
     ## Builds a target
     putEnv(SDK_ENV_VAR, sdkPath())
-    putEnv("NIM_CACHE_DIR", nimcacheDir().replace(DirSep, '/'))
     putEnv("PLAYDATE_MODULE_DIR", playdatePath())
     putEnv("PLAYDATE_PROJECT_NAME", projectName())
     putEnv("NIM_INCLUDE_DIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
+    putEnv("NIM_CACHE_DIR", (nimcacheDir() / $target).replace(DirSep, '/'))
     
-    mkDir("build")
-    withDir("build"):
-        if target == "simulator":
-            if defined(windows):
-                exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Debug" & " -G \"MinGW Makefiles\"")
-            else:
-                exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Debug" & " -G \"Unix Makefiles\"")
-            exec("make")
-        elif target == "device":
-            exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Release" & " -G \"Unix Makefiles\" --toolchain=" & (sdkPath() / "C_API" / "buildsupport" / "arm.cmake"))
-            exec("make")
-
-proc cleanCache() =
-    rmDir(nimcacheDir())
+    let buildDir = "build" / $target
+    mkDir(buildDir)
+    withDir(buildDir):
+        case target:
+            of simulator:
+                if defined(windows):
+                    exec("cmake ../.. -DCMAKE_BUILD_TYPE=Debug" & " -G \"MinGW Makefiles\"")
+                else:
+                    exec("cmake ../.. -DCMAKE_BUILD_TYPE=Debug" & " -G \"Unix Makefiles\"")
+                exec("make")
+            of device:
+                exec("cmake ../.. -DCMAKE_BUILD_TYPE=Release" & " -G \"Unix Makefiles\" --toolchain=" & (sdkPath() / "C_API" / "buildsupport" / "arm.cmake"))
+                exec("make")
 
 proc taskArgs(taskName: string): seq[string] =
     let args = command_line_params()
@@ -79,24 +82,28 @@ proc taskArgs(taskName: string): seq[string] =
 
 
 task clean, "Clean the project folders":
-    # TODO: clean targets individually
-    # let args = taskArgs("clean")
+    let args = taskArgs("clean")
     
-    # if args.contains("--all"):
-    #     discard
-    # elif args.contains("--simulator"):
-    #     discard
-    # elif args.contains("--device"):
-    #     discard
-    
-    rmDir(nimcacheDir())
-    rmDir("build")
-    rmDir(pdxName())
-    rmFile("Source" / "pdex.bin")
-    rmFile("Source" / "pdex.dylib")
-    rmFile("Source" / "pdex.dll")
-    rmFile("Source" / "pdex.so")
-    rmFile("Source" / "pdex.elf")
+    if args.contains("--simulator"):
+        rmDir(nimcacheDir() / "simulator")
+        rmDir("build" / "simulator")
+        rmFile("Source" / "pdex.dylib")
+        rmFile("Source" / "pdex.dll")
+        rmFile("Source" / "pdex.so")
+    elif args.contains("--device"):
+        rmDir(nimcacheDir() / "device")
+        rmDir("build" / "device")
+        rmFile("Source" / "pdex.bin")
+        rmFile("Source" / "pdex.elf")
+    else:
+        rmDir(nimcacheDir())
+        rmDir(pdxName())
+        rmDir("build")
+        rmFile("Source" / "pdex.bin")
+        rmFile("Source" / "pdex.dylib")
+        rmFile("Source" / "pdex.dll")
+        rmFile("Source" / "pdex.so")
+        rmFile("Source" / "pdex.elf")
 
 task cdevice, "Generate C files for the device":
     nimble "-d:device", "build"
@@ -105,27 +112,22 @@ task csim, "Generate C files for the simulator":
     nimble "-d:simulator", "build"
 
 task simulator, "Build for the simulator":
-    nimble "clean"
     nimble "-d:simulator", "build"
-    build "simulator"
+    build Target.simulator
 
 task simulate, "Build and run in the simulator":
     nimble "simulator"
     exec( (sdkPath() / "bin" / "PlaydateSimulator") & " " & pdxName())
 
 task device, "Build for the device":
-    nimble "clean"
     nimble "-d:device", "build"
-    build "device"
+    build Target.device
 
 task all, "Build for both the simulator and the device":
-    nimble "clean"
     nimble "csim"
-    build "simulator"
-    cleanCache()
+    build Target.simulator
     nimble "cdevice"
-    build "device"
-    # exec(sdkPath() & "/bin/pdc Source " & pdxName())
+    build Target.device
 
 task setup, "Initialize the build structure":
     ## Creates a default source directory if it doesn't already exist
