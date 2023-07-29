@@ -5,10 +5,18 @@ jobs:
     runs-on: ubuntu-latest
     container: nimlang/nim
     steps:
+
+      # Some of the apt dependencies require input from the installer. This disables those
+      # prompts so we can do a headless install
+    - name: Force non-interactive apt installations
+      run: echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+    
     - name: Update dependencies
       run: apt-get update
     - name: Install dependencies
       run: apt-get install -y make libpng16-16 gcc-arm-none-eabi
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest 
     - uses: actions/checkout@v1
     - name: Download playdate SDK
       run: wget https://download.panic.com/playdate_sdk/Linux/PlaydateSDK-latest.tar.gz
@@ -52,6 +60,8 @@ jobs:
       run: apt-get update
     - name: Install dependencies
       run: apt-get install -y make libpng16-16 gcc-arm-none-eabi xvfb libgtk-3-0 sudo libwebkit2gtk-4.0 libwebkit2gtk-4.0-dev libsdl2-dev pulseaudio
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest 
 
       # Because we are headless there is no audio driver to interact with by default, which causes a set
       # of warnings to be emitted. This set of commands sets up a dummy audio sink that silences those warnings.
