@@ -11,7 +11,7 @@ switch("cc", "gcc")
 switch("compileOnly", "on")
 switch("nimcache", nimcacheDir())
 
-when defined(playdate):
+when defined(device):
     echo "compiling for device"
     switch("define", "release")
     switch("checks", "off")

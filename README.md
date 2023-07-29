@@ -34,10 +34,11 @@ This package is an independent bindings library, not affiliated with Panic.
 - Nim 1.6.10+ (check with `nim -v`)
 - Nimble 0.13.1 (check with `nimble -v`)
 - `PLAYDATE_SDK_PATH` environment variable
+- Make and CMake (3.19+)
 - [SDK Prerequisites](https://sdk.play.date/Inside%20Playdate%20with%20C.html#_prerequisites) based on OS, and:
-    - Linux: a C compiler, Make, `arm-none-eabi-newlib`.
-    - macOS: a C compiler, Make. Included in Xcode Command Line Tools.
-    - Windows: MinGW, CMake, Make. [Getting started](https://code.visualstudio.com/docs/cpp/config-mingw)
+    - Linux: a C compiler, `arm-none-eabi-newlib` package (naming varies based on distro).
+    - macOS: a C compiler. Included in Xcode Command Line Tools.
+    - Windows: MinGW. [Getting started](https://code.visualstudio.com/docs/cpp/config-mingw)
 
 ### Installation
 

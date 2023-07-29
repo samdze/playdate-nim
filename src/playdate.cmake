@@ -3,13 +3,9 @@
 #
 cmake_minimum_required(VERSION 3.19)
 
-set(ENVSDK $ENV{PLAYDATE_SDK_PATH})
-set(NIM_CACHE_DIR $ENV{NIM_CACHE_DIR})
-set(UINCDIR $ENV{UINCDIR})
-
-if (NOT ${ENVSDK} STREQUAL "")
+if (NOT $ENV{PLAYDATE_SDK_PATH} STREQUAL "")
 	# Convert path from Windows
-	file(TO_CMAKE_PATH ${ENVSDK} SDK)
+	file(TO_CMAKE_PATH $ENV{PLAYDATE_SDK_PATH} SDK)
 else()
 	execute_process(
 			COMMAND bash -c "egrep '^\\s*SDKRoot' $HOME/.Playdate/config"
@@ -28,14 +24,14 @@ endif()
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 set(CMAKE_XCODE_GENERATE_SCHEME TRUE)
 
-file(GLOB nim_source_files "${NIM_CACHE_DIR}/*.c")
+file(GLOB nim_source_files "$ENV{NIM_CACHE_DIR}/*.c")
 
 # Game Name Customization
-set(PLAYDATE_GAME_NAME ${PLAYDATE_PROJECT_NAME})
-set(PLAYDATE_GAME_DEVICE ${PLAYDATE_PROJECT_NAME})
+set(PLAYDATE_GAME_NAME $ENV{PLAYDATE_PROJECT_NAME})
+set(PLAYDATE_GAME_DEVICE $ENV{PLAYDATE_PROJECT_NAME})
 
 # Include Nim required headers
-include_directories(${UINCDIR})
+include_directories($ENV{NIM_INCLUDE_DIR})
 
 if (TOOLCHAIN STREQUAL "armgcc")
 	add_executable(${PLAYDATE_GAME_DEVICE} ${nim_source_files})
@@ -67,7 +63,7 @@ if (TOOLCHAIN STREQUAL "armgcc")
 	set_property(
 		TARGET ${PLAYDATE_GAME_DEVICE} PROPERTY ADDITIONAL_CLEAN_FILES
 		${CMAKE_CURRENT_SOURCE_DIR}/${PLAYDATE_GAME_NAME}.pdx
-		)
+	)
 
 else ()
 	
@@ -84,6 +80,7 @@ else ()
 			${CMAKE_CURRENT_SOURCE_DIR}/Source/pdex.dll)
 
 	elseif(APPLE)
+		target_sources(${PLAYDATE_GAME_DEVICE} PRIVATE ${SDK}/C_API/buildsupport/setup.c)
 		if(${CMAKE_GENERATOR} MATCHES "Xcode" )
 			set(BUILD_SUB_DIR $<CONFIG>/)
 			set_property(TARGET ${PLAYDATE_GAME_NAME} PROPERTY XCODE_SCHEME_ARGUMENTS \"${CMAKE_CURRENT_SOURCE_DIR}/${PLAYDATE_GAME_NAME}.pdx\")
@@ -97,6 +94,7 @@ else ()
 			${CMAKE_CURRENT_SOURCE_DIR}/Source/pdex.dylib)
 
 	elseif(UNIX)
+		target_sources(${PLAYDATE_GAME_DEVICE} PRIVATE ${SDK}/C_API/buildsupport/setup.c)
 		add_custom_command(
 			TARGET ${PLAYDATE_GAME_NAME} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy
@@ -109,7 +107,7 @@ else ()
 	set_property(
 		TARGET ${PLAYDATE_GAME_NAME} PROPERTY ADDITIONAL_CLEAN_FILES
 		${CMAKE_CURRENT_SOURCE_DIR}/${PLAYDATE_GAME_NAME}.pdx
-		)
+	)
 
 	add_custom_command(
 		TARGET ${PLAYDATE_GAME_NAME} POST_BUILD

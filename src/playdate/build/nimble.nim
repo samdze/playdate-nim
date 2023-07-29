@@ -49,48 +49,57 @@ proc sdkPath*(): string =
 
     raise BuildFail.newException("SDK environment variable is not set: " & SDK_ENV_VAR)
 
-proc make(target: string) =
-    ## Executes a make target
+proc build(target: string) =
+    ## Builds a target
     putEnv(SDK_ENV_VAR, sdkPath())
     putEnv("NIM_CACHE_DIR", nimcacheDir().replace(DirSep, '/'))
-    putEnv("PLAYDATE_MODULE", playdatePath())
-    putEnv("PRODUCT", pdxName())
-    putEnv("PROJECT", projectName())
-    putEnv("UINCDIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
+    putEnv("PLAYDATE_MODULE_DIR", playdatePath())
+    putEnv("PLAYDATE_PROJECT_NAME", projectName())
+    putEnv("NIM_INCLUDE_DIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
     
-    if defined(windows):
-        # Handle Windows differently for now, needs CMake
-        if target == "clean":
-            rmDir("build", false)
-            return
-        if not fileExists("CMakeLists.txt"):
-            cpFile(os.joinPath(playdatePath(), "CMakeLists.txt"), "CMakeLists.txt")
-        mkDir("build")
-        cd("build")
-        if target == "simulator" or target == "pdc":
-            exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Debug" & " -G \"MinGW Makefiles\"")
+    mkDir("build")
+    withDir("build"):
+        if target == "simulator":
+            if defined(windows):
+                exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Debug" & " -G \"MinGW Makefiles\"")
+            else:
+                exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Debug" & " -G \"Unix Makefiles\"")
             exec("make")
         elif target == "device":
-            exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Release" & " -G \"Unix Makefiles\" --toolchain=" & os.joinPath(sdkPath(), "C_API", "buildsupport", "arm.cmake"))
+            exec("cmake --fresh .. -DCMAKE_BUILD_TYPE=Release" & " -G \"Unix Makefiles\" --toolchain=" & (sdkPath() / "C_API" / "buildsupport" / "arm.cmake"))
             exec("make")
-        cd("..")
-    else:
-        let makefile = playdatePath() & "/playdate.mk"
-        if not makefile.fileExists:
-            raise BuildFail.newException("Could not find playdate Makefile: " & makefile)
-        let arch = if defined(macosx): "arch -arm64 " else: ""
-        exec(arch & "make " & target & " -f " & makefile)
 
 proc cleanCache() =
     rmDir(nimcacheDir())
 
+proc taskArgs(taskName: string): seq[string] =
+    let args = command_line_params()
+    let argStart = args.find(taskName) + 1
+    return args[argStart..^1]
+
 
 task clean, "Clean the project folders":
-    cleanCache()
-    make "clean"
+    # TODO: clean targets individually
+    # let args = taskArgs("clean")
+    
+    # if args.contains("--all"):
+    #     discard
+    # elif args.contains("--simulator"):
+    #     discard
+    # elif args.contains("--device"):
+    #     discard
+    
+    rmDir(nimcacheDir())
+    rmDir("build")
+    rmDir(pdxName())
+    rmFile("Source" / "pdex.bin")
+    rmFile("Source" / "pdex.dylib")
+    rmFile("Source" / "pdex.dll")
+    rmFile("Source" / "pdex.so")
+    rmFile("Source" / "pdex.elf")
 
 task cdevice, "Generate C files for the device":
-    nimble "-d:playdate", "build"
+    nimble "-d:device", "build"
 
 task csim, "Generate C files for the simulator":
     nimble "-d:simulator", "build"
@@ -98,7 +107,7 @@ task csim, "Generate C files for the simulator":
 task simulator, "Build for the simulator":
     nimble "clean"
     nimble "-d:simulator", "build"
-    make "pdc"
+    build "simulator"
 
 task simulate, "Build and run in the simulator":
     nimble "simulator"
@@ -106,17 +115,17 @@ task simulate, "Build and run in the simulator":
 
 task device, "Build for the device":
     nimble "clean"
-    nimble "-d:playdate", "build"
-    make "device"
+    nimble "-d:device", "build"
+    build "device"
 
 task all, "Build for both the simulator and the device":
     nimble "clean"
     nimble "csim"
-    make "simulator"
+    build "simulator"
     cleanCache()
     nimble "cdevice"
-    make "device"
-    exec(sdkPath() & "/bin/pdc Source " & pdxName())
+    build "device"
+    # exec(sdkPath() & "/bin/pdc Source " & pdxName())
 
 task setup, "Initialize the build structure":
     ## Creates a default source directory if it doesn't already exist
@@ -125,6 +134,8 @@ task setup, "Initialize the build structure":
     # to the config path
     discard sdkPath()
 
+    if not fileExists("CMakeLists.txt"):
+        cpFile(playdatePath() / "CMakeLists.txt", "CMakeLists.txt")
     if not dirExists("Source"):
         mkDir "Source"
 
