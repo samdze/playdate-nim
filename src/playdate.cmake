@@ -80,7 +80,7 @@ else ()
 			${CMAKE_CURRENT_SOURCE_DIR}/Source/pdex.dll)
 
 	elseif(APPLE)
-		target_sources(${PLAYDATE_GAME_DEVICE} PRIVATE ${SDK}/C_API/buildsupport/setup.c)
+		target_sources(${PLAYDATE_GAME_NAME} PRIVATE ${SDK}/C_API/buildsupport/setup.c)
 		if(${CMAKE_GENERATOR} MATCHES "Xcode" )
 			set(BUILD_SUB_DIR $<CONFIG>/)
 			set_property(TARGET ${PLAYDATE_GAME_NAME} PROPERTY XCODE_SCHEME_ARGUMENTS \"${CMAKE_CURRENT_SOURCE_DIR}/${PLAYDATE_GAME_NAME}.pdx\")
@@ -94,7 +94,7 @@ else ()
 			${CMAKE_CURRENT_SOURCE_DIR}/Source/pdex.dylib)
 
 	elseif(UNIX)
-		target_sources(${PLAYDATE_GAME_DEVICE} PRIVATE ${SDK}/C_API/buildsupport/setup.c)
+		target_sources(${PLAYDATE_GAME_NAME} PRIVATE ${SDK}/C_API/buildsupport/setup.c)
 		add_custom_command(
 			TARGET ${PLAYDATE_GAME_NAME} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy

@@ -9,10 +9,10 @@ switch("mm", "arc")
 switch("noMain", "on")
 switch("cc", "gcc")
 switch("compileOnly", "on")
-switch("nimcache", nimcacheDir())
 
 when defined(device):
     echo "compiling for device"
+    switch("nimcache", nimcacheDir() / "device")
     switch("define", "release")
     switch("checks", "off")
     switch("cpu", "arm")
@@ -31,6 +31,7 @@ when defined(device):
 
 when defined(simulator):
     echo "compiling for simulator"
+    switch("nimcache", nimcacheDir() / "simulator")
     switch("define", "debug")
     switch("define", "nimAllocPagesViaMalloc")
     switch("checks", "on")
