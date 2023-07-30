@@ -30,7 +30,7 @@ proc playdatePath(): string =
 
 proc pdxName(): string =
     ## The name of the pdx file to generate
-    projectName() & ".pdx"
+    "playdate" & ".pdx"
 
 const SDK_ENV_VAR = "PLAYDATE_SDK_PATH"
 
@@ -52,6 +52,14 @@ proc sdkPath*(): string =
             return fromFile
 
     raise BuildFail.newException("SDK environment variable is not set: " & SDK_ENV_VAR)
+
+proc simulatorPath(open: bool = false): string =
+    if defined(windows):
+        return sdkPath() / "bin" / "PlaydateSimulator.exe"
+    elif defined(macosx):
+        return (if open: "open " else: "") & sdkPath() / "bin" / "Playdate\\ Simulator.app"
+    else:
+        return sdkPath() / "bin" / "PlaydateSimulator"
 
 proc build(target: Target) =
     ## Builds a target
@@ -87,23 +95,23 @@ task clean, "Clean the project folders":
     if args.contains("--simulator"):
         rmDir(nimcacheDir() / "simulator")
         rmDir("build" / "simulator")
-        rmFile("Source" / "pdex.dylib")
-        rmFile("Source" / "pdex.dll")
-        rmFile("Source" / "pdex.so")
+        rmFile("source" / "pdex.dylib")
+        rmFile("source" / "pdex.dll")
+        rmFile("source" / "pdex.so")
     elif args.contains("--device"):
         rmDir(nimcacheDir() / "device")
         rmDir("build" / "device")
-        rmFile("Source" / "pdex.bin")
-        rmFile("Source" / "pdex.elf")
+        rmFile("source" / "pdex.bin")
+        rmFile("source" / "pdex.elf")
     else:
         rmDir(nimcacheDir())
         rmDir(pdxName())
         rmDir("build")
-        rmFile("Source" / "pdex.bin")
-        rmFile("Source" / "pdex.dylib")
-        rmFile("Source" / "pdex.dll")
-        rmFile("Source" / "pdex.so")
-        rmFile("Source" / "pdex.elf")
+        rmFile("source" / "pdex.bin")
+        rmFile("source" / "pdex.dylib")
+        rmFile("source" / "pdex.dll")
+        rmFile("source" / "pdex.so")
+        rmFile("source" / "pdex.elf")
 
 task cdevice, "Generate C files for the device":
     nimble "-d:device", "build"
@@ -117,7 +125,7 @@ task simulator, "Build for the simulator":
 
 task simulate, "Build and run in the simulator":
     nimble "simulator"
-    exec( (sdkPath() / "bin" / "PlaydateSimulator") & " " & pdxName())
+    exec (simulatorPath(open = true) & " " & pdxName())
 
 task device, "Build for the device":
     nimble "-d:device", "build"
@@ -138,10 +146,10 @@ task setup, "Initialize the build structure":
 
     if not fileExists("CMakeLists.txt"):
         cpFile(playdatePath() / "CMakeLists.txt", "CMakeLists.txt")
-    if not dirExists("Source"):
-        mkDir "Source"
+    if not dirExists("source"):
+        mkDir "source"
 
-    if not fileExists("Source/pdxinfo"):
+    if not fileExists("source/pdxinfo"):
         let cartridgeName = projectName()
             .replace("_", " ")
             .split(" ")
@@ -158,7 +166,7 @@ task setup, "Initialize the build structure":
             .replace("-", "")
             .replace("_", "")
         writeFile(
-            "Source/pdxinfo",
+            "source/pdxinfo",
             [
                 "name=" & cartridgeName,
                 "author=" & author,
@@ -170,5 +178,5 @@ task setup, "Initialize the build structure":
     if not fileExists( ".gitignore"):
         ".gitignore".writeFile([
             pdxName(),
-            "Source/pdex.*"
+            "source/pdex.*"
         ].join("\n"))

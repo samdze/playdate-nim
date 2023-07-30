@@ -14,5 +14,9 @@ set(CMAKE_C_STANDARD 11)
 # Setup the project and its name from the environment
 project($ENV{PLAYDATE_PROJECT_NAME} C ASM)
 
-# Include the playdate module CMake configuration
+# Include the playdate module CMake configuration, this defines the targets
 include($ENV{PLAYDATE_MODULE_DIR}/playdate.cmake)
+
+# Targets:
+# ${PLAYDATE_GAME_NAME}: simulator
+# ${PLAYDATE_GAME_DEVICE}: device

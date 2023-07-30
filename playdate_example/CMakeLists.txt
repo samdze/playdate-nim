@@ -16,3 +16,7 @@ project($ENV{PLAYDATE_PROJECT_NAME} C ASM)
 
 # Include the playdate module CMake configuration
 include($ENV{PLAYDATE_MODULE_DIR}/playdate.cmake)
+
+# Targets:
+# ${PLAYDATE_GAME_NAME}: simulator
+# ${PLAYDATE_GAME_DEVICE}: device
