@@ -151,6 +151,15 @@ proc getData*(this: LCDBitmap): BitmapData =
     )
     return bitmapData
 
+proc getSize*(this: LCDBitmap): tuple[width: int, height: int] =
+    privateAccess(PlaydateGraphics)
+    assert(this != nil)
+    assert(this.resource != nil)
+    var width, height: cint
+    playdate.graphics.getBitmapData(this.resource, addr(width), addr(height), nil,
+        nil, nil)
+    return (width.int, height.int)
+
 proc clear*(this: LCDBitmap, color: LCDColor) =
     privateAccess(PlaydateGraphics)
     playdate.graphics.clearBitmap(this.resource, color.convert)
