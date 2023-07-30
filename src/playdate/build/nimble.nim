@@ -63,13 +63,14 @@ proc simulatorPath(open: bool = false): string =
 
 proc build(target: Target) =
     ## Builds a target
+    let buildDir = "build" / $target
+
     putEnv(SDK_ENV_VAR, sdkPath())
     putEnv("PLAYDATE_MODULE_DIR", playdatePath())
     putEnv("PLAYDATE_PROJECT_NAME", projectName())
     putEnv("NIM_INCLUDE_DIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
     putEnv("NIM_CACHE_DIR", (nimcacheDir() / $target).replace(DirSep, '/'))
     
-    let buildDir = "build" / $target
     mkDir(buildDir)
     withDir(buildDir):
         case target:
@@ -114,13 +115,15 @@ task clean, "Clean the project folders":
         rmFile("source" / "pdex.elf")
 
 task cdevice, "Generate C files for the device":
+    # rmDir(nimcacheDir() / $Target.device) # Incompatible with incremental builds
     nimble "-d:device", "build"
 
-task csim, "Generate C files for the simulator":
+task csimulator, "Generate C files for the simulator":
+    # rmDir(nimcacheDir() / $Target.simulator) # Incompatible with incremental builds
     nimble "-d:simulator", "build"
 
 task simulator, "Build for the simulator":
-    nimble "-d:simulator", "build"
+    nimble "csimulator"
     build Target.simulator
 
 task simulate, "Build and run in the simulator":
@@ -128,11 +131,11 @@ task simulate, "Build and run in the simulator":
     exec (simulatorPath(open = true) & " " & pdxName())
 
 task device, "Build for the device":
-    nimble "-d:device", "build"
+    nimble "cdevice"
     build Target.device
 
 task all, "Build for both the simulator and the device":
-    nimble "csim"
+    nimble "csimulator"
     build Target.simulator
     nimble "cdevice"
     build Target.device

@@ -110,4 +110,4 @@ jobs:
 
     - name: Run headless test
       working-directory: ./tests
-      run: xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator playdate_tests.pdx
+      run: xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator playdate.pdx
