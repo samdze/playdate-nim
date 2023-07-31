@@ -1,4 +1,4 @@
-import sequtils, strutils, os
+import sequtils, strutils, os, json
 
 # This file is designed to be `included` directly from a nimble file, which will make `switch` and `task`
 # implicitly available. This block just fixes auto-complete in IDEs
@@ -9,11 +9,15 @@ type Target = enum
     simulator = "simulator"
     device = "device"
 
+type CompileInstructions = object
+    compile: seq[array[2, string]]
+
+type BuildFail = object of Defect
+
+
 proc nimble(args: varargs[string]) =
     ## Executes nimble with the given set of arguments
     exec @["nimble"].concat(args.toSeq).join(" ")
-
-type BuildFail = object of Defect
 
 proc playdatePath(): string =
     ## Returns the path of the playdate nim module
@@ -30,7 +34,7 @@ proc playdatePath(): string =
 
 proc pdxName(): string =
     ## The name of the pdx file to generate
-    projectName() & ".pdx"
+    "playdate" & ".pdx"
 
 const SDK_ENV_VAR = "PLAYDATE_SDK_PATH"
 
@@ -53,15 +57,34 @@ proc sdkPath*(): string =
 
     raise BuildFail.newException("SDK environment variable is not set: " & SDK_ENV_VAR)
 
+proc simulatorPath(open: bool = false): string =
+    if defined(windows):
+        return sdkPath() / "bin" / "PlaydateSimulator.exe"
+    elif defined(macosx):
+        return (if open: "open " else: "") & sdkPath() / "bin" / "Playdate\\ Simulator.app"
+    else:
+        return sdkPath() / "bin" / "PlaydateSimulator"
+
+proc filesToCompile(target: Target): seq[string] =
+    let jsonString = readFile(nimcacheDir() / $target / projectName() & ".json")
+    let instructions = parseJson(jsonString).to(CompileInstructions)
+
+    return instructions.compile.map(
+        proc(entry: array[2, string]): string =
+            return entry[0]
+    )
+
 proc build(target: Target) =
     ## Builds a target
+    let buildDir = "build" / $target
+
     putEnv(SDK_ENV_VAR, sdkPath())
     putEnv("PLAYDATE_MODULE_DIR", playdatePath())
     putEnv("PLAYDATE_PROJECT_NAME", projectName())
     putEnv("NIM_INCLUDE_DIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
+    putEnv("NIM_C_SOURCE_FILES", filesToCompile(target).join(";").replace(DirSep, '/'))
     putEnv("NIM_CACHE_DIR", (nimcacheDir() / $target).replace(DirSep, '/'))
-    
-    let buildDir = "build" / $target
+
     mkDir(buildDir)
     withDir(buildDir):
         case target:
@@ -70,10 +93,9 @@ proc build(target: Target) =
                     exec("cmake ../.. -DCMAKE_BUILD_TYPE=Debug" & " -G \"MinGW Makefiles\"")
                 else:
                     exec("cmake ../.. -DCMAKE_BUILD_TYPE=Debug" & " -G \"Unix Makefiles\"")
-                exec("make")
             of device:
                 exec("cmake ../.. -DCMAKE_BUILD_TYPE=Release" & " -G \"Unix Makefiles\" --toolchain=" & (sdkPath() / "C_API" / "buildsupport" / "arm.cmake"))
-                exec("make")
+        exec("make")
 
 proc taskArgs(taskName: string): seq[string] =
     let args = command_line_params()
@@ -85,46 +107,46 @@ task clean, "Clean the project folders":
     let args = taskArgs("clean")
     
     if args.contains("--simulator"):
-        rmDir(nimcacheDir() / "simulator")
-        rmDir("build" / "simulator")
-        rmFile("Source" / "pdex.dylib")
-        rmFile("Source" / "pdex.dll")
-        rmFile("Source" / "pdex.so")
+        rmDir(nimcacheDir() / $Target.simulator)
+        rmDir("build" / $Target.simulator)
+        rmFile("source" / "pdex.dylib")
+        rmFile("source" / "pdex.dll")
+        rmFile("source" / "pdex.so")
     elif args.contains("--device"):
-        rmDir(nimcacheDir() / "device")
-        rmDir("build" / "device")
-        rmFile("Source" / "pdex.bin")
-        rmFile("Source" / "pdex.elf")
+        rmDir(nimcacheDir() / $Target.device)
+        rmDir("build" / $Target.device)
+        rmFile("source" / "pdex.bin")
+        rmFile("source" / "pdex.elf")
     else:
         rmDir(nimcacheDir())
         rmDir(pdxName())
         rmDir("build")
-        rmFile("Source" / "pdex.bin")
-        rmFile("Source" / "pdex.dylib")
-        rmFile("Source" / "pdex.dll")
-        rmFile("Source" / "pdex.so")
-        rmFile("Source" / "pdex.elf")
+        rmFile("source" / "pdex.bin")
+        rmFile("source" / "pdex.dylib")
+        rmFile("source" / "pdex.dll")
+        rmFile("source" / "pdex.so")
+        rmFile("source" / "pdex.elf")
 
 task cdevice, "Generate C files for the device":
     nimble "-d:device", "build"
 
-task csim, "Generate C files for the simulator":
+task csimulator, "Generate C files for the simulator":
     nimble "-d:simulator", "build"
 
 task simulator, "Build for the simulator":
-    nimble "-d:simulator", "build"
+    nimble "csimulator"
     build Target.simulator
 
 task simulate, "Build and run in the simulator":
     nimble "simulator"
-    exec( (sdkPath() / "bin" / "PlaydateSimulator") & " " & pdxName())
+    exec (simulatorPath(open = true) & " " & pdxName())
 
 task device, "Build for the device":
-    nimble "-d:device", "build"
+    nimble "cdevice"
     build Target.device
 
 task all, "Build for both the simulator and the device":
-    nimble "csim"
+    nimble "csimulator"
     build Target.simulator
     nimble "cdevice"
     build Target.device
@@ -138,10 +160,10 @@ task setup, "Initialize the build structure":
 
     if not fileExists("CMakeLists.txt"):
         cpFile(playdatePath() / "CMakeLists.txt", "CMakeLists.txt")
-    if not dirExists("Source"):
-        mkDir "Source"
+    if not dirExists("source"):
+        mkDir "source"
 
-    if not fileExists("Source/pdxinfo"):
+    if not fileExists("source/pdxinfo"):
         let cartridgeName = projectName()
             .replace("_", " ")
             .split(" ")
@@ -158,7 +180,7 @@ task setup, "Initialize the build structure":
             .replace("-", "")
             .replace("_", "")
         writeFile(
-            "Source/pdxinfo",
+            "source/pdxinfo",
             [
                 "name=" & cartridgeName,
                 "author=" & author,
@@ -170,5 +192,5 @@ task setup, "Initialize the build structure":
     if not fileExists( ".gitignore"):
         ".gitignore".writeFile([
             pdxName(),
-            "Source/pdex.*"
+            "source/pdex.*"
         ].join("\n"))

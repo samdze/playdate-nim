@@ -45,11 +45,12 @@ This package is an independent bindings library, not affiliated with Panic.
 You can quickly start using the bindings opening the `playdate_example` project included in this repository.<br>
 If you want to start from scratch, here are the steps to follow:
 
-1. If you haven't run it already, start by initializing your nimble package and follow the instructions:
+1. If you haven't done it already, start creating a folder (snake_case) and initializing your nimble package inside it running:
 
 ```
 nimble init
 ```
+Choose `binary` as the package type.
 
 2. Install the `playdate` package:
 
@@ -57,8 +58,7 @@ nimble init
 nimble install playdate
 ```
 
-3. Move into your package directory.<br>
-Add the `playdate` package as a dependency and configure the build tasks by running the following:
+3. Add the `playdate` package as a dependency and configure the build tasks by running the following:
 
 ```
 echo 'requires "playdate"' >> *.nimble;
@@ -109,6 +109,11 @@ nimble device
 For simulator + device (pdx):
 ```sh
 nimble all
+```
+
+You can also build for simulator and launch it in one command:
+```sh
+nimble simulate
 ```
 
 The example project `playdate_example` also contains VSCode launch configurations to build, start and debug your Nim application from the editor.

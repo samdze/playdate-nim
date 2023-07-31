@@ -24,20 +24,18 @@ endif()
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 set(CMAKE_XCODE_GENERATE_SCHEME TRUE)
 
-file(GLOB nim_source_files "$ENV{NIM_CACHE_DIR}/*.c")
-
 # Game Name Customization
-set(PLAYDATE_GAME_NAME $ENV{PLAYDATE_PROJECT_NAME})
-set(PLAYDATE_GAME_DEVICE $ENV{PLAYDATE_PROJECT_NAME})
+set(PLAYDATE_GAME_NAME $ENV{PLAYDATE_PROJECT_NAME}_simulator)
+set(PLAYDATE_GAME_DEVICE $ENV{PLAYDATE_PROJECT_NAME}_device)
 
 # Include Nim required headers
 include_directories($ENV{NIM_INCLUDE_DIR})
 
 if (TOOLCHAIN STREQUAL "armgcc")
-	add_executable(${PLAYDATE_GAME_DEVICE} ${nim_source_files})
+	add_executable(${PLAYDATE_GAME_DEVICE} $ENV{NIM_C_SOURCE_FILES})
 	target_link_libraries(${PLAYDATE_GAME_DEVICE} rdimon c m gcc nosys)
 else()
-	add_library(${PLAYDATE_GAME_NAME} SHARED ${nim_source_files})
+	add_library(${PLAYDATE_GAME_NAME} SHARED $ENV{NIM_C_SOURCE_FILES})
 endif()
 
 include(${SDK}/C_API/buildsupport/playdate.cmake)
@@ -51,67 +49,55 @@ if (TOOLCHAIN STREQUAL "armgcc")
 		TARGET ${PLAYDATE_GAME_DEVICE} POST_BUILD
 		COMMAND ${CMAKE_STRIP} --strip-unneeded -R .comment -g
 		${PLAYDATE_GAME_DEVICE}.elf
-		-o ${CMAKE_CURRENT_SOURCE_DIR}/Source/pdex.elf
+		-o ${CMAKE_CURRENT_SOURCE_DIR}/source/pdex.elf
 	)
 
 	add_custom_command(
 		TARGET ${PLAYDATE_GAME_DEVICE} POST_BUILD
-		COMMAND ${PDC} Source ${PLAYDATE_GAME_NAME}.pdx
+		COMMAND ${PDC} source playdate.pdx
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
 	set_property(
 		TARGET ${PLAYDATE_GAME_DEVICE} PROPERTY ADDITIONAL_CLEAN_FILES
-		${CMAKE_CURRENT_SOURCE_DIR}/${PLAYDATE_GAME_NAME}.pdx
+		${CMAKE_CURRENT_SOURCE_DIR}/playdate.pdx
 	)
 
 else ()
-	
 	if (MSVC)
 		# MSVC not supported
 		message(FATAL_ERROR "MSVC is not supported! Use MinGW.")
-	
+
 	elseif(MINGW)
 		target_compile_definitions(${PLAYDATE_GAME_NAME} PUBLIC _WINDLL=1)
-		add_custom_command(
-			TARGET ${PLAYDATE_GAME_NAME} POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy
-			${CMAKE_CURRENT_BINARY_DIR}/lib${PLAYDATE_GAME_NAME}.dll
-			${CMAKE_CURRENT_SOURCE_DIR}/Source/pdex.dll)
+		set(DYLIB_EXT "dll")
 
 	elseif(APPLE)
 		target_sources(${PLAYDATE_GAME_NAME} PRIVATE ${SDK}/C_API/buildsupport/setup.c)
-		if(${CMAKE_GENERATOR} MATCHES "Xcode" )
-			set(BUILD_SUB_DIR $<CONFIG>/)
-			set_property(TARGET ${PLAYDATE_GAME_NAME} PROPERTY XCODE_SCHEME_ARGUMENTS \"${CMAKE_CURRENT_SOURCE_DIR}/${PLAYDATE_GAME_NAME}.pdx\")
-			set_property(TARGET ${PLAYDATE_GAME_NAME} PROPERTY XCODE_SCHEME_EXECUTABLE ${SDK}/bin/Playdate\ Simulator.app)
-		endif()
-
-		add_custom_command(
-			TARGET ${PLAYDATE_GAME_NAME} POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy
-			${CMAKE_CURRENT_BINARY_DIR}/${BUILD_SUB_DIR}lib${PLAYDATE_GAME_NAME}.dylib
-			${CMAKE_CURRENT_SOURCE_DIR}/Source/pdex.dylib)
+		set(DYLIB_EXT "dylib")
 
 	elseif(UNIX)
 		target_sources(${PLAYDATE_GAME_NAME} PRIVATE ${SDK}/C_API/buildsupport/setup.c)
-		add_custom_command(
-			TARGET ${PLAYDATE_GAME_NAME} POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy
-			${CMAKE_CURRENT_BINARY_DIR}/lib${PLAYDATE_GAME_NAME}.so
-			${CMAKE_CURRENT_SOURCE_DIR}/Source/pdex.so)
+		set(DYLIB_EXT "so")
+
 	else()
 		message(FATAL_ERROR "Platform not supported!")
 	endif()
 
+	add_custom_command(
+		TARGET ${PLAYDATE_GAME_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy
+		${CMAKE_CURRENT_BINARY_DIR}/${BUILD_SUB_DIR}lib${PLAYDATE_GAME_NAME}.${DYLIB_EXT}
+		${CMAKE_CURRENT_SOURCE_DIR}/source/pdex.${DYLIB_EXT})
+
 	set_property(
 		TARGET ${PLAYDATE_GAME_NAME} PROPERTY ADDITIONAL_CLEAN_FILES
-		${CMAKE_CURRENT_SOURCE_DIR}/${PLAYDATE_GAME_NAME}.pdx
+		${CMAKE_CURRENT_SOURCE_DIR}/playdate.pdx
 	)
 
 	add_custom_command(
 		TARGET ${PLAYDATE_GAME_NAME} POST_BUILD
-		COMMAND ${PDC} ${CMAKE_CURRENT_SOURCE_DIR}/Source
-		${CMAKE_CURRENT_SOURCE_DIR}/${PLAYDATE_GAME_NAME}.pdx)
+		COMMAND ${PDC} ${CMAKE_CURRENT_SOURCE_DIR}/source
+		${CMAKE_CURRENT_SOURCE_DIR}/playdate.pdx)
 
 endif ()
