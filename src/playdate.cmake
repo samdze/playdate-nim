@@ -24,8 +24,6 @@ endif()
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 set(CMAKE_XCODE_GENERATE_SCHEME TRUE)
 
-file(GLOB nim_source_files "$ENV{NIM_CACHE_DIR}/*.c")
-
 # Game Name Customization
 set(PLAYDATE_GAME_NAME $ENV{PLAYDATE_PROJECT_NAME}_simulator)
 set(PLAYDATE_GAME_DEVICE $ENV{PLAYDATE_PROJECT_NAME}_device)
@@ -34,10 +32,10 @@ set(PLAYDATE_GAME_DEVICE $ENV{PLAYDATE_PROJECT_NAME}_device)
 include_directories($ENV{NIM_INCLUDE_DIR})
 
 if (TOOLCHAIN STREQUAL "armgcc")
-	add_executable(${PLAYDATE_GAME_DEVICE} ${nim_source_files})
+	add_executable(${PLAYDATE_GAME_DEVICE} $ENV{NIM_C_SOURCE_FILES})
 	target_link_libraries(${PLAYDATE_GAME_DEVICE} rdimon c m gcc nosys)
 else()
-	add_library(${PLAYDATE_GAME_NAME} SHARED ${nim_source_files})
+	add_library(${PLAYDATE_GAME_NAME} SHARED $ENV{NIM_C_SOURCE_FILES})
 endif()
 
 include(${SDK}/C_API/buildsupport/playdate.cmake)

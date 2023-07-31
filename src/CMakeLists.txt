@@ -5,6 +5,7 @@
 # $ENV{PLAYDATE_PROJECT_NAME}: the project name
 # $ENV{PLAYDATE_MODULE_DIR}: the path to the installed playdate Nim module
 # $ENV{NIM_CACHE_DIR}: the path to the project Nim cache files
+# $ENV{NIM_C_SOURCE_FILES}: list of semicolon-separated, Nim-generated C files that have to be compiled
 # $ENV{NIM_INCLUDE_DIR}: the path to required Nim header files
 
 cmake_minimum_required(VERSION 3.14)

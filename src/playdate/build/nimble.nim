@@ -1,4 +1,4 @@
-import sequtils, strutils, os
+import sequtils, strutils, os, json
 
 # This file is designed to be `included` directly from a nimble file, which will make `switch` and `task`
 # implicitly available. This block just fixes auto-complete in IDEs
@@ -9,11 +9,15 @@ type Target = enum
     simulator = "simulator"
     device = "device"
 
+type CompileInstructions = object
+    compile: seq[array[2, string]]
+
+type BuildFail = object of Defect
+
+
 proc nimble(args: varargs[string]) =
     ## Executes nimble with the given set of arguments
     exec @["nimble"].concat(args.toSeq).join(" ")
-
-type BuildFail = object of Defect
 
 proc playdatePath(): string =
     ## Returns the path of the playdate nim module
@@ -61,6 +65,15 @@ proc simulatorPath(open: bool = false): string =
     else:
         return sdkPath() / "bin" / "PlaydateSimulator"
 
+proc filesToCompile(target: Target): seq[string] =
+    let jsonString = readFile(nimcacheDir() / $target / projectName() & ".json")
+    let instructions = parseJson(jsonString).to(CompileInstructions)
+
+    return instructions.compile.map(
+        proc(entry: array[2, string]): string =
+            return entry[0]
+    )
+
 proc build(target: Target) =
     ## Builds a target
     let buildDir = "build" / $target
@@ -69,8 +82,9 @@ proc build(target: Target) =
     putEnv("PLAYDATE_MODULE_DIR", playdatePath())
     putEnv("PLAYDATE_PROJECT_NAME", projectName())
     putEnv("NIM_INCLUDE_DIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
+    putEnv("NIM_C_SOURCE_FILES", filesToCompile(target).join(";").replace(DirSep, '/'))
     putEnv("NIM_CACHE_DIR", (nimcacheDir() / $target).replace(DirSep, '/'))
-    
+
     mkDir(buildDir)
     withDir(buildDir):
         case target:
@@ -79,10 +93,9 @@ proc build(target: Target) =
                     exec("cmake ../.. -DCMAKE_BUILD_TYPE=Debug" & " -G \"MinGW Makefiles\"")
                 else:
                     exec("cmake ../.. -DCMAKE_BUILD_TYPE=Debug" & " -G \"Unix Makefiles\"")
-                exec("make")
             of device:
                 exec("cmake ../.. -DCMAKE_BUILD_TYPE=Release" & " -G \"Unix Makefiles\" --toolchain=" & (sdkPath() / "C_API" / "buildsupport" / "arm.cmake"))
-                exec("make")
+        exec("make")
 
 proc taskArgs(taskName: string): seq[string] =
     let args = command_line_params()
@@ -94,14 +107,14 @@ task clean, "Clean the project folders":
     let args = taskArgs("clean")
     
     if args.contains("--simulator"):
-        rmDir(nimcacheDir() / "simulator")
-        rmDir("build" / "simulator")
+        rmDir(nimcacheDir() / $Target.simulator)
+        rmDir("build" / $Target.simulator)
         rmFile("source" / "pdex.dylib")
         rmFile("source" / "pdex.dll")
         rmFile("source" / "pdex.so")
     elif args.contains("--device"):
-        rmDir(nimcacheDir() / "device")
-        rmDir("build" / "device")
+        rmDir(nimcacheDir() / $Target.device)
+        rmDir("build" / $Target.device)
         rmFile("source" / "pdex.bin")
         rmFile("source" / "pdex.elf")
     else:
@@ -115,11 +128,9 @@ task clean, "Clean the project folders":
         rmFile("source" / "pdex.elf")
 
 task cdevice, "Generate C files for the device":
-    # rmDir(nimcacheDir() / $Target.device) # Incompatible with incremental builds
     nimble "-d:device", "build"
 
 task csimulator, "Generate C files for the simulator":
-    # rmDir(nimcacheDir() / $Target.simulator) # Incompatible with incremental builds
     nimble "-d:simulator", "build"
 
 task simulator, "Build for the simulator":

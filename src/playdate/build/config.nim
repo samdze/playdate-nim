@@ -37,6 +37,7 @@ when defined(simulator):
     switch("checks", "on")
     switch("index", "on")
     switch("debuginfo", "on")
+    switch("stackTrace", "on")
     switch("lineTrace", "on")
     switch("lineDir", "on")
     switch("debugger", "native")
