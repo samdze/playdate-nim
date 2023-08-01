@@ -1,114 +1,40 @@
-import sequtils, strutils, os, json
+import sequtils, strutils, os
+
+import utils
 
 # This file is designed to be `included` directly from a nimble file, which will make `switch` and `task`
 # implicitly available. This block just fixes auto-complete in IDEs
 when not compiles(task):
     import system/nimscript
 
-type Target = enum
-    simulator = "simulator"
-    device = "device"
 
-type CompileInstructions = object
-    compile: seq[array[2, string]]
+proc bundlePDX() =
+    ## Bundles the pdx file
+    exec(pdcPath() & " -sdkpath " & sdkPath() & " source playdate")
 
-type BuildFail = object of Defect
-
-
-proc nimble(args: varargs[string]) =
-    ## Executes nimble with the given set of arguments
-    exec @["nimble"].concat(args.toSeq).join(" ")
-
-proc playdatePath(): string =
-    ## Returns the path of the playdate nim module
-    var (paths, exitCode) = gorgeEx("nimble path playdate")
-    paths.stripLineEnd()
-    if exitCode != 0:
-        raise BuildFail.newException("Could not find the playdate nimble module!")
-    let pathsSeq = paths.splitLines(false)
-    # If multiple package paths are found, use the last one
-    let path = pathsSeq[pathsSeq.len - 1]
-    if path.strip == "" or not path.strip.dirExists:
-        raise BuildFail.newException("Playdate nimble module is not a directory: " & path)
-    return path
-
-proc pdxName(): string =
-    ## The name of the pdx file to generate
-    "playdate" & ".pdx"
-
-const SDK_ENV_VAR = "PLAYDATE_SDK_PATH"
-
-proc sdkPath*(): string =
-    ## Returns the path of the playdate SDK
-    let fromEnv = getEnv(SDK_ENV_VAR)
-    let sdkPathCache = getConfigDir() / projectName() / SDK_ENV_VAR
-
-    if fromEnv != "":
-        mkDir(sdkPathCache.parentDir)
-        writeFile(sdkPathCache, fromEnv)
-        return fromEnv
-
-    if fileExists(sdkPathCache):
-        let fromFile = readFile(sdkPathCache)
-        if fromFile != "":
-            echo "Read SDK path from file: " & sdkPathCache
-            echo "SDK Path: " & fromFile
-            return fromFile
-
-    raise BuildFail.newException("SDK environment variable is not set: " & SDK_ENV_VAR)
-
-proc simulatorPath(open: bool = false): string =
-    if defined(windows):
-        return sdkPath() / "bin" / "PlaydateSimulator.exe"
-    elif defined(macosx):
-        return (if open: "open " else: "") & sdkPath() / "bin" / "Playdate\\ Simulator.app"
-    else:
-        return sdkPath() / "bin" / "PlaydateSimulator"
-
-proc filesToCompile(target: Target): seq[string] =
-    let jsonString = readFile(nimcacheDir() / $target / projectName() & ".json")
-    let instructions = parseJson(jsonString).to(CompileInstructions)
-
-    return instructions.compile.map(
-        proc(entry: array[2, string]): string =
-            return entry[0]
-    )
-
-proc build(target: Target) =
-    ## Builds a target
-    let buildDir = "build" / $target
-
-    putEnv(SDK_ENV_VAR, sdkPath())
-    putEnv("PLAYDATE_MODULE_DIR", playdatePath())
-    putEnv("PLAYDATE_PROJECT_NAME", projectName())
-    putEnv("NIM_INCLUDE_DIR", getCurrentCompilerExe().parentDir.parentDir / "lib")
-    putEnv("NIM_C_SOURCE_FILES", filesToCompile(target).join(";").replace(DirSep, '/'))
-    putEnv("NIM_CACHE_DIR", (nimcacheDir() / $target).replace(DirSep, '/'))
-
-    mkDir(buildDir)
-    withDir(buildDir):
-        case target:
-            of simulator:
-                if defined(windows):
-                    exec("cmake ../.. -DCMAKE_BUILD_TYPE=Debug" & " -G \"MinGW Makefiles\"")
-                else:
-                    exec("cmake ../.. -DCMAKE_BUILD_TYPE=Debug" & " -G \"Unix Makefiles\"")
-            of device:
-                exec("cmake ../.. -DCMAKE_BUILD_TYPE=Release" & " -G \"Unix Makefiles\" --toolchain=" & (sdkPath() / "C_API" / "buildsupport" / "arm.cmake"))
-        exec("make")
-
-proc taskArgs(taskName: string): seq[string] =
-    let args = command_line_params()
-    let argStart = args.find(taskName) + 1
-    return args[argStart..^1]
+proc postBuild(target: Target) =
+    case target:
+        of simulator:
+            if defined(windows):
+                mvFile(projectName(), "source" / "pdex.dll")
+            elif defined(macosx):
+                mvFile(projectName(), "source" / "pdex.dylib")
+                rmDir("source" / "pdex.dSYM")
+                mvFile(projectName() & ".dSYM", "source" / "pdex.dSYM")
+            elif defined(linux):
+                mvFile(projectName(), "source" / "pdex.so")
+        of device:
+            mvFile(projectName(), "source" / "pdex.elf")
+            rmFile("game.map")
 
 
-task clean, "Clean the project folders":
+task clean, "Clean the project files and folders":
     let args = taskArgs("clean")
     
     if args.contains("--simulator"):
         rmDir(nimcacheDir() / $Target.simulator)
         rmDir("build" / $Target.simulator)
+        rmDir("source" / "pdex.dSYM")
         rmFile("source" / "pdex.dylib")
         rmFile("source" / "pdex.dll")
         rmFile("source" / "pdex.so")
@@ -121,35 +47,33 @@ task clean, "Clean the project folders":
         rmDir(nimcacheDir())
         rmDir(pdxName())
         rmDir("build")
+        rmDir("source" / "pdex.dSYM")
         rmFile("source" / "pdex.bin")
         rmFile("source" / "pdex.dylib")
         rmFile("source" / "pdex.dll")
         rmFile("source" / "pdex.so")
         rmFile("source" / "pdex.elf")
 
-task cdevice, "Generate C files for the device":
-    nimble "-d:device", "build"
-
-task csimulator, "Generate C files for the simulator":
-    nimble "-d:simulator", "build"
-
 task simulator, "Build for the simulator":
-    nimble "csimulator"
-    build Target.simulator
+    nimble "-d:simulator", "build", "--verbose"
+    postBuild(Target.simulator)
+    bundlePDX()
 
 task simulate, "Build and run in the simulator":
     nimble "simulator"
     exec (simulatorPath(open = true) & " " & pdxName())
 
 task device, "Build for the device":
-    nimble "cdevice"
-    build Target.device
+    nimble "-d:device", "build", "--verbose"
+    postBuild(Target.device)
+    bundlePDX()
 
 task all, "Build for both the simulator and the device":
-    nimble "csimulator"
-    build Target.simulator
-    nimble "cdevice"
-    build Target.device
+    nimble "-d:simulator", "build", "--verbose"
+    postBuild(Target.simulator)
+    nimble "-d:device", "build", "--verbose"
+    postBuild(Target.device)
+    bundlePDX()
 
 task setup, "Initialize the build structure":
     ## Creates a default source directory if it doesn't already exist
@@ -158,8 +82,6 @@ task setup, "Initialize the build structure":
     # to the config path
     discard sdkPath()
 
-    if not fileExists("CMakeLists.txt"):
-        cpFile(playdatePath() / "CMakeLists.txt", "CMakeLists.txt")
     if not dirExists("source"):
         mkDir "source"
 
@@ -192,5 +114,6 @@ task setup, "Initialize the build structure":
     if not fileExists( ".gitignore"):
         ".gitignore".writeFile([
             pdxName(),
-            "source/pdex.*"
+            "source/pdex.*",
+            "*.dSYM"
         ].join("\n"))

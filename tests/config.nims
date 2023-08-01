@@ -1,6 +1,6 @@
 import os
 
-import ../src/playdate/build/nimble
+import ../src/playdate/build/utils
 
 switch("compileOnly", "off")
 switch("noMain", "off")

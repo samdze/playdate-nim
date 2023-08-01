@@ -1,2 +1,3 @@
-playdate_example.pdx
-Source/pdex.*
+playdate.pdx
+source/pdex.*
+*.dSYM
