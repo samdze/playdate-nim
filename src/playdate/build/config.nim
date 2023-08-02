@@ -60,8 +60,6 @@ when defined(device):
     switch("passL", "-Wl,-Map=game.map,--cref,--gc-sections,--emit-relocs")
     switch("passL", "--entry eventHandlerShim")
     switch("passL", "-lc -lm -lgcc")
-    # Disabled warnings
-    switch("passL", "-Wl,--no-warn-rwx-segments")
 
     if defined(release):
         switch("define", "release")
