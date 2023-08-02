@@ -86,7 +86,8 @@ task all, "Build for both the simulator and the device":
     let args = taskArgs("all")
     var simulatorBuild = "debug"
     var deviceBuild = "release"
-    if args.contains("debug"):
+    # Only release device build are supported on macOS at the moment.
+    if args.contains("debug") and not defined(macosx):
         deviceBuild = "debug"
     elif args.contains("release"):
         simulatorBuild = "release"
