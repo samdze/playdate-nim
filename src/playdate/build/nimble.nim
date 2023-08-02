@@ -59,6 +59,9 @@ task clean, "Clean the project files and folders":
         rmFile("source" / "pdex.dll")
         rmFile("source" / "pdex.so")
         rmFile("source" / "pdex.elf")
+    rmFile("game.map")
+    rmFile(projectName())
+    rmFile(projectName() & ".exe")
 
 task simulator, "Build for the simulator":
     let args = taskArgs("simulator")
