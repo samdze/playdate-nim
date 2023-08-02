@@ -34,11 +34,7 @@ This package is an independent bindings library, not affiliated with Panic.
 - Nim 1.6.10+ (check with `nim -v`)
 - Nimble 0.13.1 (check with `nimble -v`)
 - `PLAYDATE_SDK_PATH` environment variable
-- Make and CMake (3.19+)
-- [SDK Prerequisites](https://sdk.play.date/Inside%20Playdate%20with%20C.html#_prerequisites) based on OS, and:
-    - Linux: a C compiler, `arm-none-eabi-newlib` package (naming varies based on distro).
-    - macOS: a C compiler. Included in Xcode Command Line Tools.
-    - Windows: MinGW. [Getting started](https://code.visualstudio.com/docs/cpp/config-mingw)
+- [SDK Prerequisites](https://sdk.play.date/Inside%20Playdate%20with%20C.html#_prerequisites) based on OS, and [MinGW on Windows](https://code.visualstudio.com/docs/cpp/config-mingw).
 
 ### Installation
 
@@ -118,7 +114,7 @@ nimble simulate
 
 The example project `playdate_example` also contains VSCode launch configurations to build, start and debug your Nim application from the editor.
 
-Each project also contains a simple CMakeLists.txt as a starting point in case you'd want to add libraries or other external code.
+Each project contains a `config.nims` file that can be edited to customize how the project should be built, e.g. adding libraries or other external code.
 
 ---
 This project is perfectly usable but do note that it's still a work in progress, here's what is missing right now:
