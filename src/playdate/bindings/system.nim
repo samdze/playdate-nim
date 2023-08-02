@@ -45,8 +45,8 @@ sdktype:
         getSecondsSinceEpoch {.importc: "getSecondsSinceEpoch".}: proc (milliseconds: ptr cuint): cuint {.cdecl, raises: [].}
         drawFPS {.importsdk.}: proc (x: cint; y: cint)
         setUpdateCallback {.importc: "setUpdateCallback".}: proc (update: PDCallbackFunctionRaw, userdata: pointer) {.cdecl, raises: [].}
-        getButtonState {.importc: "getButtonState".}: proc (current: ptr uint32;
-            pushed: ptr uint32; released: ptr uint32) {.cdecl, raises: [].}
+        getButtonState {.importc: "getButtonState".}: proc (current: ptr PDButton;
+            pushed: ptr PDButton; released: ptr PDButton) {.cdecl, raises: [].}
         setPeripheralsEnabled* {.importc.}: proc (mask: PDPeripherals) {.cdecl, raises: [].}
         getAccelerometer {.importc: "getAccelerometer".}: proc (outx: ptr cfloat;
             outy: ptr cfloat; outz: ptr cfloat) {.cdecl, raises: [].}

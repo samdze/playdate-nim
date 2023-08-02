@@ -1,15 +1,21 @@
-import os, strformat
+import os
+when defined(device):
+    import strformat
+
 import utils
 
 # This file is designed to be `included` directly from a `config.nims` file, which will make `switch` and `task`
-# implicitly available. This block just fixes auto-complete in IDEs
+# implicitly available. This block just fixes auto-complete in IDEs.
 when not compiles(task):
     import system/nimscript
 
 
+switch("backend", "c")
 switch("mm", "arc")
 switch("noMain", "on")
 switch("os", "any")
+switch("parallelBuild", "0") # Auto-detect
+switch("hint", "CC:on")
 
 switch("arm.any.gcc.exe", "arm-none-eabi-gcc")
 switch("arm.any.gcc.linkerexe", "arm-none-eabi-gcc")
@@ -17,6 +23,7 @@ switch("arm.any.gcc.options.linker", "-static")
 switch("clang.options.linker", "")
 switch("mingw.options.linker", "")
 switch("gcc.options.linker", "")
+switch("gcc.options.debug", "-g3 -O0 -gdwarf-3")
 
 switch("passC", "-DTARGET_EXTENSION=1")
 switch("passC", "-Wall")
@@ -25,21 +32,16 @@ switch("passC", "-Wdouble-promotion")
 switch("passC", "-I" & sdkPath() / "C_API")
 
 when defined(device):
+    switch("gcc.options.always", "")
+
     switch("nimcache", nimcacheDir() / "device")
     switch("cc", "gcc")
     switch("app", "console")
     switch("cpu", "arm")
     switch("checks", "off")
-    switch("opt", "speed")
-    switch("debuginfo", "off")
-    switch("index", "off")
     switch("threads", "off")
-    switch("stackTrace", "off")
-    switch("lineTrace", "off")
     switch("assertions", "off")
     switch("hotCodeReloading", "off")
-
-    switch("define", "release")
     switch("define", "useMalloc")
 
     let heapSize = 8388208
@@ -49,13 +51,35 @@ when defined(device):
     switch("passC", "-mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -D__FPU_USED=1")
     switch("passC", "-falign-functions=16 -fomit-frame-pointer -gdwarf-2 -fverbose-asm")
     switch("passC", "-ffunction-sections -fdata-sections -mword-relocations -fno-common")
+    # Disabled warnings
+    switch("passC", "-Wno-unused-but-set-variable -Wno-unused-label -Wno-parentheses -Wno-discarded-qualifiers -Wno-array-bounds")
 
     switch("passL", "-nostartfiles")
     switch("passL", "-mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -D__FPU_USED=1")
     switch("passL", "-T" & sdkPath() / "C_API" / "buildsupport" / "link_map.ld")
-    switch("passL", "-Wl,-Map=game.map,--cref,--gc-sections,--no-warn-mismatch,--emit-relocs")
+    switch("passL", "-Wl,-Map=game.map,--cref,--gc-sections,--emit-relocs")
     switch("passL", "--entry eventHandlerShim")
-    switch("passL", "-lrdimon -lc -lm -lgcc -lnosys")
+    switch("passL", "-lc -lm -lgcc")
+    # Disabled warnings
+    switch("passL", "-Wl,--no-warn-rwx-segments")
+
+    if defined(release):
+        switch("define", "release")
+        switch("opt", "speed")
+        switch("debuginfo", "off")
+        switch("index", "off")
+        switch("stackTrace", "off")
+        switch("lineTrace", "off")
+        switch("passC", "--specs=nosys.specs")
+        switch("passL", "-lnosys --specs=nosys.specs")
+    else:
+        switch("define", "debug")
+        switch("opt", "none")
+        switch("debuginfo", "on")
+        switch("index", "on")
+        switch("stackTrace", "on")
+        switch("lineTrace", "on")
+        switch("passL", "-lrdimon --specs=rdimon.specs")
 
 when defined(simulator):
     switch("define", "simulator")
@@ -68,8 +92,12 @@ when defined(simulator):
         switch("passL", "-arch x86_64 -arch arm64")
     elif defined(linux):
         switch("cc", "gcc")
+        switch("passC", "-fPIC")
+        switch("passL", "-fPIC")
     elif defined(windows):
-        switch("cc", "mingw")
+        switch("define", "mingw")
+        switch("cc", "gcc")
+        switch("passC", "-D_WINDLL=1")
     
     switch("checks", "on")
     switch("index", "on")
@@ -88,5 +116,7 @@ when defined(simulator):
     switch("passC", "-Wstrict-prototypes")
 
 # Add extra files to compile last, so that 
-# they get compiled in the correct nimcache folder
-switch("compile", sdkPath() / "C_API" / "buildsupport" / "setup.c")
+# they get compiled in the correct nimcache folder.
+# Windows doesn't like having setup.c compiled.
+if defined(device) or not defined(windows):
+    switch("compile", sdkPath() / "C_API" / "buildsupport" / "setup.c")

@@ -1,4 +1,4 @@
-import sequtils, strutils, os
+import sequtils, strutils, os, strformat
 
 import utils
 
@@ -10,13 +10,14 @@ when not compiles(task):
 
 proc bundlePDX() =
     ## Bundles the pdx file
-    exec(pdcPath() & " -sdkpath " & sdkPath() & " source playdate")
+    exec(pdcPath() & " --verbose -sdkpath " & sdkPath() & " source playdate")
 
 proc postBuild(target: Target) =
+    ## Performs post-build cleanup and prepares files for bundling.
     case target:
         of simulator:
             if defined(windows):
-                mvFile(projectName(), "source" / "pdex.dll")
+                mvFile(projectName() & ".exe", "source" / "pdex.dll")
             elif defined(macosx):
                 mvFile(projectName(), "source" / "pdex.dylib")
                 rmDir("source" / "pdex.dSYM")
@@ -24,29 +25,34 @@ proc postBuild(target: Target) =
             elif defined(linux):
                 mvFile(projectName(), "source" / "pdex.so")
         of device:
-            mvFile(projectName(), "source" / "pdex.elf")
+            if defined(windows):
+                mvFile(projectName() & ".exe", "source" / "pdex.elf")
+            else:
+                mvFile(projectName(), "source" / "pdex.elf")
             rmFile("game.map")
 
 
 task clean, "Clean the project files and folders":
     let args = taskArgs("clean")
-    
-    if args.contains("--simulator"):
-        rmDir(nimcacheDir() / $Target.simulator)
-        rmDir("build" / $Target.simulator)
+    # Used to remove debug (_d) and release (_r) cache folders.
+    let baseCacheDir = nimcacheDir()[0..^2]
+    if args.contains("simulator"):
+        rmDir((baseCacheDir & "d") / $Target.simulator)
+        rmDir((baseCacheDir & "r") / $Target.simulator)
         rmDir("source" / "pdex.dSYM")
         rmFile("source" / "pdex.dylib")
         rmFile("source" / "pdex.dll")
         rmFile("source" / "pdex.so")
-    elif args.contains("--device"):
-        rmDir(nimcacheDir() / $Target.device)
-        rmDir("build" / $Target.device)
+    elif args.contains("device"):
+        rmDir((baseCacheDir & "d") / $Target.device)
+        rmDir((baseCacheDir & "r") / $Target.device)
         rmFile("source" / "pdex.bin")
         rmFile("source" / "pdex.elf")
     else:
+        rmDir((baseCacheDir & "d"))
+        rmDir((baseCacheDir & "r"))
         rmDir(nimcacheDir())
         rmDir(pdxName())
-        rmDir("build")
         rmDir("source" / "pdex.dSYM")
         rmFile("source" / "pdex.bin")
         rmFile("source" / "pdex.dylib")
@@ -55,7 +61,11 @@ task clean, "Clean the project files and folders":
         rmFile("source" / "pdex.elf")
 
 task simulator, "Build for the simulator":
-    nimble "-d:simulator", "build", "--verbose"
+    let args = taskArgs("simulator")
+    if args.contains("release"):
+        nimble "-d:simulator", "-d:release", "build", "--verbose"
+    else:
+        nimble "-d:simulator", "-d:debug", "build", "--verbose"
     postBuild(Target.simulator)
     bundlePDX()
 
@@ -64,14 +74,25 @@ task simulate, "Build and run in the simulator":
     exec (simulatorPath(open = true) & " " & pdxName())
 
 task device, "Build for the device":
-    nimble "-d:device", "build", "--verbose"
+    let args = taskArgs("device")
+    if args.contains("debug"):
+        nimble "-d:device", "-d:debug", "build", "--verbose"
+    else:
+        nimble "-d:device", "-d:release", "build", "--verbose"
     postBuild(Target.device)
     bundlePDX()
 
 task all, "Build for both the simulator and the device":
-    nimble "-d:simulator", "build", "--verbose"
+    let args = taskArgs("all")
+    var simulatorBuild = "debug"
+    var deviceBuild = "release"
+    if args.contains("debug"):
+        deviceBuild = "debug"
+    elif args.contains("release"):
+        simulatorBuild = "release"
+    nimble "-d:simulator", fmt"-d:{simulatorBuild}", "build", "--verbose"
     postBuild(Target.simulator)
-    nimble "-d:device", "build", "--verbose"
+    nimble "-d:device", fmt"-d:{deviceBuild}", "build", "--verbose"
     postBuild(Target.device)
     bundlePDX()
 
