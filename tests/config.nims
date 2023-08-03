@@ -1,10 +1,19 @@
-import os
+# Hack to pretend this is not a lib, the config file checks if test is declared.
+proc test*() = discard
+include ../src/playdate/build/config
 
-import ../src/playdate/build/utils
-
-switch("compileOnly", "off")
-switch("noMain", "off")
-switch("path", "$projectDir/../src")
-switch("passC", "-I" & sdkPath() & "/C_API -DTARGET_EXTENSION=1")
-switch("define", "simulator")
-switch("nimcache", nimcacheDir() / "simulator")
+# if headless testing, switch noMain off to include required symbols.
+if defined(simulator):
+    switch("noMain", "off")
+# Make the tests use the local playdate package.
+switch("path", projectDir() / ".." / "src")
+# This tests package fakes it's not a lib but it actually is.
+if defined(simulator):
+    switch("passL", "-shared")
+# Reset the os to its real value to make the tests run.
+if defined(windows):
+    switch("os", "windows")
+elif defined(macosx):
+    switch("os", "macosx")
+elif defined(linux):
+    switch("os", "linux")

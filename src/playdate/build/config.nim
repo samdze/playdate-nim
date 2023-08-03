@@ -9,10 +9,14 @@ import utils
 when not compiles(task):
     import system/nimscript
 
+const headlessTesting = defined(simulator) and declared(test)
+const nimbleTesting = not defined(simulator) and not defined(devide) and declared(test)
+const testing = headlessTesting or nimbleTesting
 
+if not testing:
+    switch("noMain", "on")
 switch("backend", "c")
 switch("mm", "arc")
-switch("noMain", "on")
 switch("os", "any")
 switch("parallelBuild", "0") # Auto-detect
 switch("hint", "CC:on")
@@ -82,7 +86,9 @@ when defined(device):
 when defined(simulator):
     switch("define", "simulator")
     switch("nimcache", nimcacheDir() / "simulator")
-    switch("app", "lib")
+    if not testing:
+        # Switching to a lib build makes tests not work.
+        switch("app", "lib")
     
     if defined(macosx):
         switch("cc", "clang")
@@ -113,8 +119,42 @@ when defined(simulator):
     switch("passC", "-DTARGET_SIMULATOR=1")
     switch("passC", "-Wstrict-prototypes")
 
-# Add extra files to compile last, so that 
-# they get compiled in the correct nimcache folder.
-# Windows doesn't like having setup.c compiled.
-if defined(device) or not defined(windows):
-    switch("compile", sdkPath() / "C_API" / "buildsupport" / "setup.c")
+if nimbleTesting:
+    # Compiling for tests.
+    switch("define", "simulator")
+    switch("nimcache", nimcacheDir() / "simulator")
+    
+    if defined(macosx):
+        switch("cc", "clang")
+        switch("passC", "-arch x86_64 -arch arm64")
+        switch("passL", "-arch x86_64 -arch arm64")
+    elif defined(linux):
+        switch("cc", "gcc")
+        switch("passC", "-fPIC")
+        switch("passL", "-fPIC")
+    elif defined(windows):
+        switch("define", "mingw")
+        switch("cc", "gcc")
+        switch("passC", "-D_WINDLL=1")
+    
+    switch("checks", "on")
+    switch("index", "on")
+    switch("debuginfo", "on")
+    switch("stackTrace", "on")
+    switch("lineTrace", "on")
+    switch("lineDir", "on")
+    switch("debugger", "native")
+    switch("opt", "none")
+
+    switch("define", "debug")
+    switch("define", "nimAllocPagesViaMalloc")
+    switch("define", "nimPage256")
+
+    switch("passC", "-DTARGET_SIMULATOR=1")
+    switch("passC", "-Wstrict-prototypes")
+else:
+    # Add extra files to compile last, so that 
+    # they get compiled in the correct nimcache folder.
+    # Windows doesn't like having setup.c compiled.
+    if defined(device) or not defined(windows):
+        switch("compile", sdkPath() / "C_API" / "buildsupport" / "setup.c")
