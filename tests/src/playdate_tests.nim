@@ -1,5 +1,5 @@
 ##
-## This file is the primary entry poit for running the tests inside the simulator.
+## This file is the primary entry point for running the tests inside the simulator.
 ## It requires that we spin up the full Lua runtime, as that allows us to then
 ## exit from the simulator.
 ##
