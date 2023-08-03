@@ -31,7 +31,7 @@ This package is an independent bindings library, not affiliated with Panic.
 ### Prerequisites
 
 - Playdate SDK
-- Nim 1.6.10+ (check with `nim -v`)
+- Nim 1.6.10+ (check with `nim -v`, untested with 2.0+)
 - Nimble 0.13.1 (check with `nimble -v`)
 - `PLAYDATE_SDK_PATH` environment variable
 - [SDK Prerequisites](https://sdk.play.date/Inside%20Playdate%20with%20C.html#_prerequisites) based on OS, and [MinGW on Windows](https://code.visualstudio.com/docs/cpp/config-mingw).
@@ -114,7 +114,25 @@ nimble simulate
 
 The example project `playdate_example` also contains VSCode launch configurations to build, start and debug your Nim application from the editor.
 
-Each project contains a `config.nims` file that can be edited to customize how the project should be built, e.g. adding libraries or other external code.
+Each project contains a `config.nims` file that can be edited to customize how the project should be built, e.g. adding libraries or other external code.<br>
+Here's an example of a `config.nims` that links a pre-built static library called chipmunk:
+```nim
+include playdate/build/config
+
+# Add a search path for libraries based on OS.
+if defined(device):
+    switch("passL", "-L" & getCurrentDir() / "lib" / "device")
+elif defined(windows):
+    switch("passL", "-L" & getCurrentDir() / "lib" / "windows")
+elif defined(macosx):
+    switch("passL", "-L" & getCurrentDir() / "lib" / "macos")
+elif defined(linux):
+    switch("passL", "-L" & getCurrentDir() / "lib" / "linux")
+else:
+    echo "Platform not supported!"
+# Link the chipmunk library.
+switch("passL", "-lchipmunk")
+```
 
 ---
 This project is perfectly usable but do note that it's still a work in progress, here's what is missing right now:
