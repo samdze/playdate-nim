@@ -10,6 +10,7 @@ Playdate Nim bindings, aiming to provide:
 
 The main takeaway is that, while this is to some extent a 1 to 1 mapping of the C API, it also adds extra features such as reference counted memory, OOP syntax, many other nice to haves and enhanced developer experience.
 
+The bindings are perfectly usable but a few breaking changes are expected on the road to v1.0.
 <hr>
 
 Here's a quick comparison between the main languages usable on the Playdate:
@@ -135,7 +136,7 @@ switch("passL", "-lchipmunk")
 ```
 
 ---
-This project is perfectly usable but do note that it's still a work in progress, here's what is missing right now:
+This project is a work in progress, here's what is missing right now:
 - various playdate.sound funcionalities (but FilePlayer and SamplePlayer are available)
 - playdate.json, but you can use Nim std/json, which is very convenient
 - playdate.lua, interfacing with Lua and providing classes/functions
