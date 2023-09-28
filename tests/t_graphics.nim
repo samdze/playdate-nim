@@ -1,4 +1,4 @@
-import unittest, playdate/api
+import unittest, playdate/api, strutils
 
 
 proc execGraphicsTests*(runnable: bool) =
@@ -50,6 +50,41 @@ proc execGraphicsTests*(runnable: bool) =
             if runnable:
                 let img = playdate.graphics.newBitmap(10, 10, kColorWhite)
                 discard playdate.graphics.createPattern(img, 0, 0)
+
+        test "Bitmaps should be loadable from files":
+            if runnable:
+                let img = playdate.graphics.newBitmap("boxes.png")
+
+                let expect = join(@[
+                    "          ",
+                    "  ███░░░  ",
+                    "  █░░██░  ",
+                    "  █░░██░  ",
+                    "  █░░██░  ",
+                    "  █░░██░  ",
+                    "  █░░██░  ",
+                    "  █░░██░  ",
+                    "  ███░░░  ",
+                    "          \n",
+                ], "\n")
+
+                check($(img) == expect)
+
+        test "Creating bitmaps programaticlly":
+            if runnable:
+                var img = playdate.graphics.newBitmap(2, 2, kColorWhite)
+                img.set(0, 0, kColorWhite)
+                img.set(1, 0, kColorBlack)
+                check($img == "░█\n░░\n")
+
+        test "Creating bitmaps programaticlly with clear pixels":
+            if runnable:
+                var img = playdate.graphics.newBitmap(2, 2, kColorWhite)
+                discard img.setBitmapMask()
+                img.set(0, 0, kColorWhite)
+                img.set(1, 0, kColorBlack)
+                img.set(0, 1, kColorClear)
+                check($img == "░█\n ░\n")
 
 when isMainModule:
     # We can't run these methods from the tests, so we're only interested in

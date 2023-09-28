@@ -348,13 +348,39 @@ proc drawRotated*(this: LCDBitmap, x: int, y: int, rotation: float, centerX: flo
     playdate.graphics.drawRotatedBitmap(this.resource, x.cint, y.cint, rotation.cfloat, centerX.cfloat, centerY.cfloat,
         xScale.cfloat, yScale.cfloat)
 
-proc setBitmapMask*(this: LCDBitmap, mask: LCDBitmap): int =
+proc width*(this: LCDBitmap): int = this.getData.width
+
+proc height*(this: LCDBitmap): int = this.getData.height
+
+proc setBitmapMask*(
+    this: LCDBitmap,
+    mask: LCDBitmap = playdate.graphics.newBitmap(this.width, this.height, kColorWhite)
+): int =
     privateAccess(PlaydateGraphics)
     return playdate.graphics.setBitmapMask(this.resource, mask.resource).int
 
 proc getBitmapMask*(this: LCDBitmap): LCDBitmap =
     privateAccess(PlaydateGraphics)
     return LCDBitmap(resource: playdate.graphics.getBitmapMask(this.resource), free: false) # Who should manage this memory? Not clear. Not auto-managed right now.
+
+proc get*(this: LCDBitmap, x, y: int): LCDSolidColor =
+    ## Reads the color of a bitmap, taking into account the color mask
+    if this.getBitmapMask.resource != nil and this.getBitmapMask.getData.get(x, y) == kColorBlack:
+        return kColorClear
+    else:
+        return this.getData.get(x, y)
+
+proc set*(this: var LCDBitmap, x, y: int, color: LCDSolidColor = kColorBlack) =
+    ## Reads the color of a bitmap, taking into account the color mask
+    if color == kColorClear:
+        var mask = this.getBitmapMask.getData
+        mask.set(x, y, kColorBlack)
+    else:
+        if this.getBitmapMask.resource != nil:
+            var mask = this.getBitmapMask.getData
+            mask.set(x, y, kColorWhite)
+        var data = this.getData
+        data.set(x, y, color)
 
 proc setStencilImage*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, tile: bool) =
     privateAccess(PlaydateGraphics)
@@ -364,3 +390,14 @@ proc makeFont*(this: LCDFontData, wide: bool): LCDFont =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
     return LCDFont(resource: playdate.graphics.makeFontFromData(this, if wide: 1 else: 0))
+
+proc `$`*(view: BitmapView | LCDBitmap): string =
+    ## Render a string version of a bitmap view
+    for y in 0..<view.height:
+        for x in 0..<view.width:
+            case view.get(x, y)
+            of kColorBlack: result.add("█")
+            of kColorWhite: result.add("░")
+            of kColorClear: result.add(" ")
+            of kColorXOR: result.add("X")
+        result.add("\n")
