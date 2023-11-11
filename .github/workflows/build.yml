@@ -102,6 +102,7 @@ jobs:
         mkdir -p "$PD_INI_DIR"
         export PD_INI_FILE="$PD_INI_DIR/Playdate Simulator.ini"
         echo "ShowPerfWarning=0" > $PD_INI_FILE
+        echo "ShowElist=0" >> $PD_INI_FILE
         echo "LastRelease=$(cat PlaydateSDK-*/VERSION.txt)" >> $PD_INI_FILE
 
     - name: Run headless test
