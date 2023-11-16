@@ -140,9 +140,39 @@ else:
 switch("passL", "-lchipmunk")
 ```
 
+## Interoperability with Lua
+
+Nim can be used together with Lua.
+There are two ways you can use Nim and Lua in the same project:
+1. The main loop is defined in Nim, but you want to call a few Lua functions.
+2. The main loop is defined in Lua, but you want to call Nim functions.
+
+Either way, you can provide Lua with your Nim functions during Lua initialization:
+```nim
+proc nimInsideLua(state: LuaStatePtr): cint {.cdecl, raises: [].} = ...
+
+# Application entrypoint and event handler
+proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
+    if event == kEventInitLua: # Lua initialization event
+        # Add a function `nimInsideLua` to the Lua environment
+        playdate.lua.addFunction(nimInsideLua, "nimInsideLua")
+        # If you want to use Nim to define the main loop, set the update callback
+        playdate.system.setUpdateCallback(update)
+```
+
+Calling a Lua function from Nim:
+```nim
+try:
+    # Push the argument first 
+    playdate.lua.pushInt(5)
+    playdate.lua.callFunction("funcWithOneArgument", 1)
+except:
+    playdate.system.logToConsole(getCurrentExceptionMsg())
+```
+
 ---
 This project is a work in progress, here's what is missing right now:
 - various playdate.sound funcionalities (but FilePlayer and SamplePlayer are available)
 - playdate.json, but you can use Nim std/json, which is very convenient
-- playdate.lua, interfacing with Lua and providing classes/functions
+- advanced playdate.lua features, but basic Lua interop is available
 - playdate.scoreboards, undocumented even in the official C API docs
