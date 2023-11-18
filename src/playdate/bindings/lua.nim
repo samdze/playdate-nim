@@ -4,7 +4,7 @@ import sprite {.all.}
 import types
 
 type
-    LuaStatePtr* = pointer
+    LuaStatePtr* {.importc: "lua_State*".} = object
     LuaNimFunction* = proc (L: LuaStatePtr): cint {.cdecl, raises: [].}
     LuaUDObject* {.importc: "LuaUDObject", header: "pd_api.h", bycopy.} = object
 

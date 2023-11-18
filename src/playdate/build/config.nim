@@ -17,7 +17,6 @@ if not testing:
     switch("noMain", "on")
 switch("backend", "c")
 switch("mm", "arc")
-switch("os", "any")
 switch("parallelBuild", "0") # Auto-detect
 switch("hint", "CC:on")
 
@@ -36,6 +35,7 @@ switch("passC", "-Wdouble-promotion")
 switch("passC", "-I" & sdkPath() / "C_API")
 
 when defined(device):
+    switch("os", "any")
     switch("gcc.options.always", "")
 
     switch("nimcache", nimcacheDir() / "device")
@@ -47,6 +47,7 @@ when defined(device):
     switch("assertions", "off")
     switch("hotCodeReloading", "off")
     switch("define", "useMalloc")
+    switch("define", "standalone")
 
     let heapSize = 8388208
     let stackSize = 61800

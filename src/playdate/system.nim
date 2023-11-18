@@ -190,3 +190,9 @@ proc removeAllMenuItems*(this: ptr PlaydateSys) =
 proc getReduceFlashing* (this: ptr PlaydateSys): bool =
     privateAccess(PlaydateSys)
     return this.getReduceFlashing() == 1
+
+
+import std/random
+
+proc randomize*(this: ptr PlaydateSys) =
+    randomize(this.getSecondsSinceEpoch().milliseconds.int64)

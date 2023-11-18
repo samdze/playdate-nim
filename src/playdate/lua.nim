@@ -119,5 +119,4 @@ proc callFunction*(this: ptr PlaydateLua, name: string, argsCount: int = 0) {.ra
     var err: ConstChar = nil
     var success = this.callFunction(name.cstring, argsCount.cint, addr(err))
     if success == 0:
-        playdate.system.logToConsole(err)
         raise newException(LuaError, $err)

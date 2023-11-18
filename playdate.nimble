@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.11.0"
+version       = "0.11.2"
 author        = "Samuele Zolfanelli"
 description   = "Playdate Nim bindings with extra features."
 license       = "MIT"
