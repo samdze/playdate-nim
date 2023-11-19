@@ -130,7 +130,7 @@ type BitmapData* = ref object
 proc index(x, y, rowbytes: int): int = y * rowbytes + x div 8
     ## Returns the index of an (x, y) coordinate in a flattened array.
 
-template read(bitmap: BitmapData, x, y: int): untyped =
+template read*(bitmap: BitmapData, x, y: int): untyped =
     ## Read a pixel from a bitmap.
     assert(bitmap.data != nil)
     bitmap.data[index(x, y, bitmap.rowbytes)]
