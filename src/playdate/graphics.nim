@@ -1,6 +1,6 @@
 {.push raises: [].}
 
-import std/importutils
+import std/[importutils, bitops]
 
 import system
 import bindings/[api, types]
@@ -401,3 +401,54 @@ proc `$`*(view: BitmapView | LCDBitmap): string =
             of kColorClear: result.add(" ")
             of kColorXOR: result.add("X")
         result.add("\n")
+
+template eachBitInRow(bitmap: var BitmapData, y, rowWordCount: int, exec: untyped) =
+    ## Utility template used by `setMany` that handles iteration over the words in a row of pixels
+    for relativeWordId in 0..<rowWordCount:
+
+        # The index of the word within the final image
+        let wordId = (y * bitmap.rowbytes) + relativeWordId
+
+        # The actual bits in the word. Start by reading the current value of the word so that XOR works
+        var word {.inject.} = bitmap.data[wordId]
+
+        for relX in 0..<8:
+            let x {.inject.} = (relativeWordId * 8) + relX
+
+            # The coordinate of the bit to manipulate within the word
+            let bitId {.inject.} = 7 - relX
+
+            exec
+
+        bitmap.data[wordId] = word
+
+proc setMany*[W: static int](this: var LCDBitmap, pixels: openarray[array[W, LCDSolidColor]]) =
+    ## Bulk sets an array of pixels. This is faster than individual pixel setting because it allows all the bounds
+    ## checks to be done once.
+
+    static:
+        # Making the array width divisible by 8 means we don't need to do more complicated logic in our loop to
+        # ensure we're careful about the size of the word. This also matches how Playdate works internally, as it
+        # buffers the rows in its bitmaps to align them correclty.
+        assert(W mod 8 == 0, "Pixel width must be divisible by 8, but was " & $W)
+
+    var data = this.getData
+    var mask = if this.getBitmapMask.resource == nil: nil else: this.getBitmapMask.getData
+
+    # The number of 8 bit words in each row
+    let rowWordCount = min(data.width + 7, W) div 8
+
+    for y in 0..<min(data.height, pixels.len):
+        data.eachBitInRow(y, rowWordCount):
+            case pixels[y][x]
+            of kColorBlack: word.clearBit(bitId)
+            of kColorWhite: word.setBit(bitId)
+            of kColorClear: assert(mask != nil, "Attempting to set a clear bit on a bitmap without a mask")
+            of kColorXOR: word.flipBit(bitId)
+
+        # Iterate over the mask separately to improve L1 cache hits
+        if mask != nil:
+            mask.eachBitInRow(y, rowWordCount):
+                case pixels[y][x]
+                of kColorBlack, kColorWhite, kColorXOR: word.setBit(bitId)
+                of kColorClear: word.clearBit(bitId)

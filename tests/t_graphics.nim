@@ -86,6 +86,38 @@ proc execGraphicsTests*(runnable: bool) =
                 img.set(0, 1, kColorClear)
                 check($img == "░█\n ░\n")
 
+        test "Bulk setting many pixels":
+            if runnable:
+                var img = playdate.graphics.newBitmap(6, 2, kColorWhite)
+                discard img.setBitmapMask()
+
+                img.setMany([
+                    [ kColorWhite, kColorBlack, kColorClear, kColorXOR, kColorWhite, kColorBlack, kColorClear, kColorXOR, ],
+                    [ kColorBlack, kColorClear, kColorXOR, kColorWhite, kColorBlack, kColorClear, kColorXOR, kColorWhite, ],
+                ])
+
+                check($img == "░█ █░█\n█ █░█ \n")
+
+        test "Bulk setting many pixels without a bit mask":
+            if runnable:
+                var img = playdate.graphics.newBitmap(6, 2, kColorWhite)
+
+                img.setMany([
+                    [ kColorWhite, kColorBlack, kColorXOR, kColorWhite, kColorBlack, kColorXOR, kColorWhite, kColorBlack, ],
+                    [ kColorBlack, kColorXOR, kColorWhite, kColorBlack, kColorXOR, kColorWhite, kColorBlack, kColorWhite, ],
+                ])
+
+                check($img == "░██░██\n██░██░\n")
+
+        test "Setting a clear pixel when there is no bitmask should fail":
+            if runnable:
+                var img = playdate.graphics.newBitmap(6, 2, kColorWhite)
+
+                expect AssertionDefect:
+                    img.setMany([
+                        [ kColorClear, kColorClear, kColorClear, kColorClear, kColorClear, kColorClear, kColorClear, kColorClear, ],
+                    ])
+
 when isMainModule:
     # We can't run these methods from the tests, so we're only interested in
     # whether they compile.
