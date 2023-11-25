@@ -250,7 +250,13 @@ proc getGlyphKerning*(this: LCDFontGlyph, glyphCode: char, nextCode: char): int 
     privateAccess(LCDFontGlyph)
     return playdate.graphics.getGlyphKerning(this.resource, glyphCode.uint32, nextCode.uint32).int
 
-proc getTextWidth*(this: LCDFont, text: string, len: int, encoding: PDStringEncoding, tracking: int): int =
+proc getTextWidth*(
+    this: LCDFont,
+    text: string,
+    len: int = text.len,
+    encoding: PDStringEncoding = kUTF8Encoding,
+    tracking: int = 0
+): int =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
     return playdate.graphics.getTextWidth(this.resource, text.cstring, len.csize_t, encoding, tracking.cint)
