@@ -94,9 +94,14 @@ proc drawScaled*(this: LCDBitmap, x: int, y: int, xScale: float, yScale: float) 
     privateAccess(PlaydateGraphics)
     playdate.graphics.drawScaledBitmap(this.resource, x.cint, y.cint, xScale.cfloat, yScale.cfloat)
 
-proc drawText*(this: ptr PlaydateGraphics, text: string, x: int, y: int): int {.discardable.} =
+proc drawText*(
+    this: ptr PlaydateGraphics;
+    text: string;
+    x, y: int;
+    encoding: PDStringEncoding = kUTF8Encoding
+): int {.discardable.} =
     privateAccess(PlaydateGraphics)
-    return playdate.graphics.drawText(text.cstring, len(text).csize_t, kASCIIEncoding, x.cint, y.cint).int
+    return playdate.graphics.drawText(text.cstring, len(text).csize_t, encoding, x.cint, y.cint).int
 
 proc newBitmap*(this: ptr PlaydateGraphics, width: int, height: int, color: LCDColor): LCDBitmap =
     privateAccess(PlaydateGraphics)
