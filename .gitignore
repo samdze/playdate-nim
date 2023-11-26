@@ -1,6 +1,5 @@
 # Nim bindings
 .nim/
-build/
 nimcache/
 nimblecache/
 htmldocs/
