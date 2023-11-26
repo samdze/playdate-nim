@@ -9,8 +9,9 @@ when not compiles(task):
 
 
 proc bundlePDX() =
-    ## Bundles the pdx file
-    exec(pdcPath() & " --verbose -sdkpath " & sdkPath() & " source playdate")
+    ## Bundles pdx file using parent directory name.
+    exec(pdcPath() & " --verbose -sdkpath " & sdkPath() & " source " &
+      thisDir().splitPath.tail)
 
 proc postBuild(target: Target) =
     ## Performs post-build cleanup and prepares files for bundling.

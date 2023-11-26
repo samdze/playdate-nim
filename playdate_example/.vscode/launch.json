@@ -10,7 +10,7 @@
             "name": "Debug PDX",
             "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator",
             "args": [
-                "${workspaceFolder}/playdate.pdx"
+                "${workspaceFolder}/${workspaceFolderBasename}.pdx"
             ],
             "cwd": "${workspaceFolder}",
             "osx": {
@@ -33,7 +33,7 @@
             "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator",
             "preLaunchTask": "Build Universal PDX",
             "args": [
-                "${workspaceFolder}/playdate.pdx"
+                "${workspaceFolder}/${workspaceFolderBasename}.pdx"
             ],
             "cwd": "${workspaceFolder}",
             "osx": {
@@ -56,7 +56,7 @@
             "program": "${env:PLAYDATE_SDK_PATH}/bin/Playdate Simulator",
             "preLaunchTask": "Build Simulator PDX",
             "args": [
-                "${workspaceFolder}/playdate.pdx"
+                "${workspaceFolder}/${workspaceFolderBasename}.pdx"
             ],
             "cwd": "${workspaceFolder}",
             "osx": {
