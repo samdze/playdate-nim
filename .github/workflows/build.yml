@@ -10,7 +10,7 @@ jobs:
       # prompts so we can do a headless install
     - name: Force non-interactive apt installations
       run: echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-    
+
     - name: Update dependencies
       run: apt-get update
     - name: Install dependencies
@@ -107,4 +107,4 @@ jobs:
 
     - name: Run headless test
       working-directory: ./tests
-      run: xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator playdate.pdx
+      run: xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator tests.pdx
