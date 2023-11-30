@@ -414,6 +414,7 @@ proc `$`*(view: BitmapView | LCDBitmap): string =
         result.add("\n")
 
 import strutils
+import std/strbasics
 
 proc getTextSize*(this: LCDFont, text: string, lineHeightAdjustment: int = 0): tuple[width: int, height: int] =
     let lineHeight = this.getFontHeight().int + lineHeightAdjustment
@@ -489,13 +490,21 @@ proc layoutTextInRect(this: LCDFont, text: string, x, y, width, height: int,
 
     let bottom = y + height
     let lines = text.splitLines(false)
-    var currentLine = ""
     var maxLineWidth = 0
-    var drawY = y
+    var drawY = y - lineHeight
 
-    proc drawAlignedLine(line: string, lineWidth: int) =
+    # There will be many strings manipulations, allocate space to perform them in place.
+    var maxLineLenght = 0
+    for line in lines:
+        maxLineLenght = max(maxLineLenght, line.len)
+    maxLineLenght += truncationString.len
+
+    proc drawAlignedLine(line: var string) =
         ## Draws an aligned line.
+        strbasics.strip(line, false, true)
+        let lineWidth = this.getTextWidth(line)
         maxLineWidth = max(maxLineWidth, lineWidth)
+
         if not draw:
             return
         var drawX = x
@@ -514,99 +523,109 @@ proc layoutTextInRect(this: LCDFont, text: string, x, y, width, height: int,
         var lineWidth = this.getTextWidth(word)
         var truncatedWord = word
 
-        while lineWidth > width and truncatedWord.len >= 1:
+        while lineWidth > width and truncatedWord.len > 0:
             # Remove the last character from the word and retry.
-            truncatedWord = truncatedWord[0..^2]
+            truncatedWord.delete(truncatedWord.len - 1 .. truncatedWord.len - 1)
             lineWidth = this.getTextWidth(truncatedWord)
 
-        drawAlignedLine(truncatedWord, lineWidth)
+        drawAlignedLine(truncatedWord)
         # Return the remaining word.
         return word.substr(truncatedWord.len)
     
-    proc drawLine(line: string) =
-        # Remove trailing whitespaces.
-        let trimmed = line.strip(false, true)
-        drawAlignedLine(trimmed, this.getTextWidth(trimmed))
+    proc drawTruncatedLine(line: var string) =
+        line.add(truncationString)
 
-    proc drawTruncatedLine(line: string) =
-        # Remove trailing whitespaces.
-        var trimmed = line.strip(false, true)
-        var withTruncator = trimmed & truncationString
-
-        while this.getTextWidth(withTruncator) > width and this.getTextWidth(trimmed) > 0:
-            trimmed = trimmed[0..^2]
-            withTruncator = trimmed & truncationString
+        while this.getTextWidth(line) > width and (line.len - truncationString.len) > 0:
+            line.delete((line.len - truncationString.len - 1)..<line.len)
+            line.add(truncationString)
         
-        drawAlignedLine(withTruncator, this.getTextWidth(withTruncator))
+        drawAlignedLine(line)
 
-    let previousFont: LCDFont = if draw: playdate.graphics.getFont() else: nil
-    if draw:
-        playdate.graphics.setFont(this)
-
+    var currentLine = newStringOfCap(maxLineLenght)
     var firstWordInLine = true
     var truncated = false
     block main:
-        for i, line in lines:
+        for line in lines:
+            drawY += lineHeight
             firstWordInLine = true
-            currentLine = ""
+            # Reset the current line to an empty string.
+            if currentLine.len > 0: currentLine.delete(0..<currentLine.len)
 
             for token in line.tokenize():
-                let word = token.token
-                var updatedLine = currentLine & word
+                currentLine.add(token.token)
 
-                let updatedLineWidth = this.getTextWidth(updatedLine)
-                if updatedLineWidth <= width:
-                    currentLine = updatedLine
+                if this.getTextWidth(currentLine) <= width:
                     firstWordInLine = false
                 else:
-                    while this.getTextWidth(updatedLine) > width:
+                    while this.getTextWidth(currentLine) > width:
 
                         let lastLine = (drawY + lineHeight + fontHeight) > bottom
 
                         if lastLine:
-                            drawTruncatedLine(updatedLine)
+                            # There is not vertical space left, truncate the line and break.
+                            drawTruncatedLine(currentLine)
                             truncated = true
                             break main
-                        # If this is the first word of the line, break it, otherwise go to the next line.
+                        # If this is the first word of the line, break it, otherwise just go to the next line.
                         elif firstWordInLine:
                             if token.isSep:
                                 # Reset the current line if the word is just whitespaces.
-                                updatedLine = ""
+                                if currentLine.len > 0: currentLine.delete(0..<currentLine.len)
                             else:
-                                updatedLine = drawTruncatedWord(updatedLine)
+                                let remainingWord = drawTruncatedWord(currentLine)
+                                if currentLine.len > 0: currentLine.delete(0..<currentLine.len)
+                                currentLine.add(remainingWord)
                             # Go to the next line.
                             drawY += lineHeight
                         else:
-                            drawLine(currentLine)
+                            let word = token.token
+                            # Normal line break, draw currentLine without the last word.
+                            # currentLine.setSlice(0..<(currentLine.len - word.len))
+                            currentLine.delete((currentLine.len - word.len)..<currentLine.len)
+
+                            drawAlignedLine(currentLine)
                             drawY += lineHeight
-                            if token.isSep:
-                                # Reset the current line if the word is just whitespaces.
-                                updatedLine = ""
-                            else:
-                                updatedLine = word
+
+                            if currentLine.len > 0: currentLine.delete(0..<currentLine.len)
+                            if not token.isSep:
+                                currentLine.add(word)
                             # We're at the first word in the line again.
                             firstWordInLine = true
-                        currentLine = updatedLine
+                    
                     if not token.isSep:
                         firstWordInLine = false
 
-            if currentLine.strip.len > 0:
-                drawAlignedLine(currentLine, this.getTextWidth(currentLine))
-                if i < lines.len - 1:
-                    drawY += lineHeight
+            if not currentLine.isEmptyOrWhitespace():
+                drawAlignedLine(currentLine)
     
-    if draw:
-        playdate.graphics.setFont(previousFont)
     return TextInRectResult(width: maxLineWidth, height: drawY - y + fontHeight, textWasTruncated: truncated)
 
 proc drawTextInRect*(this: LCDFont, text: string, x, y, width, height: int,
     lineHeightAdjustment: int = 0, truncationString: string = "...", alignment: TextAlignment = kTextAlignmentLeft
 ): TextInRectResult {.discardable.} =
+    let previousFont: LCDFont = playdate.graphics.getFont()
+    playdate.graphics.setFont(this)
     
-    return layoutTextInRect(this, text, x, y, width, height, lineHeightAdjustment, truncationString, alignment, true)
+    result = layoutTextInRect(this, text, x, y, width, height, lineHeightAdjustment, truncationString, alignment, true)
+
+    playdate.graphics.setFont(previousFont)
 
 proc getTextSizeInRect*(this: LCDFont, text: string, x, y, width, height: int,
     lineHeightAdjustment: int = 0, truncationString: string = "...", alignment: TextAlignment = kTextAlignmentLeft
 ): TextInRectResult =
     
     return layoutTextInRect(this, text, x, y, width, height, lineHeightAdjustment, truncationString, alignment, false)
+
+proc drawTextInRect*(this: ptr PlaydateGraphics, text: string, x, y, width, height: int,
+    lineHeightAdjustment: int = 0, truncationString: string = "...", alignment: TextAlignment = kTextAlignmentLeft
+): TextInRectResult {.discardable.} =
+    assert(this.getFont() != nil)
+
+    return layoutTextInRect(this.getFont(), text, x, y, width, height, lineHeightAdjustment, truncationString, alignment, true)
+
+proc getTextSizeInRect*(this: ptr PlaydateGraphics, text: string, x, y, width, height: int,
+    lineHeightAdjustment: int = 0, truncationString: string = "...", alignment: TextAlignment = kTextAlignmentLeft
+): TextInRectResult =
+    assert(this.getFont() != nil)
+
+    return layoutTextInRect(this.getFont(), text, x, y, width, height, lineHeightAdjustment, truncationString, alignment, false)
