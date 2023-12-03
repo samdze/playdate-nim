@@ -23,31 +23,34 @@ macro initSDK*() =
             handler(event, arg)
             return 0
 
-when not defined(simulator):
-    proc fini() {.cdecl, exportc: "_fini".} =
-        discard
+# when not defined(simulator):
+#     proc fini() {.cdecl, exportc: "_fini".} =
+#         discard
 
-when not defined(simulator) and defined(release):
-    proc close(file: cint): cint {.cdecl, exportc: "_close".} =
-        return -1
+# when not defined(simulator) and defined(release):
+    # proc realloc_r(reent: pointer, aptr: pointer, bytes: csize_t): pointer {.cdecl, exportc: "_realloc_r".} =
+    #     return nil
 
-    proc fstat(file: cint, st: pointer): cint {.cdecl, exportc: "_fstat".} =
-        return -1
+#     proc close(file: cint): cint {.cdecl, exportc: "_close".} =
+#         return -1
 
-    proc getpid(): cint {.cdecl, exportc: "_getpid".} =
-        return 1
+#     proc fstat(file: cint, st: pointer): cint {.cdecl, exportc: "_fstat".} =
+#         return -1
 
-    proc isatty(file: cint): cint {.cdecl, exportc: "_isatty".} =
-        return 0
+#     proc getpid(): cint {.cdecl, exportc: "_getpid".} =
+#         return 1
 
-    proc kill(pid, sig: cint): cint {.cdecl, exportc: "_kill".} =
-        return 0
+#     proc isatty(file: cint): cint {.cdecl, exportc: "_isatty".} =
+#         return 0
 
-    proc lseek(file, pos, whence: cint): cint {.cdecl, exportc: "_lseek".} =
-        return -1
+#     proc kill(pid, sig: cint): cint {.cdecl, exportc: "_kill".} =
+#         return 0
 
-    proc read(file: cint, pt: ptr cchar, len: cint): cint {.cdecl, exportc: "_read".} =
-        return 0
+#     proc lseek(file, pos, whence: cint): cint {.cdecl, exportc: "_lseek".} =
+#         return -1
 
-    proc write(handle: cint, data: ptr cchar, size: cint): cint {.cdecl, exportc: "_write".} =
-        return -1
+#     proc read(file: cint, pt: ptr cchar, len: cint): cint {.cdecl, exportc: "_read".} =
+#         return 0
+
+#     proc write(handle: cint, data: ptr cchar, size: cint): cint {.cdecl, exportc: "_write".} =
+#         return -1
