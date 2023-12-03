@@ -156,4 +156,8 @@ sdktype:
             cdecl, raises: [].}               ##  added in 1.10
         setStencilImage {.importc: "setStencilImage".}: proc (sprite: LCDSpritePtr;
             stencil: LCDBitmapPtr; tile: cint) {.cdecl, raises: [].}
+        setCenter {.importc: "setCenter".}: proc (sprite: LCDSpritePtr;
+            x: cfloat; y: cfloat) {.cdecl, raises: [].} ## added in 2.1
+        getCenter {.importc: "getCenter".}: proc (sprite: LCDSpritePtr;
+            x: ptr cfloat; y: ptr cfloat) {.cdecl, raises: [].}
 
