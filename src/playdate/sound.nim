@@ -198,15 +198,15 @@ proc setPaused*(this: SamplePlayer, paused: bool) =
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setPaused(this.resource, if paused: 1 else: 0)
 
-proc `rate=`*(this: SamplePlayer, rate: float) =
+proc `rate=`*(this: SamplePlayer, rate: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setRate(this.resource, rate.cfloat)
 
-proc rate*(this: SamplePlayer): float =
+proc rate*(this: SamplePlayer): float32 =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
-    return playdate.sound.sampleplayer.getRate(this.resource).float
+    return playdate.sound.sampleplayer.getRate(this.resource).float32
 
 # PlaydateSound
 var headphoneChanged: proc(headphone: bool, microphone: bool) = nil
