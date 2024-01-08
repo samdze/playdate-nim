@@ -25,7 +25,7 @@ type PlaydateSoundFileplayer {.importc: "const struct playdate_sound_fileplayer"
     getLength {.importc: "getLength".}: proc (player: FilePlayerPtr): cfloat {.cdecl, raises: [].}
     setOffset {.importc: "setOffset".}: proc (player: FilePlayerPtr; offset: cfloat) {.
         cdecl, raises: [].}
-    # setRate* {.importc: "setRate".}: proc (player: ptr FilePlayer; rate: cfloat) {.cdecl.}
+    # setRate {.importc: "setRate".}: proc (player: FilePlayerPtr; rate: cfloat) {.cdecl.}
     # setLoopRange* {.importc: "setLoopRange".}: proc (player: ptr FilePlayer;
     #     start: cfloat; `end`: cfloat) {.cdecl.}
     # didUnderrun* {.importc: "didUnderrun".}: proc (player: ptr FilePlayer): cint {.cdecl.}
@@ -77,9 +77,9 @@ type PlaydateSoundSampleplayer {.importc: "const struct playdate_sound_samplepla
     getVolume {.importc: "getVolume".}: proc (player: SamplePlayerPtr;
         left: ptr cfloat; right: ptr cfloat) {.cdecl, raises: [].}
     getLength {.importc: "getLength".}: proc (player: SamplePlayerPtr): cfloat {.cdecl, raises: [].}
+    setRate {.importc: "setRate".}: proc (player: SamplePlayerPtr; rate: cfloat) {.cdecl, raises: [].}
+    getRate {.importc: "getRate".}: proc (player: SamplePlayerPtr): cfloat {.cdecl, raises: [].}
     # setOffset* {.importc: "setOffset".}: proc (player: SamplePlayerPtr; offset: cfloat) {.
-    #     cdecl.}
-    # setRate* {.importc: "setRate".}: proc (player: ptr SamplePlayer; rate: cfloat) {.
     #     cdecl.}
     # setPlayRange* {.importc: "setPlayRange".}: proc (player: ptr SamplePlayer;
     #     start: cint; `end`: cint) {.cdecl.}
@@ -88,7 +88,6 @@ type PlaydateSoundSampleplayer {.importc: "const struct playdate_sound_samplepla
     # setLoopCallback* {.importc: "setLoopCallback".}: proc (player: ptr SamplePlayer;
     #     callback: SndCallbackProc) {.cdecl.}
     # getOffset* {.importc: "getOffset".}: proc (player: ptr SamplePlayer): cfloat {.cdecl.}
-    # getRate* {.importc: "getRate".}: proc (player: ptr SamplePlayer): cfloat {.cdecl.}
     setPaused {.importc: "setPaused".}: proc (player: SamplePlayerPtr; flag: cint) {.
         cdecl, raises: [].}
 # type PlaydateSoundSampleplayer* = ptr PlaydateSoundSampleplayerRaw
