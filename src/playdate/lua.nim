@@ -55,11 +55,11 @@ proc getArgBool*(this: ptr PlaydateLua, position: int): bool {.raises: [LuaError
         raise newException(LuaError, "Invalid argument index " & $position & ".")
     return this.getArgBool(position.cint) > 0
 
-proc getArgFloat*(this: ptr PlaydateLua, position: int): float {.raises: [LuaError]} =
+proc getArgFloat*(this: ptr PlaydateLua, position: int): float32 {.raises: [LuaError]} =
     privateAccess(PlaydateLua)
     if position < 1 or position > this.getArgCount():
         raise newException(LuaError, "Invalid argument index " & $position & ".")
-    return this.getArgFloat(position.cint).float
+    return this.getArgFloat(position.cint).float32
 
 proc getArgInt*(this: ptr PlaydateLua, position: int): int {.raises: [LuaError]} =
     privateAccess(PlaydateLua)
@@ -89,7 +89,7 @@ proc pushInt*(this: ptr PlaydateLua, value: int) =
     privateAccess(PlaydateLua)
     this.pushInt(value.cint)
 
-proc pushFloat*(this: ptr PlaydateLua, value: float) =
+proc pushFloat*(this: ptr PlaydateLua, value: float32) =
     privateAccess(PlaydateLua)
     this.pushFloat(value.cfloat)
 

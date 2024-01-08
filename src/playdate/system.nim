@@ -52,11 +52,11 @@ proc getButtonsState* (this: ptr PlaydateSys): tuple[current: PDButtons, pushed:
     this.getButtonState(cast[ptr PDButton](addr(current)), cast[ptr PDButton](addr(pushed)), cast[ptr PDButton](addr(released)))
     return (current: cast[PDButtons](current), pushed: cast[PDButtons](pushed), released: cast[PDButtons](released))
 
-proc getAccelerometer* (this: ptr PlaydateSys): tuple[x: float, y: float, z: float] =
+proc getAccelerometer* (this: ptr PlaydateSys): tuple[x: float32, y: float32, z: float32] =
     privateAccess(PlaydateSys)
     var x, y, z: cfloat
     this.getAccelerometer(addr(x), addr(y), addr(z))
-    return (x: x.float, y: y.float, z: z.float)
+    return (x: x.float32, y: y.float32, z: z.float32)
 
 proc isCrankDocked* (this: ptr PlaydateSys): bool =
     privateAccess(PlaydateSys)
