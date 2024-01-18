@@ -124,7 +124,7 @@ proc getImage*(this: LCDSprite): LCDBitmap =
     privateAccess(PlaydateSprite)
     return this.bitmap
 
-proc setSize*(this: ptr PlaydateSprite, sprite: LCDSprite, width: float32, height: float32) =
+proc setSize*(this: LCDSprite, width: float32, height: float32) =
     privateAccess(PlaydateSprite)
     playdate.sprite.setSize(this.resource, width.cfloat, height.cfloat)
 
