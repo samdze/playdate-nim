@@ -402,12 +402,12 @@ proc setStencilImage*(this: LCDSprite, stencil: LCDBitmap, tile: bool) =
     playdate.sprite.setStencilImage(this.resource, if stencil != nil: stencil.resource else: nil, if tile: 1 else: 0)
     this.stencil = stencil
 
-proc setCenter*(this: LCDSprite, x: float, y: float) =
+proc setCenter*(this: LCDSprite, x: float32, y: float32) =
     privateAccess(PlaydateSprite)
     playdate.sprite.setCenter(this.resource, x.cfloat, y.cfloat)
 
-proc getCenter*(this: LCDSprite): tuple[x: float, y: float] =
+proc getCenter*(this: LCDSprite): tuple[x: float32, y: float32] =
     privateAccess(PlaydateSprite)
     var x, y: cfloat
     playdate.sprite.getCenter(this.resource, addr x, addr y)
-    return (x: x.float, y: y.float)
+    return (x: x.float32, y: y.float32)
