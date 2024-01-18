@@ -308,15 +308,15 @@ proc checkCollisions*(this: LCDSprite, goalX: float32, goalY: float32):
         collisions: cArray
     )
 
-proc moveWithCollisions*(this: LCDSprite, goalX: float32, goalY: float32): tuple[actualX: cfloat, actualY: cfloat, collisions: SDKArray[SpriteCollisionInfo]] =
+proc moveWithCollisions*(this: LCDSprite, goalX: float32, goalY: float32): tuple[actualX: float32, actualY: float32, collisions: SDKArray[SpriteCollisionInfo]] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var actualX, actualY: cfloat
     var collisionsCount: cint
     let collisionPtr = playdate.sprite.moveWithCollisions(this.resource, goalX.cfloat, goalY.cfloat, addr(actualX), addr(actualY), addr(collisionsCount))
     let cArray = SDKArray[SpriteCollisionInfo](len: collisionsCount, data: cast[ptr UncheckedArray[SpriteCollisionInfo]](collisionPtr))
-    return (actualX: actualX,
-        actualY: actualY,
+    return (actualX: actualX.float32,
+        actualY: actualY.float32,
         collisions: cArray
     )
 
