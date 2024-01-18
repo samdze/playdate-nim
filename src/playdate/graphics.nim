@@ -52,12 +52,12 @@ proc renderFrame*(this: LCDVideoPlayer, index: int) {.raises: [CatchableError]} 
     if playdate.graphics.video.renderFrame(this.resource, index.cint) == 0:
         raise newException(CatchableError, $playdate.graphics.video.getError(this.resource))
 
-proc getInfo*(this: LCDVideoPlayer): tuple[width: int, height: int, frameRate: float, frameCount: int, currentFrame: int] =
+proc getInfo*(this: LCDVideoPlayer): tuple[width: int, height: int, frameRate: float32, frameCount: int, currentFrame: int] =
     privateAccess(PlaydateVideo)
     var width, height, frameCount, currentFrame: cint
     var frameRate: cfloat
     playdate.graphics.video.getInfo(this.resource, addr(width), addr(height), addr(frameRate), addr(frameCount), addr(currentFrame))
-    return (width: width.int, height: height.int, frameRate: frameRate.float, frameCount: frameCount.int, currentFrame: currentFrame.int)
+    return (width: width.int, height: height.int, frameRate: frameRate.float32, frameCount: frameCount.int, currentFrame: currentFrame.int)
 
 proc getContext*(this: LCDVideoPlayer): LCDBitmap =
     privateAccess(PlaydateVideo)
@@ -90,7 +90,7 @@ proc drawTiled*(this: LCDBitmap, x: int, y: int, width: int, height: int, flip: 
     privateAccess(PlaydateGraphics)
     playdate.graphics.tileBitmap(this.resource, x.cint, y.cint, width.cint, height.cint, flip)
 
-proc drawScaled*(this: LCDBitmap, x: int, y: int, xScale: float, yScale: float) =
+proc drawScaled*(this: LCDBitmap, x: int, y: int, xScale: float32, yScale: float32) =
     privateAccess(PlaydateGraphics)
     playdate.graphics.drawScaledBitmap(this.resource, x.cint, y.cint, xScale.cfloat, yScale.cfloat)
 
@@ -169,7 +169,7 @@ proc clear*(this: LCDBitmap, color: LCDColor) =
     privateAccess(PlaydateGraphics)
     playdate.graphics.clearBitmap(this.resource, color.convert)
 
-proc rotated*(this: LCDBitmap, rotation: float, xScale: float, yScale: float):
+proc rotated*(this: LCDBitmap, rotation: float32, xScale: float32, yScale: float32):
         tuple[bitmap: LCDBitmap, allocatedSize: int] =
     privateAccess(PlaydateGraphics)
     var allocatedSize: cint
@@ -177,7 +177,7 @@ proc rotated*(this: LCDBitmap, rotation: float, xScale: float, yScale: float):
         addr(allocatedSize)), free: true)
     return (bitmap, allocatedSize.int)
 
-proc rotated*(this: LCDBitmap, rotation: float, scale: float):
+proc rotated*(this: LCDBitmap, rotation: float32, scale: float32):
         tuple[bitmap: LCDBitmap, allocatedSize: int] {.inline.} =
     return this.rotated(rotation, scale, scale)
 
@@ -353,8 +353,8 @@ proc getDisplayBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
     return LCDBitmap(resource: this.getDisplayBufferBitmap(), free: false)
 
-proc drawRotated*(this: LCDBitmap, x: int, y: int, rotation: float, centerX: float, centerY:
-        float, xScale: float, yScale: float) =
+proc drawRotated*(this: LCDBitmap, x: int, y: int, rotation: float32, centerX: float32, centerY:
+        float32, xScale: float32, yScale: float32) =
     privateAccess(PlaydateGraphics)
     playdate.graphics.drawRotatedBitmap(this.resource, x.cint, y.cint, rotation.cfloat, centerX.cfloat, centerY.cfloat,
         xScale.cfloat, yScale.cfloat)

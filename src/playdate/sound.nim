@@ -39,10 +39,10 @@ proc load*(this: AudioSample, path: string) =
     privateAccess(PlaydateSoundSample)
     discard playdate.sound.sample.loadIntoSample(this.resource, path.cstring)
 
-proc getLength*(this: AudioSample): float =
+proc getLength*(this: AudioSample): float32 =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSample)
-    return playdate.sound.sample.getLength(this.resource).float
+    return playdate.sound.sample.getLength(this.resource).float32
 
 # AudioSource
 type SoundSourceObj {.requiresinit.} = object of RootObj
@@ -97,34 +97,34 @@ proc stop*(this: FilePlayer) =
     privateAccess(PlaydateSoundFileplayer)
     playdate.sound.fileplayer.stop(this.resource)
 
-proc volume*(this: FilePlayer): tuple[left: float, right: float] =
+proc volume*(this: FilePlayer): tuple[left: float32, right: float32] =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
     var left, right: cfloat
     playdate.sound.fileplayer.getVolume(this.resource, addr left, addr right)
-    return (left: left.float, right: right.float)
+    return (left: left.float32, right: right.float32)
 
-proc `volume=`*(this: FilePlayer, volume: float) =
+proc `volume=`*(this: FilePlayer, volume: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
     playdate.sound.fileplayer.setVolume(this.resource, volume.cfloat, volume.cfloat)
 
-proc setVolume*(this: FilePlayer, left: float, right: float) =
+proc setVolume*(this: FilePlayer, left: float32, right: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
     playdate.sound.fileplayer.setVolume(this.resource, left.cfloat, right.cfloat)
 
-proc getLength*(this: FilePlayer): float =
+proc getLength*(this: FilePlayer): float32 =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
-    return playdate.sound.fileplayer.getLength(this.resource).float
+    return playdate.sound.fileplayer.getLength(this.resource).float32
 
-proc offset*(this: FilePlayer): float =
+proc offset*(this: FilePlayer): float32 =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
-    return playdate.sound.fileplayer.getOffset(this.resource).float
+    return playdate.sound.fileplayer.getOffset(this.resource).float32
 
-proc `offset=`*(this: FilePlayer, offset: float) =
+proc `offset=`*(this: FilePlayer, offset: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
     playdate.sound.fileplayer.setOffset(this.resource, offset.cfloat)
@@ -161,24 +161,24 @@ proc newSamplePlayer*(this: ptr PlaydateSound, path: string): SamplePlayer {.rai
     result = SamplePlayer(resource: this.sampleplayer.newPlayer())
     result.`sample=`(this.newAudioSample(path))
 
-proc volume*(this: SamplePlayer): tuple[left: float, right: float] =
+proc volume*(this: SamplePlayer): tuple[left: float32, right: float32] =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     var left, right: cfloat
     playdate.sound.sampleplayer.getVolume(this.resource, addr left, addr right)
-    return (left: left.float, right: right.float)
+    return (left: left.float32, right: right.float32)
 
-proc `volume=`*(this: SamplePlayer, volume: float) =
+proc `volume=`*(this: SamplePlayer, volume: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setVolume(this.resource, volume.cfloat, volume.cfloat)
 
-proc setVolume*(this: SamplePlayer, left: float, right: float) =
+proc setVolume*(this: SamplePlayer, left: float32, right: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setVolume(this.resource, left.cfloat, right.cfloat)
 
-proc play*(this: SamplePlayer, repeat: int, rate: float) =
+proc play*(this: SamplePlayer, repeat: int, rate: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     discard playdate.sound.sampleplayer.play(this.resource, repeat.cint, rate.cfloat)
@@ -198,15 +198,15 @@ proc setPaused*(this: SamplePlayer, paused: bool) =
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setPaused(this.resource, if paused: 1 else: 0)
 
-proc `rate=`*(this: SamplePlayer, rate: float) =
+proc `rate=`*(this: SamplePlayer, rate: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setRate(this.resource, rate.cfloat)
 
-proc rate*(this: SamplePlayer): float =
+proc rate*(this: SamplePlayer): float32 =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
-    return playdate.sound.sampleplayer.getRate(this.resource).float
+    return playdate.sound.sampleplayer.getRate(this.resource).float32
 
 # PlaydateSound
 var headphoneChanged: proc(headphone: bool, microphone: bool) = nil

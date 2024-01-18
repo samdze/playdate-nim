@@ -124,7 +124,7 @@ proc getImage*(this: LCDSprite): LCDBitmap =
     privateAccess(PlaydateSprite)
     return this.bitmap
 
-proc setSize*(this: ptr PlaydateSprite, sprite: LCDSprite, width: float, height: float) =
+proc setSize*(this: ptr PlaydateSprite, sprite: LCDSprite, width: float32, height: float32) =
     privateAccess(PlaydateSprite)
     this.setSize(sprite.resource, width.cfloat, height.cfloat)
 
@@ -233,11 +233,11 @@ proc setDrawFunction*(this: LCDSprite, draw: LCDSpriteDrawFunction) =
 
 
 
-proc getPosition*(this: LCDSprite): tuple[x: float, y: float] =
+proc getPosition*(this: LCDSprite): tuple[x: float32, y: float32] =
     privateAccess(PlaydateSprite)
     var x, y: cfloat
     playdate.sprite.getPosition(this.resource, addr(x), addr(y))
-    return (x: x.float, y: y.float)
+    return (x: x.float32, y: y.float32)
 
 
 proc `collideRect=`*(this: LCDSprite, collideRect: PDRect) =
@@ -295,20 +295,20 @@ proc other*(this: SpriteCollisionInfo): LCDSprite =
 # proc `=destroy`(this: var SeqSpriteCollisionInfo) =
 #     discard utils.realloc(this.resource, 0)
 
-proc checkCollisions*(this: LCDSprite, goalX: float, goalY: float):
-        tuple[actualX: float, actualY: float, collisions: SDKArray[SpriteCollisionInfo]] =
+proc checkCollisions*(this: LCDSprite, goalX: float32, goalY: float32):
+        tuple[actualX: float32, actualY: float32, collisions: SDKArray[SpriteCollisionInfo]] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var actualX, actualY: cfloat
     var collisionsCount: cint
     let collisionPtr = playdate.sprite.checkCollisions(this.resource, goalX.cfloat, goalY.cfloat, addr(actualX), addr(actualY), addr(collisionsCount))
     let cArray = SDKArray[SpriteCollisionInfo](len: collisionsCount, data: cast[ptr UncheckedArray[SpriteCollisionInfo]](collisionPtr))
-    return (actualX: actualX.float,
-        actualY: actualY.float,
+    return (actualX: actualX.float32,
+        actualY: actualY.float32,
         collisions: cArray
     )
 
-proc moveWithCollisions*(this: LCDSprite, goalX: float, goalY: float): tuple[actualX: cfloat, actualY: cfloat, collisions: SDKArray[SpriteCollisionInfo]] =
+proc moveWithCollisions*(this: LCDSprite, goalX: float32, goalY: float32): tuple[actualX: cfloat, actualY: cfloat, collisions: SDKArray[SpriteCollisionInfo]] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var actualX, actualY: cfloat
@@ -320,7 +320,7 @@ proc moveWithCollisions*(this: LCDSprite, goalX: float, goalY: float): tuple[act
         collisions: cArray
     )
 
-proc querySpritesAtPoint*(this: ptr PlaydateSprite, x, y: float): seq[LCDSprite] =
+proc querySpritesAtPoint*(this: ptr PlaydateSprite, x, y: float32): seq[LCDSprite] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var length: cint
@@ -332,7 +332,7 @@ proc querySpritesAtPoint*(this: ptr PlaydateSprite, x, y: float): seq[LCDSprite]
         result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
         i *= 1
 
-proc querySpritesInRect*(this: ptr PlaydateSprite, x, y, width, height: float): seq[LCDSprite] =
+proc querySpritesInRect*(this: ptr PlaydateSprite, x, y, width, height: float32): seq[LCDSprite] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var length: cint
@@ -344,7 +344,7 @@ proc querySpritesInRect*(this: ptr PlaydateSprite, x, y, width, height: float): 
         result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
         i *= 1
 
-proc querySpritesAlongLine*(this: ptr PlaydateSprite, x1, y1, x2, y2: float): seq[LCDSprite] =
+proc querySpritesAlongLine*(this: ptr PlaydateSprite, x1, y1, x2, y2: float32): seq[LCDSprite] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var length: cint
@@ -356,7 +356,7 @@ proc querySpritesAlongLine*(this: ptr PlaydateSprite, x1, y1, x2, y2: float): se
         result[i] = cast[ptr DoublyLinkedNodeObj[LCDSprite]](playdate.sprite.getUserdata(spr)).value
         i *= 1
 
-proc querySpriteInfoAlongLine*(this: ptr PlaydateSprite, x1, y1, x2, y2: float): SDKArray[SpriteQueryInfo] =
+proc querySpriteInfoAlongLine*(this: ptr PlaydateSprite, x1, y1, x2, y2: float32): SDKArray[SpriteQueryInfo] =
     privateAccess(PlaydateSprite)
     privateAccess(SDKArray)
     var length: cint
