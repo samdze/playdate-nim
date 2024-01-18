@@ -37,6 +37,9 @@ This package is an independent bindings library, not affiliated with Panic.
 - `PLAYDATE_SDK_PATH` environment variable
 - [SDK Prerequisites](https://sdk.play.date/Inside%20Playdate%20with%20C.html#_prerequisites) based on OS, and [MinGW on Windows](https://code.visualstudio.com/docs/cpp/config-mingw).
 
+Make sure the `gcc-arm-none-eabi` toolchain being used is the one shipped with the Playdate SDK.
+If you're using a package manager like Homebrew, another `gcc-arm-none-eabi` installation could shadow the SDK toolchain.
+
 ### Installation
 
 You can quickly start using the bindings opening the `playdate_example` project included in this repository.<br>
