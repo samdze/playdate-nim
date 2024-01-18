@@ -11,7 +11,7 @@ func toNimSymbol(typeSymbol: string): string =
         of "cstring":
             return "string"
         of "cfloat":
-            return "float"
+            return "float32"
         of "csize_t":
             return "uint"
         of "RawLCDColor":
