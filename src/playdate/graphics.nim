@@ -181,6 +181,10 @@ proc rotated*(this: LCDBitmap, rotation: float32, scale: float32):
         tuple[bitmap: LCDBitmap, allocatedSize: int] {.inline.} =
     return this.rotated(rotation, scale, scale)
 
+proc tileBitmap*(this: LCDBitmap, x: int, y: int, width: int, height: int, flip: LCDBitmapFlip) =
+    privateAccess(PlaydateGraphics)
+    playdate.graphics.tileBitmap(this.resource, x.cint, y.cint, width.cint, height.cint, flip)
+
 type LCDBitmapTableObj = object
     resource: LCDBitmapTablePtr
 proc `=destroy`(this: var LCDBitmapTableObj) =
