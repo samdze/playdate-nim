@@ -10,6 +10,8 @@ when not compiles(task):
 
 proc bundlePDX() =
     ## Bundles pdx file using parent directory name.
+    echo("pdc version:")
+    exec(pdcPath() & " --version")
     exec(pdcPath() & " --verbose -sdkpath " & sdkPath() & " source " &
       thisDir().splitPath.tail)
 
