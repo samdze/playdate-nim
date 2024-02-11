@@ -98,7 +98,7 @@ jobs:
       # alert from showing in the first place
     - name: Create simulator ini
       run: |
-        export PD_INI_DIR="$HOME/.Playdate Simulator"
+        export PD_INI_DIR="$HOME/.config/Playdate Simulator"
         mkdir -p "$PD_INI_DIR"
         export PD_INI_FILE="$PD_INI_DIR/Playdate Simulator.ini"
         echo "ShowPerfWarning=0" > $PD_INI_FILE
