@@ -69,7 +69,7 @@ echo 'include playdate/build/config' > config.nims;
 4. Finally, run this command to setup the structure of the project, which prepares your application to be compiled and bundled correctly:
 
 ```
-nimble setup
+nimble configure
 ```
 
 ## Usage

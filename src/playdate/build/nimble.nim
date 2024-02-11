@@ -103,7 +103,7 @@ task all, "Build for both the simulator and the device":
     postBuild(Target.device)
     bundlePDX()
 
-task setup, "Initialize the build structure":
+task configure, "Initialize the build structure":
     ## Creates a default source directory if it doesn't already exist
 
     # Calling `sdkPath` will ensure the SDK environment variable is saved

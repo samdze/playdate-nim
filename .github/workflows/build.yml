@@ -30,7 +30,7 @@ jobs:
       run: |
         export PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d));
         cd playdate_example;
-        nimble setup;
+        nimble playdateSetup;
     - name: Install dependencies
       working-directory: ./playdate_example
       run: nimble install --depsOnly --accept
@@ -87,7 +87,7 @@ jobs:
       run: |
         export PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d));
         cd tests;
-        nimble setup;
+        nimble playdateSetup;
 
     - name: Compile for simulator
       working-directory: ./tests
