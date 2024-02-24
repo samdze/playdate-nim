@@ -42,6 +42,13 @@ proc stat*(this: ptr PlaydateFile, path: string): FileStat {.raises: [IOError]} 
         raise newException(IOError, $playdate.file.geterr())
     return info
 
+proc exists*(this: ptr PlaydateFile, path: string): bool =
+  try:
+    discard this.stat(path) # if stat() doesn't throw, the file exists
+    true
+  except:
+    false
+
 proc unlink*(this: ptr PlaydateFile, path: string, recursive: bool) {.raises: [IOError]} =
     privateAccess(PlaydateFile)
     let res = this.unlink(path.cstring, if recursive: 1 else: 0)
