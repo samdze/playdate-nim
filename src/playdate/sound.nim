@@ -1,6 +1,7 @@
 {.push raises: [].}
 
 import std/importutils
+import tables
 import bindings/sound
 import bindings/api
 import system
@@ -16,9 +17,17 @@ type
         resource: AudioSamplePtr
     AudioSample* = ref AudioSampleObj
 
+    PDSoundCallbackFunction* = proc() {.raises: [].}
+
+var
+  ## Finish callbacks for sound sources (FilePlayer, SamplePlayer)
+  soundCallbackMap: Table[SoundSourcePtr, PDSoundCallbackFunction] = initTable[SoundSourcePtr, PDSoundCallbackFunction]()
+
+
 proc `=destroy`(this: var AudioSampleObj) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSample)
+    soundCallbackMap.del(this.resource)
     playdate.sound.sample.freeSample(this.resource)
 
 proc newAudioSample*(this: ptr PlaydateSound, bytes: int32): AudioSample =
@@ -207,6 +216,25 @@ proc rate*(this: SamplePlayer): float32 =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     return playdate.sound.sampleplayer.getRate(this.resource).float32
+
+proc privateFinishCallback(soundSource: SoundSourcePtr) {.cdecl, raises: [].} =
+    try: 
+        soundCallbackMap[soundSource]()
+    except:
+        echo "No finish callback for sound source pointer " & repr(soundSource)
+
+proc setFinishCallback*(this: SamplePlayer, callback: PDSoundCallbackFunction) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSampleplayer)
+    try:
+      if callback == nil:
+          soundCallbackMap.del(this.resource)
+          playdate.sound.sampleplayer.setFinishCallback(this.resource, nil)
+      else:
+        soundCallbackMap[this.resource] = callback
+        playdate.sound.sampleplayer.setFinishCallback(this.resource, privateFinishCallback)
+    except:
+        echo "Error setting finish callback"
 
 # PlaydateSound
 var headphoneChanged: proc(headphone: bool, microphone: bool) = nil
