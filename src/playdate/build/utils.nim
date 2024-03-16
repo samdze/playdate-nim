@@ -23,7 +23,7 @@ proc nimble*(args: varargs[string]) =
 
 proc pdxName*(): string =
     ## The name of the pdx file to generate
-    projectName() & ".pdx"
+    projectDir() & ".pdx"
 
 proc sdkPath*(): string =
     ## Returns the path of the playdate SDK
