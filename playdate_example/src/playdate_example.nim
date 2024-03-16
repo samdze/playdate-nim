@@ -19,18 +19,18 @@ var y = int(LCD_ROWS / 2) + 32
 
 proc update(): int =
     # playdate is the global PlaydateAPI instance, available when playdate/api is imported
-    let buttonsState = playdate.system.getButtonsState()
+    let buttonState = playdate.system.getButtonState()
 
-    if kButtonRight in buttonsState.current:
+    if kButtonRight in buttonState.current:
         x += 10
-    if kButtonLeft in buttonsState.current:
+    if kButtonLeft in buttonState.current:
         x -= 10
-    if kButtonUp in buttonsState.current:
+    if kButtonUp in buttonState.current:
         y -= 10
-    if kButtonDown in buttonsState.current:
+    if kButtonDown in buttonState.current:
         y += 10
 
-    if kButtonA in buttonsState.pushed:
+    if kButtonA in buttonState.pushed:
         samplePlayer.play(1, 1.0)
 
     let goalX = x.toFloat
