@@ -1,4 +1,3 @@
-import bindings/utils
 
 type SDKArrayObj[T] = object
     len: int
@@ -7,7 +6,7 @@ type SDKArray*[T] = ref SDKArrayObj[T]
 
 proc `=destroy`*[T](this: var SDKArrayObj[T]) =
     if this.data != nil:
-        discard utils.realloc(this.data, 0)
+        deallocImpl(this.data)
 
 proc `[]`*[T](this: SDKArray[T]; i: Natural): lent T =
     assert i < this.len
