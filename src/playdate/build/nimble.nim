@@ -34,8 +34,7 @@ proc postBuild(target: Target) =
                 mvFile(projectName(), "source" / "pdex.elf")
             rmFile("game.map")
 
-
-task clean, "Clean the project files and folders":
+before clean:
     let args = taskArgs("clean")
     # Used to remove debug (_d) and release (_r) cache folders.
     let baseCacheDir = nimcacheDir()[0..^2]
