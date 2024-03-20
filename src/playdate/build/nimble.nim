@@ -34,8 +34,7 @@ proc postBuild(target: Target) =
                 mvFile(projectName(), "source" / "pdex.elf")
             rmFile("game.map")
 
-
-task clean, "Clean the project files and folders":
+before clean:
     let args = taskArgs("clean")
     # Used to remove debug (_d) and release (_r) cache folders.
     let baseCacheDir = nimcacheDir()[0..^2]
@@ -103,7 +102,7 @@ task all, "Build for both the simulator and the device":
     postBuild(Target.device)
     bundlePDX()
 
-task setup, "Initialize the build structure":
+task configure, "Initialize the build structure":
     ## Creates a default source directory if it doesn't already exist
 
     # Calling `sdkPath` will ensure the SDK environment variable is saved
