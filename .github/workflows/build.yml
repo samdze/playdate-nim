@@ -4,13 +4,16 @@ jobs:
 
   example-project:
     runs-on: ubuntu-latest
-    container: nimlang/nim
+    container: nimlang/choosenim
     strategy:
       matrix:
         target: [ device, simulator ]
+        nim-version: [ 1.6.16, 2.0.2 ]
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/build-setup
+      with:
+        nim-version: ${{ matrix.nim-version }}
     - uses: ./.github/actions/project-setup
       with:
         working-directory: ./playdate_example
@@ -19,21 +22,31 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    container: nimlang/nim
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        nim-version: [ 1.6.16, 2.0.2 ]
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/build-setup
+      with:
+        nim-version: ${{ matrix.nim-version }}
     - run: nimble test
 
   headless-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    container: nimlang/nim
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        nim-version: [ 1.6.16, 2.0.2 ]
     steps:
 
     - uses: actions/checkout@v3
 
     - uses: ./.github/actions/build-setup
+      with:
+        nim-version: ${{ matrix.nim-version }}
 
     - uses: ./.github/actions/project-setup
       with:
@@ -46,6 +59,7 @@ jobs:
       # of warnings to be emitted. This set of commands sets up a dummy audio sink that silences those warnings.
     - name: Setup audio sink
       run: |
+        export HOME="/config"
         pulseaudio -D --exit-idle-time=-1
         pactl load-module module-null-sink sink_name=SpeakerOutput sink_properties=device.description="Dummy_Output"
 
@@ -57,12 +71,15 @@ jobs:
       # alert from showing in the first place
     - name: Create simulator ini
       run: |
-        export PD_INI_DIR="$HOME/.config/Playdate Simulator"
+        export PD_INI_DIR="/config/.config/Playdate Simulator"
         mkdir -p "$PD_INI_DIR"
         export PD_INI_FILE="$PD_INI_DIR/Playdate Simulator.ini"
         echo "ShowPerfWarning=0" > $PD_INI_FILE
         echo "ShowElist=0" >> $PD_INI_FILE
         echo "LastRelease=$(cat PlaydateSDK-*/VERSION.txt)" >> $PD_INI_FILE
 
-    - run: xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator tests.pdx
+    - name: Run headless test
       working-directory: ./tests
+      run: |
+        export HOME="/config"
+        xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator tests.pdx

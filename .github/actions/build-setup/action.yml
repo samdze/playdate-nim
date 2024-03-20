@@ -1,4 +1,7 @@
 name: Common build setup
+inputs:
+  nim-version:
+    required: true
 runs:
   using: "composite"
   steps:
@@ -6,6 +9,21 @@ runs:
     - name: Git safe directory
       shell: bash
       run: git config --global --add safe.directory "$(pwd)"
+
+    - name: Install Nim
+      shell: bash
+      run: choosenim -y update ${{ inputs.nim-version }}
+
+    - run: nimble --accept refresh
+      shell: bash
+
+    - run: nimble install
+      shell: bash
+
+    - name: Locally publish playdate nimble package
+      shell: bash
+      if: ${{ startsWith(inputs.nim-version, '1.') }}
+      run: nimble develop
 
     # Some of the apt dependencies require input from the installer. This disables those
     # prompts so we can do a headless install
@@ -28,7 +46,3 @@ runs:
     - name: Set PLAYDATE_SDK_PATH
       shell: bash
       run: echo "PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d))" >> "$GITHUB_ENV"
-
-    - name: Locally publish playdate nimble package
-      shell: bash
-      run: nimble develop
