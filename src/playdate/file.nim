@@ -46,7 +46,7 @@ proc exists*(this: ptr PlaydateFile, path: string): bool =
     privateAccess(PlaydateFile)
     var info: FileStat = FileStat()
     let res = this.stat(path.cstring, addr(info[]))
-    return res != 0
+    return res == 0
 
 proc unlink*(this: ptr PlaydateFile, path: string, recursive: bool) {.raises: [IOError]} =
     privateAccess(PlaydateFile)
@@ -127,7 +127,8 @@ proc tell*(this: SDFile): int {.raises: [IOError]} =
 
 proc write*(this: SDFile, buffer: seq[byte], length: uint): int {.raises: [IOError]} =
     privateAccess(PlaydateFile)
-    let res = playdate.file.write(this.resource, unsafeAddr(buffer[0]), length.cuint)
-    if res < 0:
-        raise newException(IOError, $playdate.file.geterr())
-    return res
+    if length > 0:
+        let res = playdate.file.write(this.resource, unsafeAddr(buffer[0]), length.cuint)
+        if res < 0:
+            raise newException(IOError, $playdate.file.geterr())
+        return res
