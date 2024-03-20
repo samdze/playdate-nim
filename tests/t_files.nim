@@ -11,6 +11,11 @@ proc execFilesTest*() =
             var handle = playdate.file.open("test_data.txt", kFileReadData)
             check(handle.readString() == "foo")
 
+        test "Writing strings to files":
+            block:
+                playdate.file.open("test_data.txt", kFileWrite).write("file content")
+            check(playdate.file.open("test_data.txt", kFileReadData).readString() == "file content")
+
         test "Listing files":
             createFile("list_files.txt")
             check("list_files.txt" in playdate.file.listFiles("/"))

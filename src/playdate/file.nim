@@ -111,3 +111,8 @@ proc write*(this: SDFile, buffer: seq[byte], length: uint): int {.raises: [IOErr
     privateAccess(PlaydateFile)
     if length > 0:
         return playdate.file.write(this.resource, unsafeAddr(buffer[0]), length.cuint).requireValidStatus
+
+proc write*(this: SDFile, content: string): int {.raises: [IOError], discardable} =
+    privateAccess(PlaydateFile)
+    if content.len > 0:
+        return playdate.file.write(this.resource, unsafeAddr(content[0]), content.len.cuint).requireValidStatus
