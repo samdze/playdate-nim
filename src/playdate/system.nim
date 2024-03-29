@@ -46,7 +46,7 @@ proc setUpdateCallback*(this: ptr PlaydateSys, update: PDCallbackFunction) =
     this.setUpdateCallback(privateUpdate, playdate)
 # ---
 
-proc getButtonsState* (this: ptr PlaydateSys): tuple[current: PDButtons, pushed: PDButtons, released: PDButtons] =
+proc getButtonState* (this: ptr PlaydateSys): tuple[current: PDButtons, pushed: PDButtons, released: PDButtons] =
     privateAccess(PlaydateSys)
     var current, pushed, released: uint32
     this.getButtonState(cast[ptr PDButton](addr(current)), cast[ptr PDButton](addr(pushed)), cast[ptr PDButton](addr(released)))
