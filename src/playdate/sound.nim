@@ -17,7 +17,7 @@ type
         resource: AudioSamplePtr
     AudioSample* = ref AudioSampleObj
 
-    PDSoundCallbackFunction* = proc() {.raises: [].}
+    PDSoundCallbackFunction* = proc(userData: pointer) {.raises: [].}
 
 var
   ## Finish callbacks for sound sources (FilePlayer, SamplePlayer)
@@ -217,9 +217,9 @@ proc rate*(this: SamplePlayer): float32 =
     privateAccess(PlaydateSoundSampleplayer)
     return playdate.sound.sampleplayer.getRate(this.resource).float32
 
-proc privateFinishCallback(soundSource: SoundSourcePtr) {.cdecl, raises: [].} =
+proc privateFinishCallback(soundSource: SoundSourcePtr, userData: pointer) {.cdecl, raises: [].} =
     try: 
-        soundCallbackMap[soundSource]()
+        soundCallbackMap[soundSource](userData)
     except:
         echo "No finish callback for sound source pointer " & repr(soundSource)
 
@@ -229,10 +229,10 @@ proc setFinishCallback*(this: SamplePlayer, callback: PDSoundCallbackFunction) =
     try:
         if callback == nil:
             soundCallbackMap.del(this.resource)
-            playdate.sound.sampleplayer.setFinishCallback(this.resource, nil)
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, nil, nil)
         else:
             soundCallbackMap[this.resource] = callback
-            playdate.sound.sampleplayer.setFinishCallback(this.resource, privateFinishCallback)
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, privateFinishCallback, nil)
     except:
         echo "Error setting finish callback"
 
