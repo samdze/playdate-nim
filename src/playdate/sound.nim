@@ -227,12 +227,12 @@ proc setFinishCallback*(this: SamplePlayer, callback: PDSoundCallbackFunction) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     try:
-      if callback == nil:
-          soundCallbackMap.del(this.resource)
-          playdate.sound.sampleplayer.setFinishCallback(this.resource, nil)
-      else:
-        soundCallbackMap[this.resource] = callback
-        playdate.sound.sampleplayer.setFinishCallback(this.resource, privateFinishCallback)
+        if callback == nil:
+            soundCallbackMap.del(this.resource)
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, nil)
+        else:
+            soundCallbackMap[this.resource] = callback
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, privateFinishCallback)
     except:
         echo "Error setting finish callback"
 
