@@ -7,7 +7,7 @@ type AudioSamplePtr = pointer
 type SamplePlayerPtr = pointer
 type SoundSourcePtr = pointer
 
-type PDSndCallbackProcRaw {.importc: "sndCallbackProc", header: "pd_api.h".} = proc(soundSource: SoundSourcePtr): void {.cdecl.}
+type PDSndCallbackProcRaw {.importc: "sndCallbackProc", header: "pd_api.h".} = proc(soundSource: SoundSourcePtr, userData: pointer): void {.cdecl.}
 
 
 type PlaydateSoundFileplayer {.importc: "const struct playdate_sound_fileplayer",
@@ -88,7 +88,7 @@ type PlaydateSoundSampleplayer {.importc: "const struct playdate_sound_samplepla
     # setPlayRange* {.importc: "setPlayRange".}: proc (player: ptr SamplePlayer;
     #     start: cint; `end`: cint) {.cdecl.}
     setFinishCallback* {.importc: "setFinishCallback".}: proc (
-        player: SamplePlayerPtr; callback: PDSndCallbackProcRaw) {.cdecl, raises: [].}
+        player: SamplePlayerPtr; callback: PDSndCallbackProcRaw, userData: pointer = nil) {.cdecl, raises: [].}
     # setLoopCallback* {.importc: "setLoopCallback".}: proc (player: ptr SamplePlayer;
     #     callback: SndCallbackProc) {.cdecl.}
     # getOffset* {.importc: "getOffset".}: proc (player: ptr SamplePlayer): cfloat {.cdecl.}
