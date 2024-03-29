@@ -85,8 +85,8 @@ type PlaydateSoundSampleplayer {.importc: "const struct playdate_sound_samplepla
     getRate {.importc: "getRate".}: proc (player: SamplePlayerPtr): cfloat {.cdecl, raises: [].}
     # setOffset* {.importc: "setOffset".}: proc (player: SamplePlayerPtr; offset: cfloat) {.
     #     cdecl.}
-    # setPlayRange* {.importc: "setPlayRange".}: proc (player: ptr SamplePlayer;
-    #     start: cint; `end`: cint) {.cdecl.}
+    setPlayRange* {.importc: "setPlayRange".}: proc (player: SamplePlayerPtr;
+        start: cint; `end`: cint) {.cdecl, raises: [].}
     setFinishCallback* {.importc: "setFinishCallback".}: proc (
         player: SamplePlayerPtr; callback: PDSndCallbackProcRaw) {.cdecl, raises: [].}
     # setLoopCallback* {.importc: "setLoopCallback".}: proc (player: ptr SamplePlayer;

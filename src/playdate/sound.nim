@@ -236,6 +236,11 @@ proc setFinishCallback*(this: SamplePlayer, callback: PDSoundCallbackFunction) =
     except:
         echo "Error setting finish callback"
 
+proc setPlayRange*(this: SamplePlayer, start: int32, `end`: int32) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSampleplayer)
+    playdate.sound.sampleplayer.setPlayRange(this.resource, start.cint, `end`.cint)
+
 # PlaydateSound
 var headphoneChanged: proc(headphone: bool, microphone: bool) = nil
 
