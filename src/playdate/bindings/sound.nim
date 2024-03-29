@@ -92,6 +92,8 @@ type PlaydateSoundSampleplayer {.importc: "const struct playdate_sound_samplepla
     # setLoopCallback* {.importc: "setLoopCallback".}: proc (player: ptr SamplePlayer;
     #     callback: SndCallbackProc) {.cdecl.}
     getOffset* {.importc: "getOffset".}: proc (player: SamplePlayerPtr): cfloat {.cdecl , raises: [].}
+    setOffset {.importc: "setOffset".}: proc (player: SamplePlayerPtr; offset: cfloat) {.
+        cdecl, raises: [].}
     setPaused {.importc: "setPaused".}: proc (player: SamplePlayerPtr; flag: cint) {.
         cdecl, raises: [].}
 # type PlaydateSoundSampleplayer* = ptr PlaydateSoundSampleplayerRaw
