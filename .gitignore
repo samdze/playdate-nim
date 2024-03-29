@@ -56,3 +56,6 @@ $RECYCLE.BIN/
 tests/t_*
 !tests/t_*.*
 tests/playdate_tests
+
+# IntelliJ IDEA
+.idea
