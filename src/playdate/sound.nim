@@ -187,6 +187,11 @@ proc setVolume*(this: SamplePlayer, left: float32, right: float32) =
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setVolume(this.resource, left.cfloat, right.cfloat)
 
+proc offset*(this: SamplePlayer): float32 =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSamplePlayer)
+    return playdate.sound.sampleplayer.getOffset(this.resource).float32
+
 proc play*(this: SamplePlayer, repeat: int, rate: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
