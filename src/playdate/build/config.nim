@@ -1,4 +1,5 @@
-import os
+import os, strutils
+
 when defined(device):
     import strformat
 
@@ -12,6 +13,16 @@ when not compiles(task):
 const headlessTesting = defined(simulator) and declared(test)
 const nimbleTesting = not defined(simulator) and not defined(devide) and declared(test)
 const testing = headlessTesting or nimbleTesting
+
+# Path to the playdate src directory when checked out locally
+const localPlaydatePath = currentSourcePath / "../../../../src"
+
+# The path to the nimble playdate package
+let nimblePlaydatePath =
+    if dirExists(localPlaydatePath / "playdate"):
+        localPlaydatePath
+    else:
+        gorgeEx("nimble path playdate").output.split("\n")[0]
 
 if not testing:
     switch("noMain", "on")
@@ -34,8 +45,12 @@ switch("passC", "-Wno-unknown-pragmas")
 switch("passC", "-Wdouble-promotion")
 switch("passC", "-I" & sdkPath() / "C_API")
 
+switch("os", "any")
+switch("define", "useMalloc")
+switch("define", "standalone")
+switch("threads", "off")
+
 when defined(device):
-    switch("os", "any")
     switch("gcc.options.always", "")
 
     switch("nimcache", nimcacheDir() / "device")
@@ -43,11 +58,8 @@ when defined(device):
     switch("app", "console")
     switch("cpu", "arm")
     switch("checks", "off")
-    switch("threads", "off")
     switch("assertions", "off")
     switch("hotCodeReloading", "off")
-    switch("define", "useMalloc")
-    switch("define", "standalone")
 
     let heapSize = 8388208
     let stackSize = 61800
@@ -114,8 +126,6 @@ when defined(simulator):
     switch("opt", "none")
 
     switch("define", "debug")
-    switch("define", "nimAllocPagesViaMalloc")
-    switch("define", "nimPage256")
 
     switch("passC", "-DTARGET_SIMULATOR=1")
     switch("passC", "-Wstrict-prototypes")
@@ -154,8 +164,11 @@ if nimbleTesting:
     switch("passC", "-DTARGET_SIMULATOR=1")
     switch("passC", "-Wstrict-prototypes")
 else:
-    # Add extra files to compile last, so that 
+    # Add extra files to compile last, so that
     # they get compiled in the correct nimcache folder.
     # Windows doesn't like having setup.c compiled.
     if defined(device) or not defined(windows):
         switch("compile", sdkPath() / "C_API" / "buildsupport" / "setup.c")
+
+    # Overrides the nim memory management code to ensure it uses the playdate allocator
+    patchFile("stdlib", "malloc", nimblePlaydatePath / "playdate/bindings/malloc")
