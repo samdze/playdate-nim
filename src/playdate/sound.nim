@@ -1,6 +1,7 @@
 {.push raises: [].}
 
 import std/importutils
+import tables
 import bindings/sound
 import bindings/api
 import system
@@ -16,9 +17,17 @@ type
         resource: AudioSamplePtr
     AudioSample* = ref AudioSampleObj
 
+    PDSoundCallbackFunction* = proc(userData: pointer) {.raises: [].}
+
+var
+  ## Finish callbacks for sound sources (FilePlayer, SamplePlayer)
+  soundCallbackMap: Table[SoundSourcePtr, PDSoundCallbackFunction] = initTable[SoundSourcePtr, PDSoundCallbackFunction]()
+
+
 proc `=destroy`(this: var AudioSampleObj) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSample)
+    soundCallbackMap.del(this.resource)
     playdate.sound.sample.freeSample(this.resource)
 
 proc newAudioSample*(this: ptr PlaydateSound, bytes: int32): AudioSample =
@@ -178,6 +187,16 @@ proc setVolume*(this: SamplePlayer, left: float32, right: float32) =
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setVolume(this.resource, left.cfloat, right.cfloat)
 
+proc `offset=`*(this: SamplePlayer, offset: float32) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSampleplayer)
+    playdate.sound.sampleplayer.setOffset(this.resource, offset.cfloat)
+
+proc offset*(this: SamplePlayer): float32 =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSamplePlayer)
+    return playdate.sound.sampleplayer.getOffset(this.resource).float32
+
 proc play*(this: SamplePlayer, repeat: int, rate: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
@@ -207,6 +226,30 @@ proc rate*(this: SamplePlayer): float32 =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     return playdate.sound.sampleplayer.getRate(this.resource).float32
+
+proc privateFinishCallback(soundSource: SoundSourcePtr, userData: pointer) {.cdecl, raises: [].} =
+    try: 
+        soundCallbackMap[soundSource](userData)
+    except:
+        echo "No finish callback for sound source pointer " & repr(soundSource)
+
+proc setFinishCallback*(this: SamplePlayer, callback: PDSoundCallbackFunction) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSampleplayer)
+    try:
+        if callback == nil:
+            soundCallbackMap.del(this.resource)
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, nil, nil)
+        else:
+            soundCallbackMap[this.resource] = callback
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, privateFinishCallback, nil)
+    except:
+        echo "Error setting finish callback"
+
+proc setPlayRange*(this: SamplePlayer, start: int32, `end`: int32) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSampleplayer)
+    playdate.sound.sampleplayer.setPlayRange(this.resource, start.cint, `end`.cint)
 
 # PlaydateSound
 var headphoneChanged: proc(headphone: bool, microphone: bool) = nil
