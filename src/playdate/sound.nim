@@ -1,7 +1,6 @@
 {.push raises: [].}
 
 import std/importutils
-import tables
 import bindings/sound
 import bindings/api
 import system
@@ -19,15 +18,9 @@ type
 
     PDSoundCallbackFunction* = proc(userData: pointer) {.raises: [].}
 
-var
-  ## Finish callbacks for sound sources (FilePlayer, SamplePlayer)
-  soundCallbackMap: Table[SoundSourcePtr, PDSoundCallbackFunction] = initTable[SoundSourcePtr, PDSoundCallbackFunction]()
-
-
 proc `=destroy`(this: var AudioSampleObj) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSample)
-    soundCallbackMap.del(this.resource)
     playdate.sound.sample.freeSample(this.resource)
 
 proc newAudioSample*(this: ptr PlaydateSound, bytes: int32): AudioSample =
@@ -56,6 +49,7 @@ proc getLength*(this: AudioSample): float32 =
 # AudioSource
 type SoundSourceObj {.requiresinit.} = object of RootObj
     resource: pointer
+    callback: PDSoundCallbackFunction
 type SoundSource* = ref SoundSourceObj
 
 # FilePlayer
@@ -71,12 +65,12 @@ proc `=destroy`(this: var FilePlayerObj) =
 proc newFilePlayer*(this: ptr PlaydateSound): FilePlayer =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
-    result = FilePlayer(resource: this.fileplayer.newPlayer())
+    result = FilePlayer(resource: this.fileplayer.newPlayer(), callback: nil)
 
 proc newFilePlayer*(this: ptr PlaydateSound, path: string): FilePlayer {.raises: [IOError].} =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
-    result = FilePlayer(resource: this.fileplayer.newPlayer())
+    result = FilePlayer(resource: this.fileplayer.newPlayer(), callback: nil)
     if this.fileplayer.loadIntoPlayer(result.resource, path.cstring) == 0:
         raise newException(IOError, fmt"file {path} not found: No such file")
 
@@ -153,7 +147,7 @@ proc `=destroy`(this: var SamplePlayerObj) =
 proc newSamplePlayer*(this: ptr PlaydateSound): SamplePlayer =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
-    result = SamplePlayer(resource: this.sampleplayer.newPlayer())
+    result = SamplePlayer(resource: this.sampleplayer.newPlayer(), callback: nil)
 
 proc sample*(this: SamplePlayer): AudioSample =
     return this.sample
@@ -167,7 +161,7 @@ proc `sample=`*(this: SamplePlayer, sample: AudioSample) =
 proc newSamplePlayer*(this: ptr PlaydateSound, path: string): SamplePlayer {.raises: [IOError].} =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
-    result = SamplePlayer(resource: this.sampleplayer.newPlayer())
+    result = SamplePlayer(resource: this.sampleplayer.newPlayer(), callback: nil)
     result.`sample=`(this.newAudioSample(path))
 
 proc volume*(this: SamplePlayer): tuple[left: float32, right: float32] =
@@ -227,22 +221,23 @@ proc rate*(this: SamplePlayer): float32 =
     privateAccess(PlaydateSoundSampleplayer)
     return playdate.sound.sampleplayer.getRate(this.resource).float32
 
-proc privateFinishCallback(soundSource: SoundSourcePtr, userData: pointer) {.cdecl, raises: [].} =
-    try: 
-        soundCallbackMap[soundSource](userData)
+proc privateSampleFinishCallback(soundSourcePtr: SoundSourcePtr, userData: pointer) {.cdecl, raises: [].} =
+    try:
+        let samplePlayer = cast[SamplePlayer](userdata)[]
+        if samplePlayer.callback != nil:
+            samplePlayer.callback(userData)
     except:
-        echo "No finish callback for sound source pointer " & repr(soundSource)
+        echo "Error while calling SamplePlayer finish callback"
 
 proc setFinishCallback*(this: SamplePlayer, callback: PDSoundCallbackFunction) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     try:
+        this.callback = callback
         if callback == nil:
-            soundCallbackMap.del(this.resource)
             playdate.sound.sampleplayer.setFinishCallback(this.resource, nil, nil)
         else:
-            soundCallbackMap[this.resource] = callback
-            playdate.sound.sampleplayer.setFinishCallback(this.resource, privateFinishCallback, nil)
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, privateSampleFinishCallback, cast[pointer](this))
     except:
         echo "Error setting finish callback"
 
