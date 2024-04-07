@@ -16,6 +16,8 @@ type
         resource: AudioSamplePtr
     AudioSample* = ref AudioSampleObj
 
+    PDSoundCallbackFunction* = proc(userData: pointer) {.raises: [].}
+
 proc `=destroy`(this: var AudioSampleObj) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSample)
@@ -47,6 +49,7 @@ proc getLength*(this: AudioSample): float32 =
 # AudioSource
 type SoundSourceObj {.requiresinit.} = object of RootObj
     resource: pointer
+    callback: PDSoundCallbackFunction
 type SoundSource* = ref SoundSourceObj
 
 # FilePlayer
@@ -62,12 +65,12 @@ proc `=destroy`(this: var FilePlayerObj) =
 proc newFilePlayer*(this: ptr PlaydateSound): FilePlayer =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
-    result = FilePlayer(resource: this.fileplayer.newPlayer())
+    result = FilePlayer(resource: this.fileplayer.newPlayer(), callback: nil)
 
 proc newFilePlayer*(this: ptr PlaydateSound, path: string): FilePlayer {.raises: [IOError].} =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
-    result = FilePlayer(resource: this.fileplayer.newPlayer())
+    result = FilePlayer(resource: this.fileplayer.newPlayer(), callback: nil)
     if this.fileplayer.loadIntoPlayer(result.resource, path.cstring) == 0:
         raise newException(IOError, fmt"file {path} not found: No such file")
 
@@ -144,7 +147,7 @@ proc `=destroy`(this: var SamplePlayerObj) =
 proc newSamplePlayer*(this: ptr PlaydateSound): SamplePlayer =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
-    result = SamplePlayer(resource: this.sampleplayer.newPlayer())
+    result = SamplePlayer(resource: this.sampleplayer.newPlayer(), callback: nil)
 
 proc sample*(this: SamplePlayer): AudioSample =
     return this.sample
@@ -158,7 +161,7 @@ proc `sample=`*(this: SamplePlayer, sample: AudioSample) =
 proc newSamplePlayer*(this: ptr PlaydateSound, path: string): SamplePlayer {.raises: [IOError].} =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
-    result = SamplePlayer(resource: this.sampleplayer.newPlayer())
+    result = SamplePlayer(resource: this.sampleplayer.newPlayer(), callback: nil)
     result.`sample=`(this.newAudioSample(path))
 
 proc volume*(this: SamplePlayer): tuple[left: float32, right: float32] =
@@ -177,6 +180,16 @@ proc setVolume*(this: SamplePlayer, left: float32, right: float32) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     playdate.sound.sampleplayer.setVolume(this.resource, left.cfloat, right.cfloat)
+
+proc `offset=`*(this: SamplePlayer, offset: float32) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSampleplayer)
+    playdate.sound.sampleplayer.setOffset(this.resource, offset.cfloat)
+
+proc offset*(this: SamplePlayer): float32 =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSamplePlayer)
+    return playdate.sound.sampleplayer.getOffset(this.resource).float32
 
 proc play*(this: SamplePlayer, repeat: int, rate: float32) =
     privateAccess(PlaydateSound)
@@ -207,6 +220,31 @@ proc rate*(this: SamplePlayer): float32 =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundSampleplayer)
     return playdate.sound.sampleplayer.getRate(this.resource).float32
+
+proc privateSampleFinishCallback(soundSourcePtr: SoundSourcePtr, userData: pointer) {.cdecl, raises: [].} =
+    try:
+        let samplePlayer = cast[SamplePlayer](userdata)[]
+        if samplePlayer.callback != nil:
+            samplePlayer.callback(userData)
+    except:
+        echo "Error while calling SamplePlayer finish callback"
+
+proc setFinishCallback*(this: SamplePlayer, callback: PDSoundCallbackFunction) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSampleplayer)
+    try:
+        this.callback = callback
+        if callback == nil:
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, nil, nil)
+        else:
+            playdate.sound.sampleplayer.setFinishCallback(this.resource, privateSampleFinishCallback, cast[pointer](this))
+    except:
+        echo "Error setting finish callback"
+
+proc setPlayRange*(this: SamplePlayer, start: int32, `end`: int32) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundSampleplayer)
+    playdate.sound.sampleplayer.setPlayRange(this.resource, start.cint, `end`.cint)
 
 # PlaydateSound
 var headphoneChanged: proc(headphone: bool, microphone: bool) = nil
