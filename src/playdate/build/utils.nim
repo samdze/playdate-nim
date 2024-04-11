@@ -22,8 +22,8 @@ proc nimble*(args: varargs[string]) =
     exec @["nimble"].concat(args.toSeq).join(" ")
 
 proc pdxName*(): string =
-    ## The name of the pdx file to generate
-    projectDir() & ".pdx"
+    ## The name of the pdx file to generate, same as the project folder name
+    getCurrentDir().splitPath.tail & ".pdx"
 
 proc sdkPath*(): string =
     ## Returns the path of the playdate SDK
