@@ -363,9 +363,9 @@ proc drawRotated*(this: LCDBitmap, x: int, y: int, rotation: float32, centerX: f
     playdate.graphics.drawRotatedBitmap(this.resource, x.cint, y.cint, rotation.cfloat, centerX.cfloat, centerY.cfloat,
         xScale.cfloat, yScale.cfloat)
 
-proc width*(this: LCDBitmap): int = this.getData.width
+proc width*(this: LCDBitmap): int = this.getSize.width
 
-proc height*(this: LCDBitmap): int = this.getData.height
+proc height*(this: LCDBitmap): int = this.getSize.height
 
 proc setBitmapMask*(
     this: LCDBitmap,
