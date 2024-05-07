@@ -126,35 +126,43 @@ proc load*(this: LCDBitmap, path: string) {.raises: [IOError]}  =
     if err != nil:
         raise newException(IOError, $err)
 
-type BitmapData* = ref object
-    width*: int
-    height*: int
-    rowbytes: int
-    data: ptr UncheckedArray[uint8]
+type
+    BitmapDataObj* = object
+        width*: int
+        height*: int
+        rowbytes: int
+        data: ptr UncheckedArray[uint8]
+
+    BitmapData* = ref BitmapDataObj
+
+    AnyBitmapData* = BitmapDataObj | BitmapData
 
 proc index(x, y, rowbytes: int): int = y * rowbytes + x div 8
     ## Returns the index of an (x, y) coordinate in a flattened array.
 
-template read(bitmap: BitmapData, x, y: int): untyped =
+template read(bitmap: AnyBitmapData, x, y: int): untyped =
     ## Read a pixel from a bitmap.
     assert(bitmap.data != nil)
     bitmap.data[index(x, y, bitmap.rowbytes)]
 
-proc getData*(this: LCDBitmap): BitmapData =
+proc getDataObj*(this: LCDBitmap): BitmapDataObj =
     ## Fetch the underlying bitmap data for an image.
     privateAccess(PlaydateGraphics)
     assert(this != nil)
     assert(this.resource != nil)
-    var bitmapData = BitmapData()
     playdate.graphics.getBitmapData(
         this.resource,
-        cast[ptr cint](addr(bitmapData.width)),
-        cast[ptr cint](addr(bitmapData.height)),
-        cast[ptr cint](addr(bitmapData.rowbytes)),
+        cast[ptr cint](addr(result.width)),
+        cast[ptr cint](addr(result.height)),
+        cast[ptr cint](addr(result.rowbytes)),
         nil,
-        cast[ptr ptr uint8](addr(bitmapData.data))
+        cast[ptr ptr uint8](addr(result.data))
     )
-    return bitmapData
+
+proc getData*(this: LCDBitmap): BitmapData =
+    ## Fetch the underlying bitmap data for an image.
+    result = new(BitmapData)
+    result[] = getDataObj(this)
 
 proc getSize*(this: LCDBitmap): tuple[width: int, height: int] =
     privateAccess(PlaydateGraphics)
@@ -274,7 +282,7 @@ type
     DisplayFrame* = distinct ptr array[LCD_ROWSIZE * LCD_ROWS, uint8]
         ## The raw bytes in a display frame buffer.
 
-    BitmapView* = DisplayFrame | BitmapData
+    BitmapView* = DisplayFrame | AnyBitmapData
         ## Types that allow the manipulation of individual pixels.
 
 proc getFrame*(this: ptr PlaydateGraphics): DisplayFrame =
