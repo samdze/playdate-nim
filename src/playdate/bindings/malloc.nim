@@ -43,7 +43,7 @@ proc reallocImpl(p: pointer, newSize: Natural): pointer =
     return pdrealloc(p, newSize.csize_t)
 
 proc realloc0Impl(p: pointer, oldsize, newSize: Natural): pointer =
-    result = realloc(p, newSize.csize_t)
+    result = reallocImpl(p, newSize.csize_t)
     if newSize > oldSize:
         zeroMem(cast[pointer](cast[uint](result) + uint(oldSize)), newSize - oldSize)
 
