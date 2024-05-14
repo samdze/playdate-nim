@@ -3,19 +3,19 @@
 import utils, types
 
 type LCDRect* {.importc: "LCDRect", header: "pd_api.h".} = object
-    left* {.importc.}: int # int32?
-    right* {.importc.}: int
-    top* {.importc.}: int
-    bottom* {.importc.}: int
+    left* {.importc.}: int32
+    right* {.importc.}: int32
+    top* {.importc.}: int32
+    bottom* {.importc.}: int32
 
-proc makeLCDRect*(x: int, y: int, width: int, height: int): LCDRect =
+proc makeLCDRect*(x: int32, y: int32, width: int32, height: int32): LCDRect =
     return LCDRect(left: x, right: x + width, top: y, bottom: y + height)
 
 proc translateLCDRect*(rect: LCDRect, dx: int, dy: int): LCDRect {.importc: "PDStringEncoding", header: "pd_api.h".}
 
-const LCD_COLUMNS*: int = 400
-const LCD_ROWS*: int = 240
-const LCD_ROWSIZE*: int = 52
+const LCD_COLUMNS*: int32 = 400
+const LCD_ROWS*: int32 = 240
+const LCD_ROWSIZE*: int32 = 52
 const LCD_SCREEN_RECT* = makeLCDRect(0, 0, LCD_COLUMNS, LCD_ROWS)
 
 # Enums
