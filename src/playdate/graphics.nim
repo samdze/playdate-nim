@@ -342,7 +342,7 @@ proc createPattern*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, x: int, y: in
 
 import macros
 
-proc fillPolygon*[Int32x2](this: ptr PlaydateGraphics, points: seq[Int32x2], color: LCDColor, fillRule: LCDPolygonFillRule) =
+proc fillPolygon*[Int32x2](this: ptr PlaydateGraphics, points: openArray[Int32x2], color: LCDColor, fillRule: LCDPolygonFillRule) =
     when sizeof(Int32x2) != sizeof(int32) * 2: {.error: "size of points is not sizeof(int32) * 2".}
 
     privateAccess(PlaydateGraphics)

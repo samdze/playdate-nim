@@ -74,6 +74,9 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
         # Errors are handled through exceptions
         try:
             samplePlayer = playdate.sound.newSamplePlayer("/audio/jingle")
+
+            samplePlayer.finishCallback = proc(player: SamplePlayer) =
+                playdate.system.logToConsole("Sound finished playing.")
         except:
             playdate.system.logToConsole(getCurrentExceptionMsg())
         # Inline try/except
