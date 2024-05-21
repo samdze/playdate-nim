@@ -17,6 +17,10 @@
 when defined(memtrace):
     import system/ansi_c
 
+# Forward declaration for memory profiling support
+when defined(memProfiler):
+    proc nimProfile(requestedSize: int)
+
 type PDRealloc = proc (p: pointer; size: csize_t): pointer {.tags: [], raises: [], cdecl, gcsafe.}
 
 var pdrealloc: PDRealloc
@@ -29,6 +33,15 @@ proc setupRealloc*(allocator: PDRealloc) =
 proc allocImpl(size: Natural): pointer =
     when defined(memtrace):
         cfprintf(cstderr, "Allocating %d\n", size)
+
+    # Integrage with: https://nim-lang.org/docs/estp.html
+    when defined(memProfiler):
+        {.cast(tags: []).}:
+            try:
+                nimProfile(size.int)
+            except:
+                discard
+
     result = pdrealloc(nil, size.csize_t)
     when defined(memtrace):
         cfprintf(cstderr, "  At %p\n", result)
