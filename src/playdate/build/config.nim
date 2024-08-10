@@ -80,7 +80,10 @@ when defined(device):
 
     if defined(release):
         switch("define", "release")
-        switch("opt", "speed")
+        # Normally, one would use opt = speed, which implies O3 (optimization level 3),
+        # but O2 outperforms O3 on the Playdate
+        switch("opt", "none")
+        switch("passC", "-O2")
         switch("debuginfo", "off")
         switch("index", "off")
         switch("stackTrace", "off")
