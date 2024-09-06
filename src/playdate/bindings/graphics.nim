@@ -189,6 +189,8 @@ sdktype:
             table: LCDBitmapTablePtr; outerr: ptr cstring) {.cdecl, raises: [].}
         getTableBitmap {.importc: "getTableBitmap".}: proc (table: LCDBitmapTablePtr;
             idx: cint): LCDBitmapPtr {.cdecl, raises: [].}
+        getBitmapTableInfo {.importc: "getBitmapTableInfo".}: proc (table: LCDBitmapTablePtr;
+            outCount: ptr cint; outCellsWide: ptr cint) {.cdecl, raises: [].}
 
         loadFont {.importc: "loadFont".}: proc (path: cstring, outErr: ptr cstring): LCDFontPtr {.cdecl, raises: [].}
 
