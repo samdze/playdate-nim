@@ -16,6 +16,8 @@ jobs:
     - name: Install dependencies
       run: apt-get install -y libpng16-16 gcc-arm-none-eabi
     - uses: actions/checkout@v1
+    - name: Safe git directory
+      run: git config --global --add safe.directory "$(pwd)"
     - name: Download playdate SDK
       run: wget https://download.panic.com/playdate_sdk/Linux/PlaydateSDK-latest.tar.gz
     - name: Extract playdate SDK
@@ -68,6 +70,9 @@ jobs:
 
     - name: Checkout commit
       uses: actions/checkout@v1
+
+    - name: Safe git directory
+      run: git config --global --add safe.directory "$(pwd)"
 
     - name: Download playdate SDK
       run: wget https://download.panic.com/playdate_sdk/Linux/PlaydateSDK-latest.tar.gz
