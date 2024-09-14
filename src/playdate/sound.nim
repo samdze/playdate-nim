@@ -1,6 +1,6 @@
 {.push raises: [].}
 
-import std/importutils
+import std/[importutils, macros]
 import bindings/sound
 import bindings/api
 import system
@@ -295,3 +295,73 @@ proc getHeadphoneState*(this: ptr PlaydateSound): tuple[headphone: bool, microph
 proc setOutputsActive*(this: ptr PlaydateSound, headphone: bool, speaker: bool) =
     privateAccess(PlaydateSound)
     this.setOutputsActive(if headphone: 1 else: 0, if speaker: 1 else: 0)
+
+type
+    SoundSequenceObj = object
+        resource: SoundSequencePtr
+
+    SoundSequence* = ref SoundSequenceObj
+
+proc `=destroy`*(this: var SoundSequenceObj) =
+    privateAccess(PlaydateSoundSequence)
+    playdate.sound.sequence.freeSequence(this.resource)
+
+proc newSequence*(this: ptr PlaydateSoundSequence): SoundSequence =
+    privateAccess(PlaydateSoundSequence)
+    return SoundSequence(resource: this.newSequence())
+
+template checkZero(code: typed) =
+    if code == 0:
+        raise newException(CatchableError, astToStr(code))
+
+proc loadMIDIFile*(this: var SoundSequence, path: string) {.raises: [CatchableError].} =
+    privateAccess(PlaydateSoundSequence)
+    checkZero(playdate.sound.sequence.loadMIDIFile(this.resource, path.cstring))
+
+proc getTime*(this: SoundSequence): uint32 =
+    privateAccess(PlaydateSoundSequence)
+    return playdate.sound.sequence.getTime(this.resource).uint32
+
+proc setTime*(this: SoundSequence, time: uint32) =
+    privateAccess(PlaydateSoundSequence)
+    playdate.sound.sequence.setTime(this.resource, time)
+
+proc setLoops*(this: SoundSequence, loopstart, loopend, loops: int32) =
+    privateAccess(PlaydateSoundSequence)
+    playdate.sound.sequence.setLoops(this.resource, loopstart.cint, loopend.cint, loops.cint)
+
+proc allNotesOff*(this: SoundSequence) =
+    privateAccess(PlaydateSoundSequence)
+    playdate.sound.sequence.allNotesOff(this.resource)
+
+proc isPlaying*(this: SoundSequence): bool =
+    privateAccess(PlaydateSoundSequence)
+    return playdate.sound.sequence.isPlaying(this.resource) == 1
+
+proc getLength*(this: SoundSequence): uint32 =
+    privateAccess(PlaydateSoundSequence)
+    return playdate.sound.sequence.getLength(this.resource).uint32
+
+proc play*(this: SoundSequence, finishCallback: SequenceFinishedCallback = nil) =
+    privateAccess(PlaydateSoundSequence)
+    playdate.sound.sequence.play(this.resource, finishCallback, nil)
+
+proc stop*(this: SoundSequence) =
+    privateAccess(PlaydateSoundSequence)
+    playdate.sound.sequence.stop(this.resource)
+
+proc getCurrentStep*(this: SoundSequence): int32 =
+    privateAccess(PlaydateSoundSequence)
+    return playdate.sound.sequence.getCurrentStep(this.resource, nil).int32
+
+proc setCurrentStep*(this: SoundSequence, step, timeOffset, playNotes: int32) =
+    privateAccess(PlaydateSoundSequence)
+    playdate.sound.sequence.setCurrentStep(this.resource, step.cint, timeOffset.cint, playNotes.cint)
+
+proc getTempo*(this: SoundSequence): float32 =
+    privateAccess(PlaydateSoundSequence)
+    return playdate.sound.sequence.getTempo(this.resource).float32
+
+proc setTempo*(this: SoundSequence, stepsPerSecond: float32) =
+    privateAccess(PlaydateSoundSequence)
+    playdate.sound.sequence.setTempo(this.resource, stepsPerSecond)

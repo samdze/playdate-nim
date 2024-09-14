@@ -5,7 +5,7 @@
 ##
 
 import playdate/api
-import ../[t_buttons, t_graphics, t_nineslice, t_files]
+import ../[t_buttons, t_graphics, t_nineslice, t_files, t_midi]
 
 proc runTests() {.raises: [].} =
     try:
@@ -13,6 +13,7 @@ proc runTests() {.raises: [].} =
         execGraphicsTests(true)
         execNineSliceTests(true)
         execFilesTest()
+        execMidiTests(true)
     except Exception as e:
         quit(e.msg & "\n" & e.getStackTrace)
 
