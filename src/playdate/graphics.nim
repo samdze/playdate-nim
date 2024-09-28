@@ -235,6 +235,12 @@ proc getBitmap*(this: LCDBitmapTable, index: int): LCDBitmap =
         return LCDTableBitmap(resource: resource, free: false, table: this)
     return nil
 
+proc getBitmapTableInfo*(this: LCDBitmapTable): tuple[count: int, cellsWide: int] =
+    privateAccess(PlaydateGraphics)
+    var count, cellsWide: cint
+    playdate.graphics.getBitmapTableInfo(this.resource, addr(count), addr(cellsWide))
+    return (count.int, cellsWide.int)
+
 proc newFont*(this: ptr PlaydateGraphics, path: string): LCDFont {.raises: [IOError]} =
     privateAccess(PlaydateGraphics)
     privateAccess(LCDFont)
