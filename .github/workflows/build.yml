@@ -1,109 +1,77 @@
 name: Build
 on: [push, pull_request]
 jobs:
-  build:
+
+  example-project:
     runs-on: ubuntu-latest
-    container: nimlang/nim
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        target: [ device, simulator ]
+        nim-version: [ 1.6.16, 2.0.2 ]
     steps:
-
-      # Some of the apt dependencies require input from the installer. This disables those
-      # prompts so we can do a headless install
-    - name: Force non-interactive apt installations
-      run: echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-
-    - name: Update dependencies
-      run: apt-get update
-    - name: Install dependencies
-      run: apt-get install -y libpng16-16 gcc-arm-none-eabi
-    - uses: actions/checkout@v1
-    - name: Safe git directory
-      run: git config --global --add safe.directory "$(pwd)"
-    - name: Download playdate SDK
-      run: wget https://download.panic.com/playdate_sdk/Linux/PlaydateSDK-latest.tar.gz
-    - name: Extract playdate SDK
-      run: tar -xvzf PlaydateSDK-latest.tar.gz
-    - name: Local publish playdate
-      run: nimble develop
-    - name: Tests
-      run: |
-        export PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d));
-        nimble test;
-    - name: Setup
-      run: |
-        export PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d));
-        cd playdate_example;
-        nimble setup;
-    - name: Install dependencies
+    - uses: actions/checkout@v3
+    - uses: ./.github/actions/build-setup
+      with:
+        nim-version: ${{ matrix.nim-version }}
+    - uses: ./.github/actions/project-setup
+      with:
+        working-directory: ./playdate_example
+    - run: nimble ${{ matrix.target }}
       working-directory: ./playdate_example
-      run: nimble install --depsOnly --accept
-    - name: Simulator
-      working-directory: ./playdate_example
-      run: nimble simulator
-    - name: Device
-      working-directory: ./playdate_example
-      run: nimble device
 
-  simulate:
+  tests:
+    runs-on: ubuntu-latest
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        nim-version: [ 1.6.16, 2.0.2 ]
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/actions/build-setup
+      with:
+        nim-version: ${{ matrix.nim-version }}
+    - run: nimble test
+
+  headless-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    container: nimlang/nim
-    env:
-      HOME: /config
+    container: nimlang/choosenim
+    strategy:
+      matrix:
+        nim-version: [ 1.6.16, 2.0.2 ]
     steps:
 
-      # Some of the apt dependencies require input from the installer. This disables those
-      # prompts so we can do a headless install
-    - name: Force non-interactive apt installations
-      run: echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+    - uses: actions/checkout@v3
 
-    - name: Update dependencies
-      run: apt-get update
+    - uses: ./.github/actions/build-setup
+      with:
+        nim-version: ${{ matrix.nim-version }}
+
+    - uses: ./.github/actions/project-setup
+      with:
+        working-directory: ./tests
+
     - name: Install dependencies
-      run: apt-get install -y libpng16-16 gcc-arm-none-eabi xvfb libgtk-3-0 sudo libwebkit2gtk-4.0 libwebkit2gtk-4.0-dev libsdl2-dev pulseaudio
+      run: apt-get install -y xvfb libgtk-3-0 sudo libwebkit2gtk-4.0 libwebkit2gtk-4.0-dev libsdl2-dev pulseaudio
 
       # Because we are headless there is no audio driver to interact with by default, which causes a set
       # of warnings to be emitted. This set of commands sets up a dummy audio sink that silences those warnings.
     - name: Setup audio sink
       run: |
+        export HOME="/config"
         pulseaudio -D --exit-idle-time=-1
         pactl load-module module-null-sink sink_name=SpeakerOutput sink_properties=device.description="Dummy_Output"
 
-    - name: Checkout commit
-      uses: actions/checkout@v1
-
-    - name: Safe git directory
-      run: git config --global --add safe.directory "$(pwd)"
-
-    - name: Download playdate SDK
-      run: wget https://download.panic.com/playdate_sdk/Linux/PlaydateSDK-latest.tar.gz
-    - name: Extract playdate SDK
-      run: tar -xvzf PlaydateSDK-latest.tar.gz
-
-    - name: Local publish playdate
-      run: nimble develop
-
-    - name: Install dependencies
+    - run: nimble simulator
       working-directory: ./tests
-      run: nimble install --depsOnly --accept
-
-      # The tests need to be told where the SDK is. Running `setup` with the SDK path configured
-      # will fill that in
-    - name: Setup tests
-      run: |
-        export PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d));
-        cd tests;
-        nimble setup;
-
-    - name: Compile for simulator
-      working-directory: ./tests
-      run: nimble simulator
 
       # The first time the simulator runs, it prompts the user with an alert. Obviously, we're running headless,
       # so this prevents the tests from running without closing that alert. Creating this ini file will stop that
       # alert from showing in the first place
     - name: Create simulator ini
       run: |
-        export PD_INI_DIR="$HOME/.config/Playdate Simulator"
+        export PD_INI_DIR="/config/.config/Playdate Simulator"
         mkdir -p "$PD_INI_DIR"
         export PD_INI_FILE="$PD_INI_DIR/Playdate Simulator.ini"
         echo "ShowPerfWarning=0" > $PD_INI_FILE
@@ -112,4 +80,6 @@ jobs:
 
     - name: Run headless test
       working-directory: ./tests
-      run: xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator tests.pdx
+      run: |
+        export HOME="/config"
+        xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator tests.pdx

@@ -32,7 +32,7 @@ This package is an independent bindings library, not affiliated with Panic.
 ### Prerequisites
 
 - Playdate SDK
-- Nim 1.6.10+ (check with `nim -v`, untested with 2.0+) ([recommended extension for VSCode](https://marketplace.visualstudio.com/items?itemName=nimsaem.nimvscode))
+- Nim 1.6.10+ or Nim 2+ ([recommended extension for VSCode](https://marketplace.visualstudio.com/items?itemName=nimsaem.nimvscode))
 - Nimble 0.13.1 (check with `nimble -v`)
 - `PLAYDATE_SDK_PATH` environment variable
 - [SDK Prerequisites](https://sdk.play.date/Inside%20Playdate%20with%20C.html#_prerequisites) based on OS, and [MinGW on Windows](https://code.visualstudio.com/docs/cpp/config-mingw).
@@ -69,7 +69,7 @@ echo 'include playdate/build/config' > config.nims;
 4. Finally, run this command to setup the structure of the project, which prepares your application to be compiled and bundled correctly:
 
 ```
-nimble setup
+nimble configure
 ```
 
 ## Usage
