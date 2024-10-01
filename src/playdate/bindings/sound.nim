@@ -7,9 +7,10 @@ type AudioSamplePtr = pointer
 type SamplePlayerPtr = pointer
 type SoundSourceRaw {.importc: "SoundSource", header: "pd_api.h".} = object
 type SoundSourcePtr = ptr SoundSourceRaw
-type SoundSequencePtr = pointer
+type SoundSequenceRaw {.importc: "SoundSequence", header: "pd_api.h".} = object
+type SoundSequencePtr = ptr SoundSequenceRaw
 
-type SequenceFinishedCallback = proc(soundSource: SoundSourcePtr, userdata: pointer) {.cdecl.}
+type SequenceFinishedCallback = proc(soundSource: SoundSequencePtr, userdata: pointer) {.cdecl.}
 type PDSndCallbackProcRaw {.importc: "sndCallbackProc", header: "pd_api.h".} = proc(soundSource: SoundSourcePtr, userdata: pointer) {.cdecl.}
 
 

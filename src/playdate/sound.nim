@@ -302,6 +302,8 @@ type
 
     SoundSequence* = ref SoundSequenceObj
 
+    PDSoundSequenceCallbackFunction* = proc(sequence: SoundSequence) {.raises: [].}
+
 proc `=destroy`*(this: var SoundSequenceObj) =
     privateAccess(PlaydateSoundSequence)
     playdate.sound.sequence.freeSequence(this.resource)
