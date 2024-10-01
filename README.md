@@ -32,8 +32,8 @@ This package is an independent bindings library, not affiliated with Panic.
 ### Prerequisites
 
 - Playdate SDK
-- Nim 1.6.10+ or Nim 2+ ([recommended extension for VSCode](https://marketplace.visualstudio.com/items?itemName=nimsaem.nimvscode))
-- Nimble 0.13.1 (check with `nimble -v`)
+- Nim 2+ ([recommended extension for VSCode](https://marketplace.visualstudio.com/items?itemName=NimLang.nimlang))
+- Nimble 0.14.2+ (check with `nimble -v`)
 - `PLAYDATE_SDK_PATH` environment variable
 - [SDK Prerequisites](https://sdk.play.date/Inside%20Playdate%20with%20C.html#_prerequisites) based on OS, and [MinGW on Windows](https://code.visualstudio.com/docs/cpp/config-mingw).
 
@@ -175,7 +175,7 @@ except:
 
 ---
 This project is a work in progress, here's what is missing right now:
-- various playdate.sound funcionalities (but FilePlayer and SamplePlayer are available)
+- various playdate.sound funcionalities (but FilePlayer, SamplePlayer and SoundSequence are available)
 - playdate.json, but you can use Nim std/json, which is very convenient
 - advanced playdate.lua features, but basic Lua interop is available
 - playdate.scoreboards, undocumented even in the official C API docs
