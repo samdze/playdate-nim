@@ -6,6 +6,7 @@ htmldocs/
 src/tests/
 pdex.bin
 *.pdx
+docs
 
 # macOS general
 .DS_Store
