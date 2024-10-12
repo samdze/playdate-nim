@@ -341,7 +341,7 @@ proc set*(view: var BitmapView, x, y: int, color: LCDSolidColor) =
 
 proc getDebugBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.getDebugBitmap(), free: true) # Who should manage this memory? Not clear. Auto-managed.
+    return LCDBitmap(resource: this.getDebugBitmap(), free: false)
 
 proc copyFrameBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
