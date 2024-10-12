@@ -51,6 +51,12 @@ proc execGraphicsTests*(runnable: bool) =
                 let img = playdate.graphics.newBitmap(10, 10, kColorWhite)
                 discard playdate.graphics.createPattern(img, 0, 0)
 
+        test "DebugBitmap should not be freed after use":
+            if runnable:
+                discard playdate.graphics.getDebugBitmap()
+                # if the bitmap was freed, this would crash
+                discard playdate.graphics.getDebugBitmap()
+
         test "Bitmaps should be loadable from files":
             if runnable:
                 let img = playdate.graphics.newBitmap("boxes.png")
