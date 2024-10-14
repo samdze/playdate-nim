@@ -1,4 +1,4 @@
-import unittest, random, algorithm, sequtils, playdate/bindings/sparsemap
+import unittest, random, algorithm, sequtils, playdate/util/sparsemap
 
 proc randomData[T](N: int, maxVal: T): seq[T] =
     result = newSeq[T](N)
