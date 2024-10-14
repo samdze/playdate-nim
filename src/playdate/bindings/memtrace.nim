@@ -269,21 +269,19 @@ proc realloc*(trace: var MemTrace, alloc: Allocator, p: pointer, newSize: Natura
 proc traceDealloc(trace: var MemTrace, alloc: Allocator, p: pointer) {.inline.} =
     trace.check
     let realPointer = p.input
-    let entry = trace.allocs[realPointer.ord]
-    if entry == nil:
+    if realPointer.ord notin trace.allocs:
         cfprintf(cstderr, "Attempting to dealloc unmanaged memory! %p\n", p)
         createStackFrame[STACK_SIZE](getFrame()).printStack()
-        let deleted = trace.deleted[realPointer.ord]
-        if deleted == nil:
+        if realPointer.ord notin trace.deleted:
             trace.printPrior(p)
         else:
-            deleted[].print("Previously deallocated", printMem = false)
+            trace.deleted[realPointer.ord].print("Previously deallocated", printMem = false)
         return
     else:
-        var local = entry[]
+        var local = trace.allocs[realPointer.ord]
         local.stack = createStackFrame[STACK_SIZE](getFrame())
 
-        unprotect(realPointer, entry.realSize)
+        unprotect(realPointer, local.realSize)
         discard alloc(realPointer, 0)
         trace.deleted[realPointer.ord] = local
         trace.allocs.delete(realPointer.ord)
