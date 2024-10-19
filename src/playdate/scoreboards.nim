@@ -19,7 +19,7 @@ type
 
 var privatePersonalBestCallback: PersonalBestCallback
 
-proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: cstring) {.cdecl, raises: [].} =
+proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   privatePersonalBestCallback(cast[PDScore](score), $errorMessage)
 
 # proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 =
