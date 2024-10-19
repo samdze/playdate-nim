@@ -6,8 +6,8 @@ import std/importutils
 import bindings/api
 export api
 
-import graphics, system, file, sprite, display, sound, lua, json, utils, types, nineslice
-export graphics, system, file, sprite, display, sound, lua, json, utils, types, nineslice
+import graphics, system, file, sprite, display, sound, scoreboards, lua, json, utils, types, nineslice
+export graphics, system, file, sprite, display, sound, scoreboards, lua, json, utils, types, nineslice
 
 macro initSDK*() =
     return quote do:
