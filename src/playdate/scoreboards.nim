@@ -57,10 +57,10 @@ proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: 
   privatePersonalBestCallback = callback
   return this.getPersonalBestBinding(boardID.cstring, invokePersonalBestCallback)
 
-proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: int32, callback: AddScoreCallback): int32 =
+proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 =
   privateAccess(PlaydateScoreboards)
   privateAddScoreCallback = callback
-  return this.addScoreBinding(boardID.cstring, value.uint32, invokeAddScoreCallback)
+  return this.addScoreBinding(boardID.cstring, value.cuint, invokeAddScoreCallback)
 
 # proc getScoreboards*(this: ptr PlaydateScoreboards, callback: BoardsListCallback): int32 =
 #   privateAccess(PlaydateScoreboards)
