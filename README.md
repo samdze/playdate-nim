@@ -178,4 +178,3 @@ This project is a work in progress, here's what is missing right now:
 - various playdate.sound funcionalities (but FilePlayer, SamplePlayer and SoundSequence are available)
 - playdate.json, but you can use Nim std/json, which is very convenient
 - advanced playdate.lua features, but basic Lua interop is available
-- playdate.scoreboards, undocumented even in the official C API docs
