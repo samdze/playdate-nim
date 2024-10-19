@@ -12,20 +12,28 @@ export scoreboards
 import bindings/scoreboards {.all.}
 
 type
-  AddScoreCallback* = proc(score: ptr PDScore, errorMessage: string)
-  PersonalBestCallback* = proc(score: ptr PDScore, errorMessage: string)
-  BoardsListCallback* = proc(boards: ptr PDBoardsList, errorMessage: string)
-  ScoresCallback* = proc(scores: ptr PDScoresList, errorMessage: string)
+  # AddScoreCallback* = proc(score: ptr PDScore, errorMessage: string)
+  PersonalBestCallback* = proc(score: PDScore, errorMessage: string)
+  # BoardsListCallback* = proc(boards: ptr PDBoardsList, errorMessage: string)
+  # ScoresCallback* = proc(scores: ptr PDScoresList, errorMessage: string)
 
-proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 =
-  privateAccess(PlaydateScoreboards)
+var privatePersonalBestCallback: PersonalBestCallback
+
+proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: cstring) {.cdecl, raises: [].} =
+  privatePersonalBestCallback(cast[PDScore](score), $errorMessage)
+
+# proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 =
+#   privateAccess(PlaydateScoreboards)
+
 proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 =
   privateAccess(PlaydateScoreboards)
+  privatePersonalBestCallback = callback
+  return this.getPersonalBestBinding(boardID.cstring, invokePersonalBestCallback)
 
 # proc freeScore*(score: ptr PDScore) 
-proc getScoreboards*(this: ptr PlaydateScoreboards, callback: BoardsListCallback): int32 =
-  privateAccess(PlaydateScoreboards)
-# proc freeBoardsList*(boardsList: ptr PDBoardsList) 
-proc getScores*(this: ptr PlaydateScoreboards, boardID: string, callback: ScoresCallback): int32 =
-  privateAccess(PlaydateScoreboards)
-# proc freeScoresList*(scoresList: ptr PDScoresList) 
+# proc getScoreboards*(this: ptr PlaydateScoreboards, callback: BoardsListCallback): int32 =
+#   privateAccess(PlaydateScoreboards)
+# # proc freeBoardsList*(boardsList: ptr PDBoardsList) 
+# proc getScores*(this: ptr PlaydateScoreboards, boardID: string, callback: ScoresCallback): int32 =
+#   privateAccess(PlaydateScoreboards)
+# # proc freeScoresList*(scoresList: ptr PDScoresList) 
