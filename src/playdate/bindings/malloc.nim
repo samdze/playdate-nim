@@ -18,32 +18,9 @@
 when defined(memProfiler):
     proc nimProfile(requestedSize: int)
 
-import memtrace
-import system/ansi_c
-
-type PDRealloc = proc (p: pointer; size: csize_t): pointer {.tags: [], raises: [], cdecl, gcsafe.}
-
-proc nativeAlloc(p: pointer; size: csize_t): pointer {.tags: [], raises: [], cdecl, gcsafe.} =
-    if p == nil:
-        return c_malloc(size)
-    elif size == 0:
-        c_free(p)
-        return nil
-    else:
-        return c_realloc(p, size)
-
-var pdrealloc: PDRealloc
+import ../util/[memtrace, initreqs]
 
 var trace: MemTrace
-
-
-proc setupRealloc*(allocator: PDRealloc) =
-    when defined(memtrace):
-        cfprintf(cstderr, "Setting up playdate allocator")
-    when defined(nativeAlloc):
-        pdrealloc = nativeAlloc
-    else:
-        pdrealloc = allocator
 
 proc allocImpl(size: Natural): pointer =
     # Integrage with: https://nim-lang.org/docs/estp.html

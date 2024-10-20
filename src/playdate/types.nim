@@ -1,4 +1,3 @@
-
 type SDKArrayObj[T] = object
     len: int
     data: ptr UncheckedArray[T]

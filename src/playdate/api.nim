@@ -1,7 +1,7 @@
 {.push raises: [].}
 
 import macros
-import std/importutils
+import std/importutils, util/initreqs
 
 import bindings/api
 export api
@@ -16,8 +16,7 @@ macro initSDK*() =
         proc eventHandler(playdateAPI: ptr PlaydateAPI, event: PDSystemEvent, arg: uint32): cint {.cdecl, exportc.} =
             privateAccess(PlaydateSys)
             if event == kEventInit:
-                when declared(setupRealloc):
-                    setupRealloc(playdateAPI.system.realloc)
+                initPrereqs(playdateAPI.system.realloc, playdateAPI.system.logToConsole)
                 NimMain()
                 api.playdate = playdateAPI
             handler(event, arg)
