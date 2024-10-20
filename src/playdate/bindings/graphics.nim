@@ -1,6 +1,6 @@
 {.push raises: [].}
 
-import utils, types
+import utils, types, ../util/initreqs
 
 type LCDRect* {.importc: "LCDRect", header: "pd_api.h".} = object
     left* {.importc.}: int # int32?
