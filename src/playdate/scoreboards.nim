@@ -38,6 +38,10 @@ proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cd
   if errorMessage != nil:
     privatePersonalBestCallback(PDScore(value: 0, rank: 0, player: ""), $errorMessage)
     return
+
+  if score == nil:
+    privatePersonalBestCallback(PDScore(), "Playdate-nim: No personal best")
+    return
     
   let domainScore = PDScore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)
   playdate.scoreboards.freeScore(score)
