@@ -30,21 +30,22 @@ proc `=destroy`(this: PDSCoreObj) =
   privateAccess(PlaydateScoreboards)
   playdate.scoreboards.freeScore(this.resource)
 
-var privatePersonalBestCallback: PersonalBestCallback
+var privatePersonalBestCallbacks = newSeq[PersonalBestCallback]()
 
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
+  let callback = privatePersonalBestCallbacks.pop() # first in, first out
   if score == nil and errorMessage == nil:
-    privatePersonalBestCallback(nil, "Playdate-nim: No personal best")
+    callback(nil, "Playdate-nim: No personal best")
     return
     
-  privatePersonalBestCallback(PDscore(resource: score), $errorMessage)
+  callback(PDscore(resource: score), $errorMessage)
 
 # proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 =
 #   privateAccess(PlaydateScoreboards)
 
 proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 =
   privateAccess(PlaydateScoreboards)
-  privatePersonalBestCallback = callback
+  privatePersonalBestCallbacks.insert(callback)
   return this.getPersonalBestBinding(boardID.cstring, invokePersonalBestCallback)
 
 # proc getScoreboards*(this: ptr PlaydateScoreboards, callback: BoardsListCallback): int32 =
