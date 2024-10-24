@@ -59,7 +59,7 @@ template invokeCallback(callbackSeqs, value, errorMessage, freeValue, builder, e
     let nimObj = builder(value)
     callback(nimObj, $errorMessage)
   finally:
-    freeValue(score)
+    freeValue(value)
 
 
 proc newPDScore(value: uint32, rank: uint32, player: string): PDScore =
@@ -105,28 +105,24 @@ proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl,
   )
 
 proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
-  privateAccess(PlaydateScoreboards)
-  let callback = privateScoresCallbacks.pop() # first in, first out
-  if scoresList == nil and errorMessage == nil:
-    callback(emptyPDScoresList, "Playdate-nim: No scores")
-    return
+  invokeCallback(
+    callbackSeqs = privateScoresCallbacks,
+    value = scoresList,
+    errorMessage = errorMessage,
+    freeValue = playdate.scoreboards.freeScoresList,
+    builder = proc (scoresList: PDScoresListPtr): PDScoresList =
+      privateAccess(SDKArray)
+      let length = scoresList.count.cint
+      let cArray = SDKArray[PDScoreRaw](data: cast[ptr UncheckedArray[PDScoreRaw]](scoresList.scores), len: length)
+      var scoresSeq = newSeq[PDScore](length)
+      for i in 0 ..< length:
+        let score = cArray[i]
+        scoresSeq[i] = newPDScore(value = score.value.uint32, rank = score.rank.uint32, player = $score.player)
+      cArray.data = nil # no need for SDKArray to free the data, freeScoresList() will do it
 
-  if scoresList == nil:
-    callback(emptyPDScoresList, $errorMessage)
-    return
-
-  privateAccess(SDKArray)
-  let length = scoresList.count.cint
-  let cArray = SDKArray[PDScoreRaw](data: cast[ptr UncheckedArray[PDScoreRaw]](scoresList.scores), len: length)
-  var scoresSeq = newSeq[PDScore](length)
-  for i in 0 ..< length:
-    let score = cArray[i]
-    scoresSeq[i] = newPDScore(value = score.value.uint32, rank = score.rank.uint32, player = $score.player)
-  cArray.data = nil # no need for SDKArray to free the data, freeScoresList() will do it
-
-  let domainObject = newPDScoresList(boardID = $scoresList.boardID, lastUpdated = scoresList.lastUpdated, scores = scoresSeq)
-  callback(domainObject, $errorMessage)
-  playdate.scoreboards.freeScoresList(scoresList)
+      return newPDScoresList(boardID = $scoresList.boardID, lastUpdated = scoresList.lastUpdated, scores = scoresSeq),
+    emptyValue = emptyPDScoresList
+  )
 
 proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   let callback = privateBoardsListCallbacks.pop() # first in, first out
