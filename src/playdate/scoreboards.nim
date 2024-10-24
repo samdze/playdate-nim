@@ -31,7 +31,7 @@ type
   ScoresCallback* = proc(scores: PDScoresList, errorMessage: string)
 
 var privatePersonalBestCallbacks = newSeq[PersonalBestCallback]()
-var privateAddScoreCallback: AddScoreCallback
+var privateAddScoreCallbacks = newSeq[AddScoreCallback]()
 var privateScoresCallbacks = newSeq[ScoresCallback]()
 
 proc newPDScore(value: uint32, rank: uint32, player: string): PDScore =
@@ -59,13 +59,14 @@ proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cd
   callback(domainScore, $errorMessage)
 
 proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
+  let callback = privateAddScoreCallbacks.pop() # first in, first out
   if errorMessage != nil:
-    privateAddScoreCallback(newPDScore(value = 0, rank = 0, player = ""), $errorMessage)
+    callback(newPDScore(value = 0, rank = 0, player = ""), $errorMessage)
     return
     
   let domainScore = newPDScore(value = score.value.uint32, rank = score.rank.uint32, player = $score.player)
   playdate.scoreboards.freeScore(score)
-  privateAddScoreCallback(domainScore, $errorMessage)
+  callback(domainScore, $errorMessage)
 
 proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   privateAccess(PlaydateScoreboards)
@@ -95,12 +96,12 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
 
 proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 =
   privateAccess(PlaydateScoreboards)
-  privatePersonalBestCallbacks.insert(callback)
+  privatePersonalBestCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
   return this.getPersonalBestBinding(boardID.cstring, invokePersonalBestCallback)
 
 proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 =
   privateAccess(PlaydateScoreboards)
-  privateAddScoreCallback = callback
+  privateAddScoreCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
   return this.addScoreBinding(boardID.cstring, value.cuint, invokeAddScoreCallback)
 
 # proc getScoreboards*(this: ptr PlaydateScoreboards, callback: BoardsListCallback): int32 =
@@ -108,5 +109,5 @@ proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, ca
 # # proc freeBoardsList*(boardsList: ptr PDBoardsList) 
 proc getScores*(this: ptr PlaydateScoreboards, boardID: string, callback: ScoresCallback): int32 =
   privateAccess(PlaydateScoreboards)
-  privateScoresCallbacks.insert(callback)
+  privateScoresCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
   return this.getScoresBinding(boardID.cstring, invokeScoresCallback)
