@@ -130,7 +130,7 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
     freeValue = playdate.scoreboards.freeScoresList,
     builder = proc (scoresList: PDScoresListPtr): PDScoresList =
       privateAccess(SDKArray)
-      var scoresSeq = seqBuilder[PDScoreRaw, PDScore](
+      var scoresSeq = seqBuilder(
         rawField = scoresList.scores,
         itemBuilder = scoreBuilder
       )
@@ -147,7 +147,7 @@ proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstCh
     freeValue = playdate.scoreboards.freeBoardsList,
     builder = proc (boardsList: PDBoardsListPtr): PDBoardsList =
       privateAccess(SDKArray)
-      var boardsSeq = seqBuilder[PDBoardRaw, PDBoard](
+      var boardsSeq = seqBuilder(
       rawField = cast[ptr UncheckedArray[PDBoardRaw]](boardsList.boards),
       itemBuilder = proc (board: PDBoardRaw): PDBoard =
         newPDBoard(boardID = $board.boardID, name = $board.name)
