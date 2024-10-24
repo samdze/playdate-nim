@@ -125,28 +125,24 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
   )
 
 proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
-  let callback = privateBoardsListCallbacks.pop() # first in, first out
-  if boardsList == nil and errorMessage == nil:
-    callback(emptyPDBoardsList, "Playdate-nim: No boards")
-    return
+  invokeCallback(
+    callbackSeqs = privateBoardsListCallbacks,
+    value = boardsList,
+    errorMessage = errorMessage,
+    freeValue = playdate.scoreboards.freeBoardsList,
+    builder = proc (boardsList: PDBoardsListPtr): PDBoardsList =
+      privateAccess(SDKArray)
+      let length = boardsList.count.cint
+      let cArray = SDKArray[PDBoardRaw](data: cast[ptr UncheckedArray[PDBoardRaw]](boardsList.boards), len: length)
+      var boardsSeq = newSeq[PDBoard](length)
+      for i in 0 ..< length:
+        let board = cArray[i]
+        boardsSeq[i] = newPDBoard(boardID = $board.boardID, name = $board.name)
+      cArray.data = nil # no need for SDKArray to free the data, freeBoardsList() will do it
 
-  if boardsList == nil:
-    callback(emptyPDBoardsList, $errorMessage)
-    return
-
-  privateAccess(SDKArray)
-  let length = boardsList.count.cint
-  let cArray = SDKArray[PDBoardRaw](data: cast[ptr UncheckedArray[PDBoardRaw]](boardsList.boards), len: length)
-  var boardsSeq = newSeq[PDBoard](length)
-  for i in 0 ..< length:
-    let board = cArray[i]
-    boardsSeq[i] = newPDBoard(boardID = $board.boardID, name = $board.name)
-  cArray.data = nil # no need for SDKArray to free the data, freeBoardsList() will do it
-
-  let domainObject = newPDBoardsList(lastUpdated = boardsList.lastUpdated, boards = boardsSeq)
-
-  callback(domainObject, $errorMessage)
-  playdate.scoreboards.freeBoardsList(boardsList)
+      return newPDBoardsList(lastUpdated = boardsList.lastUpdated, boards = boardsSeq),
+    emptyValue = emptyPDBoardsList
+  )
 
 proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 {.discardable.} =
   privateAccess(PlaydateScoreboards)
