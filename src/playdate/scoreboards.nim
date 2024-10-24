@@ -45,18 +45,18 @@ var
   privateScoresCallbacks = newSeq[ScoresCallback]()
   privateBoardsListCallbacks = newSeq[BoardsListCallback]()
 
-template invokeCallback(callbackSeqs, value, errorMessage, freeValue, build, emptyValue: untyped) =
+template invokeCallback(callbackSeqs, value, errorMessage, freeValue, builder, emptyValue: untyped) =
   let callback = callbackSeqs.pop()
   if value == nil and errorMessage == nil:
       callback(emptyValue, "Playdate-nim: No value provided for callback")
       return
 
   if value == nil:
-    callback(default(build.type), $errorMessage)
+    callback(emptyValue, $errorMessage)
     return
 
   try:
-    let nimObj = build
+    let nimObj = builder(value)
     callback(nimObj, $errorMessage)
   finally:
     freeValue(score)
@@ -77,17 +77,20 @@ proc newPDBoardsList(lastUpdated: uint32, boards: seq[PDBoard]): PDBoardsList =
   PDBoardsList(lastUpdated: lastUpdated, boards: boards)
 let emptyPDBoardsList = newPDBoardsList(lastUpdated = 0, boards = @[])
 
+proc scoreBuilder(score: PDScorePtr): PDScore =
+  newPDScore(
+    value = score.value.uint32,
+    rank = score.rank.uint32,
+    player = $score.player
+  )
+
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   invokeCallback(
     callbackSeqs = privatePersonalBestCallbacks,
     value = score,
     errorMessage = errorMessage,
     freeValue = playdate.scoreboards.freeScore,
-    build = newPDScore(
-      value = score.value.uint32,
-      rank = score.rank.uint32,
-      player = $score.player
-    ),
+    builder = scoreBuilder,
     emptyValue = emptyPDScore
   )
 
@@ -97,11 +100,7 @@ proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl,
     value = score,
     errorMessage = errorMessage,
     freeValue = playdate.scoreboards.freeScore,
-    build = newPDScore(
-      value = score.value.uint32,
-      rank = score.rank.uint32,
-      player = $score.player
-    ),
+    builder = scoreBuilder,
     emptyValue = emptyPDScore
   )
 
