@@ -11,15 +11,6 @@ export scoreboards
 {.hint[DuplicateModuleImport]: off.}
 import bindings/scoreboards {.all.}
 
-# type PDScoreObj = object of RootObj
-#   # resource {.requiresinit.}: PDScorePtr
-#   rank*: int32
-#   value*: int32
-#   player*: string
-
-# proc `=destroy`(this: PDScoreObj) = 
-#   privateaccess(PlaydateScoreboards)
-#   playdate.scoreboards.freeScore(this.resource)
 type PDScore* = object of RootObj
   value*: uint32
   rank*: uint32
@@ -43,6 +34,11 @@ var privatePersonalBestCallbacks = newSeq[PersonalBestCallback]()
 var privateAddScoreCallback: AddScoreCallback
 var privateScoresCallbacks = newSeq[ScoresCallback]()
 
+proc newPDScore(value: uint32, rank: uint32, player: string): PDScore =
+  result.value = value
+  result.rank = rank
+  result.player = player
+
 proc newPDScoresList(boardID: string, lastUpdated: uint32, scores: seq[PDScore]): PDScoresList =
   result.boardID = boardID
   result.lastUpdated = lastUpdated
@@ -51,24 +47,23 @@ proc newPDScoresList(boardID: string, lastUpdated: uint32, scores: seq[PDScore])
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   let callback = privatePersonalBestCallbacks.pop() # first in, first out
   if score == nil and errorMessage == nil:
-    callback(PDScore(), "Playdate-nim: No personal best")
+    callback(newPDScore(value = 0, rank = 0, player = ""), "Playdate-nim: No personal best")
     return
 
   if score == nil:
-    callback(PDScore(), $errorMessage)
+    callback(newPDScore(value = 0, rank = 0, player = ""), $errorMessage)
     return
     
-  let domainScore = PDScore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)
+  let domainScore = newPDScore(value = score.value.uint32, rank = score.rank.uint32, player = $score.player)
   playdate.scoreboards.freeScore(score)
   callback(domainScore, $errorMessage)
 
 proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   if errorMessage != nil:
-    privateAddScoreCallback(PDScore(value: 0, rank: 0, player: ""), $errorMessage)
+    privateAddScoreCallback(newPDScore(value = 0, rank = 0, player = ""), $errorMessage)
     return
     
-  # todo create newPDSCore constructor
-  let domainScore = PDScore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)
+  let domainScore = newPDScore(value = score.value.uint32, rank = score.rank.uint32, player = $score.player)
   playdate.scoreboards.freeScore(score)
   privateAddScoreCallback(domainScore, $errorMessage)
 
