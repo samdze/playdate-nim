@@ -38,7 +38,7 @@ type
 
 var
   # The sdk callbacks unfortunately don't provide a userdata field to tag the callback with eg. the boardID
-  # So we need to keep track of the callbacks in the order they were called, which luckily is guaranteed by the Playdate API
+  # Scoreboard responses are handled in order of request, however, so if we keep track of request order everything should be fine.
   # By inserting the callback at the start, it will be popped last: first in, first out
   privatePersonalBestCallbacks = newSeq[PersonalBestCallback]()
   privateAddScoreCallbacks = newSeq[AddScoreCallback]()
