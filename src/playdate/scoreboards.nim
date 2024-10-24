@@ -45,6 +45,23 @@ var
   privateScoresCallbacks = newSeq[ScoresCallback]()
   privateBoardsListCallbacks = newSeq[BoardsListCallback]()
 
+template invokeCallback(callbackSeqs, value, errorMessage, freeValue, build, emptyValue: untyped) =
+  let callback = callbackSeqs.pop()
+  if value == nil and errorMessage == nil:
+      callback(emptyValue, "Playdate-nim: No value provided for callback")
+      return
+
+  if value == nil:
+    callback(default(build.type), $errorMessage)
+    return
+
+  try:
+    let nimObj = build
+    callback(nimObj, $errorMessage)
+  finally:
+    freeValue(score)
+
+
 proc newPDScore(value: uint32, rank: uint32, player: string): PDScore =
   PDSCore(value: value, rank: rank, player: player)
 let emptyPDScore = newPDScore(value = 0, rank = 0, player = "")
@@ -61,28 +78,32 @@ proc newPDBoardsList(lastUpdated: uint32, boards: seq[PDBoard]): PDBoardsList =
 let emptyPDBoardsList = newPDBoardsList(lastUpdated = 0, boards = @[])
 
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
-  let callback = privatePersonalBestCallbacks.pop() # first in, first out
-  if score == nil and errorMessage == nil:
-    callback(emptyPDScore, "Playdate-nim: No personal best")
-    return
-
-  if score == nil:
-    callback(emptyPDScore, $errorMessage)
-    return
-    
-  let domainScore = newPDScore(value = score.value.uint32, rank = score.rank.uint32, player = $score.player)
-  playdate.scoreboards.freeScore(score)
-  callback(domainScore, $errorMessage)
+  invokeCallback(
+    callbackSeqs = privatePersonalBestCallbacks,
+    value = score,
+    errorMessage = errorMessage,
+    freeValue = playdate.scoreboards.freeScore,
+    build = newPDScore(
+      value = score.value.uint32,
+      rank = score.rank.uint32,
+      player = $score.player
+    ),
+    emptyValue = emptyPDScore
+  )
 
 proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
-  let callback = privateAddScoreCallbacks.pop() # first in, first out
-  if errorMessage != nil:
-    callback(emptyPDScore, $errorMessage)
-    return
-    
-  let domainScore = newPDScore(value = score.value.uint32, rank = score.rank.uint32, player = $score.player)
-  playdate.scoreboards.freeScore(score)
-  callback(domainScore, $errorMessage)
+  invokeCallback(
+    callbackSeqs = privateAddScoreCallbacks,
+    value = score,
+    errorMessage = errorMessage,
+    freeValue = playdate.scoreboards.freeScore,
+    build = newPDScore(
+      value = score.value.uint32,
+      rank = score.rank.uint32,
+      player = $score.player
+    ),
+    emptyValue = emptyPDScore
+  )
 
 proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   privateAccess(PlaydateScoreboards)
