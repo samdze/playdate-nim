@@ -84,6 +84,13 @@ proc scoreBuilder(score: PDScorePtr): PDScore =
     player = $score.player
   )
 
+proc scoreBuilder(score: PDScoreRaw): PDScore =
+  newPDScore(
+    value = score.value.uint32,
+    rank = score.rank.uint32,
+    player = $score.player
+  )
+
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   invokeCallback(
     callbackSeqs = privatePersonalBestCallbacks,
@@ -102,13 +109,6 @@ proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl,
     freeValue = playdate.scoreboards.freeScore,
     builder = scoreBuilder,
     emptyValue = emptyPDScore
-  )
-
-proc rawScoreBuilder(score: PDScoreRaw): PDScore =
-  newPDScore(
-    value = score.value.uint32,
-    rank = score.rank.uint32,
-    player = $score.player
   )
 
 proc buildList[T, U](rawField: ptr UncheckedArray[T], itemBuilder: proc (item: T): U {.raises: [].}): seq[U] =
@@ -132,7 +132,7 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
       privateAccess(SDKArray)
       var scoresSeq = buildList[PDScoreRaw, PDScore](
         rawField = scoresList.scores,
-        itemBuilder = rawScoreBuilder
+        itemBuilder = scoreBuilder
       )
 
       return newPDScoresList(boardID = $scoresList.boardID, lastUpdated = scoresList.lastUpdated, scores = scoresSeq),
