@@ -111,7 +111,7 @@ proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl,
     emptyValue = emptyPDScore
   )
 
-proc seqBuilder[T, U](rawField: ptr UncheckedArray[T], length: cuint, itemBuilder: proc (item: T): U {.raises: [].}): seq[U] =
+proc seqBuilder[T, U](rawField: ptr UncheckedArray[T], length: SomeInteger, itemBuilder: proc (item: T): U {.raises: [].}): seq[U] =
   privateAccess(SDKArray)
   let cArray = SDKArray[T](data: rawField, len: length.int)
   var newSeq = newSeq[U](length)
