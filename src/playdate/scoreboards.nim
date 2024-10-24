@@ -87,6 +87,17 @@ proc scoreBuilder(score: PDScoreRaw): PDScore =
 proc scoreBuilder(score: PDScorePtr): PDScore =
   scoreBuilder(score[])
 
+proc seqBuilder[T, U](rawField: ptr UncheckedArray[T], length: SomeInteger, itemBuilder: proc (item: T): U {.raises: [].}): seq[U] =
+  ## Coverts a C array to a Nim seq
+  privateAccess(SDKArray)
+  let cArray = SDKArray[T](data: rawField, len: length.int)
+  var newSeq = newSeq[U](length)
+  for i in 0 ..< length:
+    let item = cArray[i]
+    newSeq[i] = itemBuilder(item)
+  cArray.data = nil # no need for SDKArray to free the data, free function will do it
+  return newSeq
+
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   invokeCallback(
     callbackSeqs = privatePersonalBestCallbacks,
@@ -107,16 +118,6 @@ proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl,
     emptyValue = emptyPDScore
   )
 
-proc seqBuilder[T, U](rawField: ptr UncheckedArray[T], length: SomeInteger, itemBuilder: proc (item: T): U {.raises: [].}): seq[U] =
-  privateAccess(SDKArray)
-  let cArray = SDKArray[T](data: rawField, len: length.int)
-  var newSeq = newSeq[U](length)
-  for i in 0 ..< length:
-    let item = cArray[i]
-    newSeq[i] = itemBuilder(item)
-  cArray.data = nil # no need for SDKArray to free the data, free function will do it
-  return newSeq
-
 proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   invokeCallback(
     callbackSeqs = privateScoresCallbacks,
@@ -130,7 +131,6 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
         length = scoresList.count,
         itemBuilder = scoreBuilder
       )
-
       return newPDScoresList(boardID = $scoresList.boardID, lastUpdated = scoresList.lastUpdated, scores = scoresSeq),
     emptyValue = emptyPDScoresList
   )
@@ -142,14 +142,12 @@ proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstCh
     errorMessage = errorMessage,
     freeValue = playdate.scoreboards.freeBoardsList,
     builder = proc (boardsList: PDBoardsListPtr): PDBoardsList =
-      privateAccess(SDKArray)
       var boardsSeq = seqBuilder(
       rawField = cast[ptr UncheckedArray[PDBoardRaw]](boardsList.boards),
       length = boardsList.count,
       itemBuilder = proc (board: PDBoardRaw): PDBoard =
         newPDBoard(boardID = $board.boardID, name = $board.name)
       )
-
       return newPDBoardsList(lastUpdated = boardsList.lastUpdated, boards = boardsSeq),
     emptyValue = emptyPDBoardsList
   )
