@@ -104,6 +104,24 @@ proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl,
     emptyValue = emptyPDScore
   )
 
+proc rawScoreBuilder(score: PDScoreRaw): PDScore =
+  newPDScore(
+    value = score.value.uint32,
+    rank = score.rank.uint32,
+    player = $score.player
+  )
+
+proc buildList[T, U](rawField: ptr UncheckedArray[T], itemBuilder: proc (item: T): U {.raises: [].}): seq[U] =
+  let length = 10 # todo
+  privateAccess(SDKArray)
+  let cArray = SDKArray[T](data: rawField, len: length)
+  var newSeq = newSeq[U](length)
+  for i in 0 ..< length:
+    let item = cArray[i]
+    newSeq[i] = itemBuilder(item)
+  cArray.data = nil # no need for SDKArray to free the data, free function will do it
+  return newSeq
+
 proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   invokeCallback(
     callbackSeqs = privateScoresCallbacks,
@@ -112,13 +130,10 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
     freeValue = playdate.scoreboards.freeScoresList,
     builder = proc (scoresList: PDScoresListPtr): PDScoresList =
       privateAccess(SDKArray)
-      let length = scoresList.count.cint
-      let cArray = SDKArray[PDScoreRaw](data: cast[ptr UncheckedArray[PDScoreRaw]](scoresList.scores), len: length)
-      var scoresSeq = newSeq[PDScore](length)
-      for i in 0 ..< length:
-        let score = cArray[i]
-        scoresSeq[i] = newPDScore(value = score.value.uint32, rank = score.rank.uint32, player = $score.player)
-      cArray.data = nil # no need for SDKArray to free the data, freeScoresList() will do it
+      var scoresSeq = buildList[PDScoreRaw, PDScore](
+        rawField = scoresList.scores,
+        itemBuilder = rawScoreBuilder
+      )
 
       return newPDScoresList(boardID = $scoresList.boardID, lastUpdated = scoresList.lastUpdated, scores = scoresSeq),
     emptyValue = emptyPDScoresList
@@ -139,7 +154,7 @@ proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstCh
         let board = cArray[i]
         boardsSeq[i] = newPDBoard(boardID = $board.boardID, name = $board.name)
       cArray.data = nil # no need for SDKArray to free the data, freeBoardsList() will do it
-
+      
       return newPDBoardsList(lastUpdated = boardsList.lastUpdated, boards = boardsSeq),
     emptyValue = emptyPDBoardsList
   )
