@@ -14,9 +14,11 @@ type PDScoresListRaw* {.importc: "PDScoresList", header: "pd_api.h", bycopy.} = 
     boardID* {.importc: "boardID".}: cstring
     count* {.importc: "count".}: cuint
     lastUpdated* {.importc: "lastUpdated".}: cuint
-    playerIncluded* {.importc: "playerIncluded".}: cint
+    playerIncluded* {.importc: "playerIncluded".}: cuint
     limit* {.importc: "limit".}: cuint
     scores* {.importc: "scores".}: ptr PDScoreRaw
+
+type PDScoresListPtr* = ptr PDScoresListRaw
 
 type PDBoardRaw* {.importc: "PDBoard", header: "pd_api.h", bycopy.} = object
     boardID* {.importc: "boardID".}: cstring
@@ -30,7 +32,7 @@ type PDBoardsListRaw* {.importc: "PDBoardsList", header: "pd_api.h", bycopy.} = 
 type PersonalBestCallbackRaw* {.importc: "PersonalBestCallback", header: "pd_api.h".} = proc (score: PDScorePtr; errorMessage: cstring) {.cdecl.}
 type AddScoreCallbackRaw* {.importc: "AddScoreCallback", header: "pd_api.h".} = proc (score: PDScorePtr; errorMessage: cstring) {.cdecl.}
 # type BoardsListCallbackRaw* = proc (boards: ptr PDBoardsListRaw; errorMessage: cstring) {.cdecl.}
-# type ScoresCallbackRaw* = proc (scores: ptr PDScoresListRaw; errorMessage: cstring) {.cdecl.}
+type ScoresCallbackRaw* = proc (scores: ptr PDScoresListRaw; errorMessage: cstring) {.cdecl.}
 
 sdktype:
     type PlaydateScoreboards* {.importc: "const struct playdate_scoreboards", header: "pd_api.h".} = object
@@ -43,7 +45,7 @@ sdktype:
         #     callback: BoardsListCallbackRaw): cint {.cdecl.}
         # freeBoardsList* {.importc: "freeBoardsList".}: proc (
         #     boardsList: ptr PDBoardsList) {.cdecl.}
-        # getScores* {.importc: "getScores".}: proc (boardId: cstring;
-        #     callback: ScoresCallbackRaw): cint {.cdecl.}
-        # freeScoresList* {.importc: "freeScoresList".}: proc (
-        #     scoresList: ptr PDScoresList) {.cdecl.}
+        getScoresBinding* {.importc: "getScores".}: proc (boardId: cstring;
+            callback: ScoresCallbackRaw): cint {.cdecl, raises: [].}
+        freeScoresList* {.importc: "freeScoresList".}: proc (
+            scoresList: PDScoresListPtr) {.cdecl, raises: [].}
