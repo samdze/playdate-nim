@@ -94,13 +94,14 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
     let score = cArray[i]
     scoresSeq[i] = PDScore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)
 
-  # todo enabling this cleanup code freezes the simulator. Should we free individual scores? With or without: both freeze
-  # for i in 0 ..< length:
-  #   playdate.scoreboards.freeScore(addr cArray[i])
-  # playdate.scoreboards.freeScoresList(scoresList)
+  for i in 0 ..< length:
+    playdate.scoreboards.freeScore(addr cArray[i])
+  cArray.data = nil
 
   let domainObject = newPDScoresList(boardID = $scoresList.boardID, lastUpdated = scoresList.lastUpdated, scores = scoresSeq)
   callback(domainObject, $errorMessage)
+  # todo enabling this cleanup code freezes the simulator. In this correct to free individual score first, right?
+  # playdate.scoreboards.freeScoresList(scoresList)
 
 proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 =
   privateAccess(PlaydateScoreboards)
