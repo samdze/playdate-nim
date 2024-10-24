@@ -88,20 +88,15 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
   privateAccess(SDKArray)
   let length = scoresList.count.cint
   let cArray = SDKArray[PDScoreRaw](data: cast[ptr UncheckedArray[PDScoreRaw]](scoresList.scores), len: length)
-
   var scoresSeq = newSeq[PDScore](length)
   for i in 0 ..< length:
     let score = cArray[i]
     scoresSeq[i] = PDScore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)
-
-  for i in 0 ..< length:
-    playdate.scoreboards.freeScore(addr cArray[i])
-  cArray.data = nil
+  cArray.data = nil # no need for SDKArray to free the data, freeScoresList() will do it
 
   let domainObject = newPDScoresList(boardID = $scoresList.boardID, lastUpdated = scoresList.lastUpdated, scores = scoresSeq)
   callback(domainObject, $errorMessage)
-  # todo enabling this cleanup code freezes the simulator. In this correct to free individual score first, right?
-  # playdate.scoreboards.freeScoresList(scoresList)
+  playdate.scoreboards.freeScoresList(scoresList)
 
 proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 =
   privateAccess(PlaydateScoreboards)
