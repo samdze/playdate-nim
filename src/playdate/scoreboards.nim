@@ -77,19 +77,15 @@ proc newPDBoardsList(lastUpdated: uint32, boards: seq[PDBoard]): PDBoardsList =
   PDBoardsList(lastUpdated: lastUpdated, boards: boards)
 let emptyPDBoardsList = newPDBoardsList(lastUpdated = 0, boards = @[])
 
-proc scoreBuilder(score: PDScorePtr): PDScore =
-  newPDScore(
-    value = score.value.uint32,
-    rank = score.rank.uint32,
-    player = $score.player
-  )
-
 proc scoreBuilder(score: PDScoreRaw): PDScore =
   newPDScore(
     value = score.value.uint32,
     rank = score.rank.uint32,
     player = $score.player
   )
+
+proc scoreBuilder(score: PDScorePtr): PDScore =
+  scoreBuilder(score[])
 
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
   invokeCallback(
