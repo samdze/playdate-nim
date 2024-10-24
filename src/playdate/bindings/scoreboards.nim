@@ -15,7 +15,7 @@ type PDScoresListRaw* {.importc: "PDScoresList", header: "pd_api.h", bycopy.} = 
     lastUpdated* {.importc: "lastUpdated".}: cuint
     playerIncluded* {.importc: "playerIncluded".}: cuint
     limit* {.importc: "limit".}: cuint
-    scores* {.importc: "scores".}: ptr PDScoreRaw
+    scores* {.importc: "scores".}: ptr UncheckedArray[PDScoreRaw]
 type PDScoresListPtr* = ptr PDScoresListRaw
 
 type PDBoardRaw* {.importc: "PDBoard", header: "pd_api.h", bycopy.} = object
@@ -25,7 +25,7 @@ type PDBoardRaw* {.importc: "PDBoard", header: "pd_api.h", bycopy.} = object
 type PDBoardsListRaw* {.importc: "PDBoardsList", header: "pd_api.h", bycopy.} = object
     count* {.importc: "count".}: cuint
     lastUpdated* {.importc: "lastUpdated".}: cuint
-    boards* {.importc: "boards".}: ptr PDBoardRaw
+    boards* {.importc: "boards".}: ptr UncheckedArray[PDBoardRaw]
 type PDBoardsListPtr* = ptr PDBoardsListRaw
 
 type PersonalBestCallbackRaw* {.importc: "PersonalBestCallback", header: "pd_api.h".} = proc (score: PDScorePtr; errorMessage: cstring) {.cdecl.}
