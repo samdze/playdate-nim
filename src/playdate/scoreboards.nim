@@ -111,10 +111,9 @@ proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl,
     emptyValue = emptyPDScore
   )
 
-proc seqBuilder[T, U](rawField: ptr UncheckedArray[T], itemBuilder: proc (item: T): U {.raises: [].}): seq[U] =
-  let length = 10 # todo
+proc seqBuilder[T, U](rawField: ptr UncheckedArray[T], length: cuint, itemBuilder: proc (item: T): U {.raises: [].}): seq[U] =
   privateAccess(SDKArray)
-  let cArray = SDKArray[T](data: rawField, len: length)
+  let cArray = SDKArray[T](data: rawField, len: length.int)
   var newSeq = newSeq[U](length)
   for i in 0 ..< length:
     let item = cArray[i]
@@ -132,6 +131,7 @@ proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) 
       privateAccess(SDKArray)
       var scoresSeq = seqBuilder(
         rawField = scoresList.scores,
+        length = scoresList.count,
         itemBuilder = scoreBuilder
       )
 
@@ -149,6 +149,7 @@ proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstCh
       privateAccess(SDKArray)
       var boardsSeq = seqBuilder(
       rawField = cast[ptr UncheckedArray[PDBoardRaw]](boardsList.boards),
+      length = boardsList.count,
       itemBuilder = proc (board: PDBoardRaw): PDBoard =
         newPDBoard(boardID = $board.boardID, name = $board.name)
       )
