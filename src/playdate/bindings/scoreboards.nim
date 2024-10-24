@@ -8,7 +8,6 @@ type PDScoreRaw* {.importc: "PDScore", header: "pd_api.h", bycopy.} = object
     player* {.importc: "player".}: cstring
 
 type PDScorePtr* = ptr PDScoreRaw
-# type PDScore* = ref PDScoreRaw
 
 type PDScoresListRaw* {.importc: "PDScoresList", header: "pd_api.h", bycopy.} = object
     boardID* {.importc: "boardID".}: cstring

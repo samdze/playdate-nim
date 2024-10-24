@@ -11,57 +11,50 @@ export scoreboards
 {.hint[DuplicateModuleImport]: off.}
 import bindings/scoreboards {.all.}
 
-type PDScore* = object of RootObj
-  value*: uint32
-  rank*: uint32
-  player*: string
+type 
+  PDScore* = object of RootObj
+    value*, rank*: uint32
+    player*: string
 
-type PDScoresList* = object of RootObj
-  boardID*: string
-  lastUpdated*: uint32
-  scores*: seq[PDScore]
-  # these properties are not implemented yet in the Playdate API
-  # playerIncluded*: uint32
-  # limit*: uint32
+  PDScoresList* = object of RootObj
+    boardID*: string
+    lastUpdated*: uint32
+    scores*: seq[PDScore]
+    # these properties are not implemented yet in the Playdate API
+    # playerIncluded*: uint32
+    # limit*: uint32
 
-type PDBoard* = object of RootObj
-  boardID*: string
-  name*: string
+  PDBoard* = object of RootObj
+    boardID*, name*: string
 
-type PDBoardsList* = object of RootObj
-  lastUpdated*: uint32
-  boards*: seq[PDBoard]
+  PDBoardsList* = object of RootObj
+    lastUpdated*: uint32
+    boards*: seq[PDBoard]
 
-type
   PersonalBestCallback* = proc(score: PDScore, errorMessage: string)
   AddScoreCallback* = proc(score: PDScore, errorMessage: string)
   BoardsListCallback* = proc(boards: PDBoardsList, errorMessage: string)
   ScoresCallback* = proc(scores: PDScoresList, errorMessage: string)
 
-var privatePersonalBestCallbacks = newSeq[PersonalBestCallback]()
-var privateAddScoreCallbacks = newSeq[AddScoreCallback]()
-var privateScoresCallbacks = newSeq[ScoresCallback]()
-var privateBoardsListCallbacks = newSeq[BoardsListCallback]()
+var 
+  privatePersonalBestCallbacks = newSeq[PersonalBestCallback]()
+  privateAddScoreCallbacks = newSeq[AddScoreCallback]()
+  privateScoresCallbacks = newSeq[ScoresCallback]()
+  privateBoardsListCallbacks = newSeq[BoardsListCallback]()
 
 proc newPDScore(value: uint32, rank: uint32, player: string): PDScore =
-  result.value = value
-  result.rank = rank
-  result.player = player
+  PDSCore(value: value, rank: rank, player: player)
 let emptyPDScore = newPDScore(value = 0, rank = 0, player = "")
 
 proc newPDScoresList(boardID: string, lastUpdated: uint32, scores: seq[PDScore]): PDScoresList =
-  result.boardID = boardID
-  result.lastUpdated = lastUpdated
-  result.scores = scores
+  PDScoresList(boardID: boardID, lastUpdated: lastUpdated, scores: scores)
 let emptyPDScoresList = newPDScoresList(boardID = "", lastUpdated = 0, scores = @[])
 
 proc newPDBoard(boardID: string, name: string): PDBoard =
-  result.boardID = boardID
-  result.name = name
+  PDBoard(boardID: boardID, name: name)
 
 proc newPDBoardsList(lastUpdated: uint32, boards: seq[PDBoard]): PDBoardsList =
-  result.lastUpdated = lastUpdated
-  result.boards = boards
+  PDBoardsList(lastUpdated: lastUpdated, boards: boards)
 let emptyPDBoardsList = newPDBoardsList(lastUpdated = 0, boards = @[])
 
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
@@ -136,22 +129,22 @@ proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstCh
   callback(domainObject, $errorMessage)
   playdate.scoreboards.freeBoardsList(boardsList)
 
-proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 =
+proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 {.discardable.} =
   privateAccess(PlaydateScoreboards)
   privatePersonalBestCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
   return this.getPersonalBestBinding(boardID.cstring, invokePersonalBestCallback)
 
-proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 =
+proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 {.discardable.} =
   privateAccess(PlaydateScoreboards)
   privateAddScoreCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
   return this.addScoreBinding(boardID.cstring, value.cuint, invokeAddScoreCallback)
 
-proc getScoreboards*(this: ptr PlaydateScoreboards, callback: BoardsListCallback): int32 =
+proc getScoreboards*(this: ptr PlaydateScoreboards, callback: BoardsListCallback): int32 {.discardable.} =
   privateAccess(PlaydateScoreboards)
   privateBoardsListCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
   return this.getScoreboardsBinding(invokeBoardsListCallback)
 
-proc getScores*(this: ptr PlaydateScoreboards, boardID: string, callback: ScoresCallback): int32 =
+proc getScores*(this: ptr PlaydateScoreboards, boardID: string, callback: ScoresCallback): int32 {.discardable.} =
   privateAccess(PlaydateScoreboards)
   privateScoresCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
   return this.getScoresBinding(boardID.cstring, invokeScoresCallback)
