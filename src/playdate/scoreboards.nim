@@ -31,10 +31,17 @@ type
         lastUpdated*: uint32
         boards*: seq[PDBoard]
 
-    PersonalBestCallback* = proc(score: PDScore, errorMessage: string) {.raises: [].}
-    AddScoreCallback* = proc(score: PDScore, errorMessage: string) {.raises: [].}
-    BoardsListCallback* = proc(boards: PDBoardsList, errorMessage: string) {.raises: [].}
-    ScoresCallback* = proc(scores: PDScoresList, errorMessage: string) {.raises: [].}
+    PDResultKind* = enum PDResultSuccess, PDResultError
+
+    PDResult*[T] = object
+        case kind*: PDResultKind
+        of PDResultSuccess: result*: T
+        of PDResultError: message*: string
+
+    PersonalBestCallback* = proc(result: PDResult[PDScore]) {.raises: [].}
+    AddScoreCallback* = proc(result: PDResult[PDScore]) {.raises: [].}
+    BoardsListCallback* = proc(result: PDResult[PDBoardsList]) {.raises: [].}
+    ScoresCallback* = proc(result: PDResult[PDScoresList]) {.raises: [].}
 
 var
     # The sdk callbacks unfortunately don't provide a userdata field to tag the callback with eg. the boardID
@@ -46,20 +53,17 @@ var
     privateBoardsListCallbacks = newSeq[BoardsListCallback]()
 
 template invokeCallback(callbackSeqs, value, errorMessage, freeValue, builder: untyped) =
-  let callback = callbackSeqs.pop()
-  if value == nil and errorMessage == nil:
-      callback(default(typeof(builder)), "Playdate-nim: No value provided for callback")
-      return
-
-  if value == nil:
-    callback(default(typeof(builder)), $errorMessage)
-    return
-
-  try:
-    let nimObj = builder
-    callback(nimObj, $errorMessage)
-  finally:
-    freeValue(value)
+    type ResultType = typeof(builder)
+    let callback = callbackSeqs.pop()
+    if value == nil:
+        let message = if errorMessage == nil: "Playdate-nim: No value provided for callback" else: $errorMessage
+        callback(PDResult[ResultType](kind: PDResultError, message: message))
+    else:
+        try:
+            let built = builder
+            callback(PDResult[ResultType](kind: PDResultSuccess, result: built))
+        finally:
+            freeValue(value)
 
 proc scoreBuilder(score: PDScoreRaw | PDScorePtr): PDScore =
     PDSCore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)

@@ -7,17 +7,19 @@ proc execScoreboardTests*() =
     suite "Scoreboards API verification":
 
         test "getPersonalBest":
-            playdate.scoreboards.getPersonalBest("some_board") do (score: PDScore, errorMessage: string) -> void:
-                discard
+            playdate.scoreboards.getPersonalBest("some_board") do (score: PDResult[PDScore]) -> void:
+                case score.kind
+                of PDResultSuccess: echo $score.result
+                of PDResultError: echo $score.message
 
         test "addScore":
-            playdate.scoreboards.addScore("some_board", 123) do (score: PDScore, errorMessage: string) -> void:
+            playdate.scoreboards.addScore("some_board", 123) do (score: PDResult[PDScore]) -> void:
                 discard
 
         test "getScoreboards":
-            playdate.scoreboards.getScoreboards() do (boards: PDBoardsList, errorMessage: string) -> void:
+            playdate.scoreboards.getScoreboards() do (boards: PDResult[PDBoardsList]) -> void:
                 discard
 
         test "getScores":
-            playdate.scoreboards.getScores("some_board") do (boards: PDScoresList, errorMessage: string) -> void:
+            playdate.scoreboards.getScores("some_board") do (scores: PDResult[PDScoresList]) -> void:
                 discard
