@@ -1,7 +1,6 @@
 {.push raises: [].}
 
-import std/importutils
-import std/sequtils
+import std/[importutils, sequtils]
 
 import types {.all.}
 import bindings/[api, types, utils]
@@ -32,10 +31,10 @@ type
         lastUpdated*: uint32
         boards*: seq[PDBoard]
 
-    PersonalBestCallback* = proc(score: PDScore, errorMessage: string)
-    AddScoreCallback* = proc(score: PDScore, errorMessage: string)
-    BoardsListCallback* = proc(boards: PDBoardsList, errorMessage: string)
-    ScoresCallback* = proc(scores: PDScoresList, errorMessage: string)
+    PersonalBestCallback* = proc(score: PDScore, errorMessage: string) {.raises: [].}
+    AddScoreCallback* = proc(score: PDScore, errorMessage: string) {.raises: [].}
+    BoardsListCallback* = proc(boards: PDBoardsList, errorMessage: string) {.raises: [].}
+    ScoresCallback* = proc(scores: PDScoresList, errorMessage: string) {.raises: [].}
 
 var
     # The sdk callbacks unfortunately don't provide a userdata field to tag the callback with eg. the boardID
@@ -46,91 +45,43 @@ var
     privateScoresCallbacks = newSeq[ScoresCallback]()
     privateBoardsListCallbacks = newSeq[BoardsListCallback]()
 
-template invokeCallback(callbackSeqs, value, errorMessage, freeValue, builder, emptyValue: untyped) =
-    let callback = callbackSeqs.pop()
-    if value == nil and errorMessage == nil:
-            callback(emptyValue, "Playdate-nim: No value provided for callback")
-            return
+template invokeCallback(callbackSeqs, value, errorMessage, freeValue, builder: untyped) =
+  let callback = callbackSeqs.pop()
+  if value == nil and errorMessage == nil:
+      callback(default(typeof(builder)), "Playdate-nim: No value provided for callback")
+      return
 
-    if value == nil:
-        callback(emptyValue, $errorMessage)
-        return
+  if value == nil:
+    callback(default(typeof(builder)), $errorMessage)
+    return
 
-    try:
-        let nimObj = builder(value)
-        callback(nimObj, $errorMessage)
-    finally:
-        freeValue(value)
-
-
-proc newPDScore(value: uint32, rank: uint32, player: string): PDScore =
-    PDSCore(value: value, rank: rank, player: player)
-let emptyPDScore = newPDScore(value = 0, rank = 0, player = "")
-
-proc newPDScoresList(boardID: string, lastUpdated: uint32, scores: seq[PDScore]): PDScoresList =
-    PDScoresList(boardID: boardID, lastUpdated: lastUpdated, scores: scores)
-let emptyPDScoresList = newPDScoresList(boardID = "", lastUpdated = 0, scores = @[])
-
-proc newPDBoard(boardID: string, name: string): PDBoard =
-    PDBoard(boardID: boardID, name: name)
-
-proc newPDBoardsList(lastUpdated: uint32, boards: seq[PDBoard]): PDBoardsList =
-    PDBoardsList(lastUpdated: lastUpdated, boards: boards)
-let emptyPDBoardsList = newPDBoardsList(lastUpdated = 0, boards = @[])
+  try:
+    let nimObj = builder
+    callback(nimObj, $errorMessage)
+  finally:
+    freeValue(value)
 
 proc scoreBuilder(score: PDScoreRaw | PDScorePtr): PDScore =
-    newPDScore(
-        value = score.value.uint32,
-        rank = score.rank.uint32,
-        player = $score.player
-    )
+    PDSCore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)
 
 proc invokePersonalBestCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
-    invokeCallback(
-        callbackSeqs = privatePersonalBestCallbacks,
-        value = score,
-        errorMessage = errorMessage,
-        freeValue = playdate.scoreboards.freeScore,
-        builder = scoreBuilder,
-        emptyValue = emptyPDScore
-    )
+    invokeCallback(privatePersonalBestCallbacks, score, errorMessage, playdate.scoreboards.freeScore):
+        scoreBuilder(score)
 
 proc invokeAddScoreCallback(score: PDScorePtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
-    invokeCallback(
-        callbackSeqs = privateAddScoreCallbacks,
-        value = score,
-        errorMessage = errorMessage,
-        freeValue = playdate.scoreboards.freeScore,
-        builder = scoreBuilder,
-        emptyValue = emptyPDScore
-    )
+    invokeCallback(privateAddScoreCallbacks, score, errorMessage, playdate.scoreboards.freeScore):
+        scoreBuilder(score)
 
 proc invokeScoresCallback(scoresList: PDScoresListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
-    invokeCallback(
-        callbackSeqs = privateScoresCallbacks,
-        value = scoresList,
-        errorMessage = errorMessage,
-        freeValue = playdate.scoreboards.freeScoresList,
-        builder = proc (scoresList: PDScoresListPtr): PDScoresList =
-            privateAccess(SDKArray)
-            let scoresSeq = scoresList.scores.items(scoresList.count).toSeq.mapIt(scoreBuilder(it))
-            return newPDScoresList(boardID = $scoresList.boardID, lastUpdated = scoresList.lastUpdated, scores = scoresSeq),
-        emptyValue = emptyPDScoresList
-    )
+    invokeCallback(privateScoresCallbacks, scoresList, errorMessage, playdate.scoreboards.freeScoresList):
+        let scoresSeq = scoresList.scores.items(scoresList.count).toSeq.mapIt(scoreBuilder(it))
+        PDScoresList(boardID: $scoresList.boardID, lastUpdated: scoresList.lastUpdated, scores: scoresSeq)
 
 proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstChar) {.cdecl, raises: [].} =
-    invokeCallback(
-        callbackSeqs = privateBoardsListCallbacks,
-        value = boardsList,
-        errorMessage = errorMessage,
-        freeValue = playdate.scoreboards.freeBoardsList,
-        builder = proc (boardsList: PDBoardsListPtr): PDBoardsList =
-            let boardsSeq: seq[PDBoard] = boardsList.boards.items(boardsList.count).toSeq.mapIt(
-                newPDBoard(boardID = $it.boardID, name = $it.name)
-            )
-            return newPDBoardsList(lastUpdated = boardsList.lastUpdated, boards = boardsSeq),
-        emptyValue = emptyPDBoardsList
-    )
+    invokeCallback(privateBoardsListCallbacks, boardsList, errorMessage, playdate.scoreboards.freeBoardsList):
+        let boardsSeq = boardsList.boards.items(boardsList.count).toSeq
+            .mapIt(PDBoard(boardID: $it.boardID, name: $it.name))
+        PDBoardsList(lastUpdated: boardsList.lastUpdated, boards: boardsSeq)
 
 proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 {.discardable.} =
     privateAccess(PlaydateScoreboards)
