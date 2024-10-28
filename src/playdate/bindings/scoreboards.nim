@@ -2,45 +2,52 @@
 
 import utils
 
-type PDScore* {.importc: "PDScore", header: "pd_api_scoreboards.h", bycopy.} = object
-    rank* {.importc: "rank".}: uint32
-    value* {.importc: "value".}: uint32
-    player* {.importc: "player".}: cstring
+type
+    PDScoreRaw* {.importc: "PDScore", header: "pd_api.h", bycopy.} = object
+        rank* {.importc: "rank".}: cuint
+        value* {.importc: "value".}: cuint
+        player* {.importc: "player".}: cstring
 
-type PDScoresList* {.importc: "PDScoresList", header: "pd_api_scoreboards.h", bycopy.} = object
-    boardID* {.importc: "boardID".}: cstring
-    count* {.importc: "count".}: cuint
-    lastUpdated* {.importc: "lastUpdated".}: uint32
-    playerIncluded* {.importc: "playerIncluded".}: cint
-    limit* {.importc: "limit".}: cuint
-    scores* {.importc: "scores".}: ptr PDScore
+    PDScorePtr* = ptr PDScoreRaw
 
-type PDBoard* {.importc: "PDBoard", header: "pd_api_scoreboards.h", bycopy.} = object
-    boardID* {.importc: "boardID".}: cstring
-    name* {.importc: "name".}: cstring
+    PDScoresListRaw* {.importc: "PDScoresList", header: "pd_api.h", bycopy.} = object
+        boardID* {.importc: "boardID".}: cstring
+        count* {.importc: "count".}: cuint
+        lastUpdated* {.importc: "lastUpdated".}: cuint
+        playerIncluded* {.importc: "playerIncluded".}: cuint
+        limit* {.importc: "limit".}: cuint
+        scores* {.importc: "scores".}: ptr UncheckedArray[PDScoreRaw]
 
-type PDBoardsList* {.importc: "PDBoardsList", header: "pd_api_scoreboards.h", bycopy.} = object
-    count* {.importc: "count".}: cuint
-    lastUpdated* {.importc: "lastUpdated".}: uint32
-    boards* {.importc: "boards".}: ptr PDBoard
+    PDScoresListPtr* = ptr PDScoresListRaw
 
-type AddScoreCallback* = proc (score: ptr PDScore; errorMessage: cstring) {.cdecl.}
-type PersonalBestCallback* = proc (score: ptr PDScore; errorMessage: cstring) {.cdecl.}
-type BoardsListCallback* = proc (boards: ptr PDBoardsList; errorMessage: cstring) {.cdecl.}
-type ScoresCallback* = proc (scores: ptr PDScoresList; errorMessage: cstring) {.cdecl.}
+    PDBoardRaw* {.importc: "PDBoard", header: "pd_api.h", bycopy.} = object
+        boardID* {.importc: "boardID".}: cstring
+        name* {.importc: "name".}: cstring
+
+    PDBoardsListRaw* {.importc: "PDBoardsList", header: "pd_api.h", bycopy.} = object
+        count* {.importc: "count".}: cuint
+        lastUpdated* {.importc: "lastUpdated".}: cuint
+        boards* {.importc: "boards".}: ptr UncheckedArray[PDBoardRaw]
+
+    PDBoardsListPtr* = ptr PDBoardsListRaw
+
+    PersonalBestCallbackRaw* {.importc: "PersonalBestCallback", header: "pd_api.h".} = proc (score: PDScorePtr; errorMessage: cstring) {.cdecl.}
+    AddScoreCallbackRaw* {.importc: "AddScoreCallback", header: "pd_api.h".} = proc (score: PDScorePtr; errorMessage: cstring) {.cdecl.}
+    BoardsListCallbackRaw* = proc (boards: ptr PDBoardsListRaw; errorMessage: cstring) {.cdecl.}
+    ScoresCallbackRaw* = proc (scores: ptr PDScoresListRaw; errorMessage: cstring) {.cdecl.}
 
 sdktype:
     type PlaydateScoreboards* {.importc: "const struct playdate_scoreboards", header: "pd_api.h".} = object
-        addScore* {.importc: "addScore".}: proc (boardId: cstring; value: uint32;
-            callback: AddScoreCallback): cint {.cdecl.}
-        getPersonalBest* {.importc: "getPersonalBest".}: proc (boardId: cstring;
-            callback: PersonalBestCallback): cint {.cdecl.}
-        freeScore* {.importc: "freeScore".}: proc (score: ptr PDScore) {.cdecl.}
-        getScoreboards* {.importc: "getScoreboards".}: proc (
-            callback: BoardsListCallback): cint {.cdecl.}
+        getPersonalBestBinding* {.importc: "getPersonalBest".}: proc (boardId: cstring;
+            callback: PersonalBestCallbackRaw): cint {.cdecl, raises: [].}
+        addScoreBinding* {.importc: "addScore".}: proc (boardId: cstring; value: cuint;
+            callback: AddScoreCallbackRaw): cint {.cdecl, raises: [].}
+        freeScore* {.importc: "freeScore".}: proc (score: PDScorePtr) {.cdecl, raises: [].}
+        getScoreboardsBinding* {.importc: "getScoreboards".}: proc (
+            callback: BoardsListCallbackRaw): cint {.cdecl, raises: [].}
         freeBoardsList* {.importc: "freeBoardsList".}: proc (
-            boardsList: ptr PDBoardsList) {.cdecl.}
-        getScores* {.importc: "getScores".}: proc (boardId: cstring;
-            callback: ScoresCallback): cint {.cdecl.}
+            boardsList: PDBoardsListPtr) {.cdecl, raises: [].}
+        getScoresBinding* {.importc: "getScores".}: proc (boardId: cstring;
+            callback: ScoresCallbackRaw): cint {.cdecl, raises: [].}
         freeScoresList* {.importc: "freeScoresList".}: proc (
-            scoresList: ptr PDScoresList) {.cdecl.}
+            scoresList: PDScoresListPtr) {.cdecl, raises: [].}
