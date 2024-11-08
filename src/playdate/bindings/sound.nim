@@ -38,15 +38,15 @@ type PlaydateSoundFileplayer {.importc: "const struct playdate_sound_fileplayer"
     #     start: cfloat; `end`: cfloat) {.cdecl.}
     # didUnderrun* {.importc: "didUnderrun".}: proc (player: ptr FilePlayer): cint {.cdecl.}
     setFinishCallback* {.importc: "setFinishCallback".}: proc (
-        player: FilePlayerPtr; callback: PDSndCallbackProcRaw, userData: pointer = nil) {.cdecl, raises: [].}
+        player: FilePlayerPtr; callback: PDSndCallbackProcRaw, userdata: pointer = nil) {.cdecl, raises: [].}
     # setLoopCallback* {.importc: "setLoopCallback".}: proc (player: ptr FilePlayer;
     #     callback: SndCallbackProc) {.cdecl.}
     getOffset {.importc: "getOffset".}: proc (player: FilePlayerPtr): cfloat {.cdecl, raises: [].}
     # getRate* {.importc: "getRate".}: proc (player: ptr FilePlayer): cfloat {.cdecl.}
     # setStopOnUnderrun* {.importc: "setStopOnUnderrun".}: proc (
     #     player: ptr FilePlayer; flag: cint) {.cdecl.}
-    # fadeVolume* {.importc: "fadeVolume".}: proc (player: ptr FilePlayer; left: cfloat;
-    #     right: cfloat; len: int32T; finishCallback: SndCallbackProc) {.cdecl.}
+    fadeVolume* {.importc: "fadeVolume".}: proc (player: FilePlayerPtr; left: cfloat;
+        right: cfloat; len: cint; finishCallback: PDSndCallbackProcRaw, userdata: pointer = nil) {.cdecl, raises:[].}
     # setMP3StreamSource* {.importc: "setMP3StreamSource".}: proc (
     #     player: ptr FilePlayer; dataSource: proc (data: ptr uint8T; bytes: cint;
     #     userdata: pointer): cint {.cdecl.}; userdata: pointer; bufferLen: cfloat) {.
@@ -90,7 +90,7 @@ type PlaydateSoundSampleplayer {.importc: "const struct playdate_sound_samplepla
     setPlayRange* {.importc: "setPlayRange".}: proc (player: SamplePlayerPtr;
         start: cint; `end`: cint) {.cdecl, raises: [].}
     setFinishCallback* {.importc: "setFinishCallback".}: proc (
-        player: SamplePlayerPtr; callback: PDSndCallbackProcRaw, userData: pointer = nil) {.cdecl, raises: [].}
+        player: SamplePlayerPtr; callback: PDSndCallbackProcRaw, userdata: pointer = nil) {.cdecl, raises: [].}
     # setLoopCallback* {.importc: "setLoopCallback".}: proc (player: ptr SamplePlayer;
     #     callback: SndCallbackProc) {.cdecl.}
     getOffset* {.importc: "getOffset".}: proc (player: SamplePlayerPtr): cfloat {.cdecl , raises: [].}
