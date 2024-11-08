@@ -61,7 +61,10 @@ template invokeCallback(callbackSeqs, value, errorMessage, freeValue, builder: u
     type ResultType = typeof(builder)
     let callback = callbackSeqs.pop()
     if value == nil:
-        callback(PDResult[ResultType](kind: PDResultUnavailable))
+        if errorMessage == nil:
+            callback(PDResult[ResultType](kind: PDResultUnavailable))
+        else:
+            callback(PDResult[ResultType](kind: PDResultError, message: $errorMessage))
     else:
         try:
             let built = builder
