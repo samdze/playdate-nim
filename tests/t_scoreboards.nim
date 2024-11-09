@@ -11,6 +11,7 @@ proc execScoreboardTests*() =
                 case score.kind
                 of PDResultSuccess: echo $score.result
                 of PDResultError: echo $score.message
+                of PDResultUnavailable: echo "PDResultUnavailable"
 
         test "addScore":
             playdate.scoreboards.addScore("some_board", 123) do (score: PDResult[PDScore]) -> void:

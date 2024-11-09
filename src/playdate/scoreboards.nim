@@ -31,11 +31,16 @@ type
         lastUpdated*: uint32
         boards*: seq[PDBoard]
 
-    PDResultKind* = enum PDResultSuccess, PDResultError
+    PDResultKind* = enum 
+        PDResultSuccess, 
+        PDResultUnavailable,
+            ## The operation completed successfully, but the response had no data
+        PDResultError, 
 
     PDResult*[T] = object
         case kind*: PDResultKind
         of PDResultSuccess: result*: T
+        of PDResultUnavailable: discard
         of PDResultError: message*: string
 
     PersonalBestCallback* = proc(result: PDResult[PDScore]) {.raises: [].}
@@ -56,8 +61,10 @@ template invokeCallback(callbackSeqs, value, errorMessage, freeValue, builder: u
     type ResultType = typeof(builder)
     let callback = callbackSeqs.pop()
     if value == nil:
-        let message = if errorMessage == nil: "Playdate-nim: No value provided for callback" else: $errorMessage
-        callback(PDResult[ResultType](kind: PDResultError, message: message))
+        if errorMessage == nil:
+            callback(PDResult[ResultType](kind: PDResultUnavailable))
+        else:
+            callback(PDResult[ResultType](kind: PDResultError, message: $errorMessage))
     else:
         try:
             let built = builder
@@ -88,11 +95,13 @@ proc invokeBoardsListCallback(boardsList: PDBoardsListPtr, errorMessage: ConstCh
         PDBoardsList(lastUpdated: boardsList.lastUpdated, boards: boardsSeq)
 
 proc getPersonalBest*(this: ptr PlaydateScoreboards, boardID: string, callback: PersonalBestCallback): int32 {.discardable.} =
+    ## Responds with PDResultUnavailable if no score exists for the current player.
     privateAccess(PlaydateScoreboards)
     privatePersonalBestCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
     return this.getPersonalBestBinding(boardID.cstring, invokePersonalBestCallback)
 
 proc addScore*(this: ptr PlaydateScoreboards, boardID: string, value: uint32, callback: AddScoreCallback): int32 {.discardable.} =
+    ## Responds with PDResultUnavailable if the score was queued for later submission. Probably, Wi-Fi is not available.
     privateAccess(PlaydateScoreboards)
     privateAddScoreCallbacks.insert(callback) # by inserting the callback at the start, it will be popped last: first in, first out
     return this.addScoreBinding(boardID.cstring, value.cuint, invokeAddScoreCallback)
