@@ -16,7 +16,7 @@ type
         resource: AudioSamplePtr
     AudioSample* = ref AudioSampleObj
 
-    PDSoundCallbackFunction* = proc(userData: pointer) {.raises: [].}
+    PDSoundCallbackFunction* = proc(userdata: pointer) {.raises: [].}
 
 proc `=destroy`(this: var AudioSampleObj) =
     privateAccess(PlaydateSound)
@@ -55,6 +55,7 @@ type SoundSource* = ref SoundSourceObj
 type
     FilePlayerObj = object of SoundSourceObj
         finishCallback: PDFilePlayerCallbackFunction
+        fadeVolumeCallback: PDFilePlayerCallbackFunction
     FilePlayer* = ref FilePlayerObj
 
     PDFilePlayerCallbackFunction* = proc(player: FilePlayer) {.raises: [].}
@@ -139,6 +140,11 @@ proc privateFilePlayerFinishCallback(soundSource: SoundSourcePtr, userdata: poin
     if filePlayer.finishCallback != nil:
         filePlayer.finishCallback(filePlayer)
 
+proc privateFilePlayerFadeVolumeCallback(soundSource: SoundSourcePtr, userdata: pointer) {.cdecl, raises: [].} =
+    let filePlayer = cast[FilePlayer](userdata)
+    if filePlayer.fadeVolumeCallback != nil:
+        filePlayer.fadeVolumeCallback(filePlayer)
+
 proc setFinishCallback*(this: FilePlayer, callback: PDFilePlayerCallbackFunction) =
     privateAccess(PlaydateSound)
     privateAccess(PlaydateSoundFileplayer)
@@ -147,6 +153,15 @@ proc setFinishCallback*(this: FilePlayer, callback: PDFilePlayerCallbackFunction
         playdate.sound.fileplayer.setFinishCallback(this.resource, nil, nil)
     else:
         playdate.sound.fileplayer.setFinishCallback(this.resource, privateFilePlayerFinishCallback, cast[pointer](this))
+
+proc fadeVolume*(this: FilePlayer, left, right: float32, len: int32, callback: PDFilePlayerCallbackFunction) =
+    privateAccess(PlaydateSound)
+    privateAccess(PlaydateSoundFileplayer)
+    this.fadeVolumeCallback = callback
+    if callback == nil:
+        playdate.sound.fileplayer.fadeVolume(this.resource, left.cfloat, right.cfloat, len.cint , nil, nil)
+    else:
+        playdate.sound.fileplayer.fadeVolume(this.resource, left.cfloat, right.cfloat, len.cint , privateFilePlayerFadeVolumeCallback, cast[pointer](this))
 
 proc finishCallback*(this: FilePlayer): PDFilePlayerCallbackFunction =
     return this.finishCallback

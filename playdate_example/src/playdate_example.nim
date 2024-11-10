@@ -3,6 +3,10 @@ import playdate/api
 const FONT_PATH = "/System/Fonts/Asheville-Sans-14-Bold.pft"
 const NIM_IMAGE_PATH = "/images/nim_logo"
 const PLAYDATE_NIM_IMAGE_PATH = "/images/playdate_nim"
+const BACKGROUND_MUSIC_PATH = "/audio/finally_see_the_light"
+const BACKGROUND_MUSIC_SAMPLE_RATE = 48_000
+const BACKGROUND_MUSIC_FADE_IN_SECONDS = 4.0
+const BACKGROUND_MUSIC_FADE_IN_SAMPLES = (BACKGROUND_MUSIC_SAMPLE_RATE * BACKGROUND_MUSIC_FADE_IN_SECONDS).int32
 
 var font: LCDFont
 
@@ -80,9 +84,11 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
         except:
             playdate.system.logToConsole(getCurrentExceptionMsg())
         # Inline try/except
-        filePlayer = try: playdate.sound.newFilePlayer("/audio/finally_see_the_light") except: nil
+        filePlayer = try: playdate.sound.newFilePlayer(BACKGROUND_MUSIC_PATH) except: nil
 
         filePlayer.play(0)
+        fileplayer.volume = 0.0 # first set folume to 0%
+        filePlayer.fadeVolume(1.0, 1.0, BACKGROUND_MUSIC_FADE_IN_SAMPLES, nil) # then fade to 100%
 
         # Add a checkmark menu item that plays a sound when switched and unpaused
         discard playdate.system.addCheckmarkMenuItem("Checkmark", false,
