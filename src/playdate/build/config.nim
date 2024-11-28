@@ -14,6 +14,10 @@ const headlessTesting = defined(simulator) and declared(test)
 const nimbleTesting = not defined(simulator) and not defined(device) and declared(test)
 const testing = headlessTesting or nimbleTesting
 
+# Use the host OS for compilation. This is useful when running supporting development tools that import the playdate SDK or where the os module needs to be available.
+# This does not make the playdate api callable, only the types (header files) are available.
+const useHostOS = defined(useHostOS)
+
 # Path to the playdate src directory when checked out locally
 const localPlaydatePath = currentSourcePath / "../../../../src"
 
@@ -45,7 +49,9 @@ switch("passC", "-Wno-unknown-pragmas")
 switch("passC", "-Wdouble-promotion")
 switch("passC", "-I" & sdkPath() / "C_API")
 
-switch("os", "any")
+if not useHostOS:
+    echo "Setting os to any"
+    switch("os", "any")
 switch("define", "useMalloc")
 switch("define", "standalone")
 switch("threads", "off")
@@ -133,8 +139,8 @@ when defined(simulator):
     switch("passC", "-DTARGET_SIMULATOR=1")
     switch("passC", "-Wstrict-prototypes")
 
-if nimbleTesting:
-    # Compiling for tests.
+if useHostOS or nimbleTesting:
+    # Compiling for host system environment.
     switch("define", "simulator")
     switch("nimcache", nimcacheDir() / "simulator")
     
