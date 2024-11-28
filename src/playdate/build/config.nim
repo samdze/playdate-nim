@@ -11,7 +11,7 @@ when not compiles(task):
     import system/nimscript
 
 const headlessTesting = defined(simulator) and declared(test)
-const nimbleTesting = not defined(simulator) and not defined(devide) and declared(test)
+const nimbleTesting = not defined(simulator) and not defined(device) and declared(test)
 const testing = headlessTesting or nimbleTesting
 
 # Path to the playdate src directory when checked out locally
