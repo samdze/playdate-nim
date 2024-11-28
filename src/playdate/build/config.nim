@@ -28,7 +28,7 @@ let nimblePlaydatePath =
     else:
         gorgeEx("nimble path playdate").output.split("\n")[0]
 
-if not testing:
+if not testing and not useHostOS:
     switch("noMain", "on")
 switch("backend", "c")
 switch("mm", "arc")
