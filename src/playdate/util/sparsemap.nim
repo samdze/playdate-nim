@@ -1,3 +1,15 @@
+##
+## A very basic sparse hashmap implementation. This implementation...
+##
+## * ...stores all memory on the stack, so it is non-resizeable
+## * ...uses a very simple linear open addressing scheme for managing collisions
+## * ...tombstones deleted entries
+## * ...silently rejects adding new values when at capacity
+##
+## An artical about the basic strategy for this implementation can be found here:
+## https://tristanpenman.com/blog/posts/2017/10/11/sparsehash-internals/
+##
+
 type
     Pair*[K, V] = tuple[key: K, value: V]
 
@@ -7,8 +19,11 @@ type
 
     DenseIdx = distinct uint32
 
-    StaticSparseMap*[N : static int, K, V] {.byref.} = object
+    StaticSparseMap*[N : static int, K, V] = object
         ## A sparse map implemented on the stack
+        ## * `N` is the maximum capacity of the map
+        ## * `K` is the type of the key
+        ## * `V` is the type for values stored in the map
         dense: array[N, Entry[K, V]]
         sparse: array[N, DenseIdx]
         size: uint32
@@ -52,6 +67,7 @@ iterator items*[N : static int, K, V](m: var StaticSparseMap[N, K, V]): var Pair
         yield m.dense[i].pair
 
 template find[N, K, V](m: var StaticSparseMap[N, K, V], key: K, exec: untyped): untyped =
+    ## Internal template for walking the Open Addressing indexes internal used to organize the keys
     for sparseIdx {.inject.} in possibleSparseIdxs[N, K](key):
         let denseIdx {.inject.} = m.sparse[sparseIdx]
 
@@ -63,10 +79,9 @@ template find[N, K, V](m: var StaticSparseMap[N, K, V], key: K, exec: untyped): 
                 exec
 
 proc contains*[N : static int, K, V](m: var StaticSparseMap[N, K, V], key: K): bool =
-    ## Whethera key is in this table
+    ## Whether a key is in this table
     m.find(key):
         return true
-    return false
 
 proc `[]`*[N : static int, K, V](m: var StaticSparseMap[N, K, V], key: K): V =
     ## Get a pointer to a key in this map
