@@ -40,6 +40,7 @@ jobs:
     strategy:
       matrix:
         nim-version: [ 2.0.8 ]
+        build-flags: [ noflag, memProfiler, memtrace, memrecord ]
     steps:
 
     - uses: actions/checkout@v3
@@ -62,6 +63,9 @@ jobs:
         export HOME="/config"
         pulseaudio -D --exit-idle-time=-1
         pactl load-module module-null-sink sink_name=SpeakerOutput sink_properties=device.description="Dummy_Output"
+
+    - run: echo 'switch("d", "${{ matrix.build-flags }}")' >> configs.nims
+      working-directory: ./tests
 
     - run: nimble simulator
       working-directory: ./tests
