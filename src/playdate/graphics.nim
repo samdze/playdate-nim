@@ -341,7 +341,7 @@ proc set*(view: var BitmapView, x, y: int, color: LCDSolidColor) =
 
 proc getDebugBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
-    return LCDBitmap(resource: this.getDebugBitmap(), free: true) # Who should manage this memory? Not clear. Auto-managed.
+    return LCDBitmap(resource: this.getDebugBitmap(), free: false) # do not free: system owns this
 
 proc copyFrameBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
@@ -411,9 +411,12 @@ proc set*(this: var LCDBitmap, x, y: int, color: LCDSolidColor = kColorBlack) =
         var data = this.getData
         data.set(x, y, color)
 
-proc setStencilImage*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, tile: bool) =
+proc setStencilImage*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, tile: bool = false) =
     privateAccess(PlaydateGraphics)
-    this.setStencilImage(bitmap.resource, if tile: 1 else: 0)
+    if bitmap == nil:
+        this.setStencilImage(nil, if tile: 1 else: 0)
+    else:
+        this.setStencilImage(bitmap.resource, if tile: 1 else: 0)
 
 proc makeFont*(this: LCDFontData, wide: bool): LCDFont =
     privateAccess(PlaydateGraphics)
