@@ -1,4 +1,4 @@
-import system/ansi_c, ../util/sparsemap
+import system/ansi_c, sparsemap, initreqs
 
 proc mprotect(a1: pointer, a2: int, a3: cint): cint {.importc, header: "<sys/mman.h>".}
 
@@ -13,8 +13,6 @@ const STACK_SIZE = 12
 const BUFFER = sizeof(byte) * 8
 
 type
-    Allocator* = proc (p: pointer; size: csize_t): pointer {.tags: [], raises: [], cdecl, gcsafe.}
-
     StackString[N : static int] = object
         data: array[N, char]
         len: int32
@@ -210,7 +208,7 @@ proc record[N: static int](stack: array[N, StackFrame] = createStackFrame[N](get
             discard c_fwrite(addr stack[i].procname, 1, stack[i].procname.len.csize_t, handle)
         c_fputc('\n', handle)
 
-proc traceAlloc(trace: var MemTrace, alloc: Allocator, size: Natural): pointer {.inline.} =
+proc traceAlloc*(trace: var MemTrace, alloc: PDRealloc, size: Natural): pointer {.inline.} =
     trace.totalAllocs += 1
     trace.check
 
@@ -231,11 +229,8 @@ proc traceAlloc(trace: var MemTrace, alloc: Allocator, size: Natural): pointer {
 
     trace.allocs[realPointer.ord] = entry
 
-proc alloc*(trace: var MemTrace, alloc: Allocator, size: Natural): pointer {.inline.} =
+proc traceRealloc*(trace: var MemTrace, alloc: PDRealloc, p: pointer, newSize: Natural): pointer {.inline.} =
     record[5]()
-    when defined(memtrace): return traceAlloc(trace, alloc, size) else: return alloc(nil, size.csize_t)
-
-proc traceRealloc(trace: var MemTrace, alloc: Allocator, p: pointer, newSize: Natural): pointer {.inline.} =
     trace.check
 
     let realInPointer = p.input
@@ -263,10 +258,7 @@ proc traceRealloc(trace: var MemTrace, alloc: Allocator, p: pointer, newSize: Na
 
     trace.allocs[realOutPointer.ord] = entry
 
-proc realloc*(trace: var MemTrace, alloc: Allocator, p: pointer, newSize: Natural): pointer {.inline.} =
-    when defined(memtrace): return traceRealloc(trace, alloc, p, newSize) else: return alloc(p, newSize.csize_t)
-
-proc traceDealloc(trace: var MemTrace, alloc: Allocator, p: pointer) {.inline.} =
+proc traceDealloc*(trace: var MemTrace, alloc: PDRealloc, p: pointer) {.inline.} =
     trace.check
     let realPointer = p.input
     if realPointer.ord notin trace.allocs:
@@ -285,6 +277,3 @@ proc traceDealloc(trace: var MemTrace, alloc: Allocator, p: pointer) {.inline.} 
         discard alloc(realPointer, 0)
         trace.deleted[realPointer.ord] = local
         trace.allocs.delete(realPointer.ord)
-
-proc dealloc*(trace: var MemTrace, alloc: Allocator, p: pointer) {.inline.} =
-    when defined(memtrace): traceDealloc(trace, alloc, p) else: discard alloc(p, 0)
