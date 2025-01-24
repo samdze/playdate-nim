@@ -31,11 +31,14 @@ proc `=destroy`(this: var LCDBitmapObj) =
 
 proc `=copy`(a: var LCDBitmapObj, b: LCDBitmapObj) {.error.}
 
-proc bitmapPtr(point: LCDBitmapPtr): auto =
+converter bitmapPtr*(point: LCDBitmapPtr): auto =
     LCDBitmap(managed: false, res: point)
 
 proc bitmapRef(point: LCDBitmapPtr): auto =
     LCDBitmap(managed: true, obj: LCDBitmapObjRef(res: point))
+
+proc `==`*(bitmap: LCDBitmap, point: LCDBitmapPtr): bool =
+    not bitmap.managed and bitmap.res == point
 
 proc resource*(bitmap: LCDBitmap): LCDBitmapPtr =
     if bitmap.managed:
@@ -53,7 +56,7 @@ type LCDVideoPlayerObj = object of RootObj
 proc `=destroy`(this: var LCDVideoPlayerObj) =
     privateAccess(PlaydateVideo)
     playdate.graphics.video.freePlayer(this.resource)
-    this.context.reset()
+    this.context = nil
 type LCDVideoPlayer* = ref LCDVideoPlayerObj
 
 proc newVideoPlayer*(this: ptr PlaydateVideo, path: string): LCDVideoPlayer {.raises: [IOError]} =
@@ -72,7 +75,7 @@ proc setContext*(this: LCDVideoPlayer, context: LCDBitmap) {.raises: [CatchableE
 proc useScreenContext*(this: LCDVideoPlayer) =
     privateAccess(PlaydateVideo)
     playdate.graphics.video.useScreenContext(this.resource)
-    this.context.reset()
+    this.context = nil
 
 proc renderFrame*(this: LCDVideoPlayer, index: int) {.raises: [CatchableError]} =
     privateAccess(PlaydateVideo)
@@ -90,7 +93,7 @@ proc getContext*(this: LCDVideoPlayer): LCDBitmap =
     privateAccess(PlaydateVideo)
     let bitmapPtr = playdate.graphics.video.getContext(this.resource)
     playdate.system.logToConsole(fmt"video context: {bitmapPtr.repr}")
-    if this.context.isNil or this.context.resource != bitmapPtr:
+    if this.context == nil or this.context.resource != bitmapPtr:
         this.context = bitmapPtr(bitmapPtr)
     return this.context
 
@@ -107,7 +110,7 @@ proc getFont*(this: ptr PlaydateGraphics): LCDFont =
 
 proc pushContext*(this: ptr PlaydateGraphics, target: LCDBitmap) =
     privateAccess(PlaydateGraphics)
-    this.pushContext(target.resource)
+    this.pushContext(if target != nil: target.resource else: nil)
 
 proc draw*(this: LCDBitmap, x: int, y: int, flip: LCDBitmapFlip) =
     privateAccess(PlaydateGraphics)
@@ -175,7 +178,7 @@ template read(bitmap: AnyBitmapData, x, y: int): untyped =
 proc getDataObj*(this: LCDBitmap): BitmapDataObj =
     ## Fetch the underlying bitmap data for an image.
     privateAccess(PlaydateGraphics)
-    assert(not this.isNil)
+    assert(this != nil)
     assert(this.resource != nil)
     playdate.graphics.getBitmapData(
         this.resource,
@@ -193,7 +196,7 @@ proc getData*(this: LCDBitmap): BitmapData =
 
 proc getSize*(this: LCDBitmap): tuple[width: int, height: int] =
     privateAccess(PlaydateGraphics)
-    assert(not this.isNil)
+    assert(this != nil)
     assert(this.resource != nil)
     var width, height: cint
     playdate.graphics.getBitmapData(this.resource, addr(width), addr(height), nil,
@@ -440,7 +443,7 @@ proc set*(this: var LCDBitmap, x, y: int, color: LCDSolidColor = kColorBlack) =
 
 proc setStencilImage*(this: ptr PlaydateGraphics, bitmap: LCDBitmap, tile: bool = false) =
     privateAccess(PlaydateGraphics)
-    if bitmap.isNil:
+    if bitmap == nil:
         this.setStencilImage(nil, if tile: 1 else: 0)
     else:
         this.setStencilImage(bitmap.resource, if tile: 1 else: 0)

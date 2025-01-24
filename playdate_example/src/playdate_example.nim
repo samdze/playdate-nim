@@ -99,8 +99,8 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
         font = try: playdate.graphics.newFont(FONT_PATH) except: nil
         playdate.graphics.setFont(font)
 
-        playdateNimBitmap = try: playdate.graphics.newBitmap(PLAYDATE_NIM_IMAGE_PATH) except: return
-        nimLogoBitmap = try: playdate.graphics.newBitmap(NIM_IMAGE_PATH) except: return
+        playdateNimBitmap = try: playdate.graphics.newBitmap(PLAYDATE_NIM_IMAGE_PATH) except: nil
+        nimLogoBitmap = try: playdate.graphics.newBitmap(NIM_IMAGE_PATH) except: nil
 
         sprite = playdate.sprite.newSprite()
         sprite.add()
