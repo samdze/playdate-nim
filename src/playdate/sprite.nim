@@ -404,12 +404,12 @@ proc setStencilPattern*(this: LCDSprite, pattern: array[8, uint8]) =
 proc clearStencil*(this: LCDSprite) =
     privateAccess(PlaydateSprite)
     playdate.sprite.clearStencil(this.resource)
-    this.stencil.reset()
+    this.stencil = nil
 
 proc setStencilImage*(this: LCDSprite, stencil: LCDBitmap, tile: bool) =
     privateAccess(PlaydateSprite)
     privateAccess(LCDBitmap)
-    playdate.sprite.setStencilImage(this.resource, stencil.resource, if tile: 1 else: 0)
+    playdate.sprite.setStencilImage(this.resource, if stencil != nil: stencil.resource else: nil, if tile: 1 else: 0)
     this.stencil = stencil
 
 proc setCenter*(this: LCDSprite, x: float32, y: float32) =
