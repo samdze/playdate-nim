@@ -2,7 +2,6 @@
 
 import std/importutils
 
-import system
 import bindings/[api, types]
 import bindings/graphics
 
@@ -12,7 +11,7 @@ export graphics
 import bindings/graphics {.all.}
 
 type LCDBitmapObj = object of RootObj
-    resource {.requiresinit.}: LCDBitmapPtr
+    resource* {.requiresinit.}: LCDBitmapPtr
     free: bool
 proc `=destroy`(this: var LCDBitmapObj) =
     privateAccess(PlaydateGraphics)
@@ -62,7 +61,7 @@ proc getInfo*(this: LCDVideoPlayer): tuple[width: int, height: int, frameRate: f
 proc getContext*(this: LCDVideoPlayer): LCDBitmap =
     privateAccess(PlaydateVideo)
     let bitmapPtr = playdate.graphics.video.getContext(this.resource)
-    playdate.system.logToConsole(fmt"video context: {bitmapPtr.repr}")
+    # echo(fmt"video context: {bitmapPtr.repr}")
     if this.context == nil or this.context.resource != bitmapPtr:
         this.context = LCDBitmap(resource: bitmapPtr, free: false)
     return this.context

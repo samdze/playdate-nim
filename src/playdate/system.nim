@@ -6,6 +6,7 @@ import sequtils
 
 import bindings/[api, types]
 import bindings/system
+import graphics
 
 # Only export public symbols, then import all
 export system
@@ -186,6 +187,15 @@ proc removeAllMenuItems*(this: ptr PlaydateSys) =
     menuItems.setLen(0)
     this.removeAllMenuItems()
 # ---
+
+proc setMenuImage*(this: ptr PlaydateSys, image: LCDBitmap, xOffset: int32 = 0) =
+    privateAccess(PlaydateSys)
+    privateAccess(PlaydateGraphics)
+    this.setMenuImage(
+        # if image != nil: image.resource else: nil
+        image.resource,
+        xOffset.cint
+    )
 
 proc getReduceFlashing* (this: ptr PlaydateSys): bool =
     privateAccess(PlaydateSys)
