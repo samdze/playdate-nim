@@ -37,7 +37,7 @@ sdktype:
         realloc {.importc: "realloc".}: proc (`ptr`: pointer; size: csize_t): pointer {.cdecl, raises: [], tags: [], gcsafe.}
         formatString {.importc: "formatString".}: proc (ret: cstringArray; fmt: cstring): cint {.
             cdecl, varargs, raises: [].}
-        logToConsole {.importc: "logToConsole".}: proc (fmt: cstring) {.cdecl, varargs, raises: [].}
+        logToConsole {.importc: "logToConsole".}: proc (fmt: ConstChar) {.cdecl, varargs, raises: [].}
         error {.importc: "error".}: proc (fmt: cstring) {.cdecl, varargs, raises: [].}
         getLanguage {.importsdk.}: proc (): PDLanguage
         getCurrentTimeMilliseconds {.importsdk.}: proc (): cuint
