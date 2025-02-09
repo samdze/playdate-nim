@@ -3,12 +3,13 @@ on: [push, pull_request]
 jobs:
 
   example-project:
-    runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
+        os: [macos-latest, ubuntu-latest]
         target: [ device, simulator ]
         nim-version: [ 2.0.8 ]
+    runs-on: ${{ matrix.os }}
+    container: nimlang/choosenim
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/build-setup
@@ -17,6 +18,8 @@ jobs:
     - uses: ./.github/actions/project-setup
       with:
         working-directory: ./playdate_example
+    - name: Check GCC version
+      run: echo gcc -v
     - run: nimble ${{ matrix.target }}
       working-directory: ./playdate_example
 
