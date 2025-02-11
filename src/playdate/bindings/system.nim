@@ -34,10 +34,10 @@ type PDMenuItemCallbackFunctionRaw {.importc: "PDMenuItemCallbackFunction", head
 # System
 sdktype:
     type PlaydateSys* {.importc: "const struct playdate_sys", header: "pd_api.h".} = object
-        realloc {.importc: "realloc".}: proc (`ptr`: pointer; size: csize_t): pointer {.cdecl, raises: [], tags: [], gcsafe.}
+        realloc {.importc: "realloc".}: PDRealloc
         formatString {.importc: "formatString".}: proc (ret: cstringArray; fmt: cstring): cint {.
             cdecl, varargs, raises: [].}
-        logToConsole {.importc: "logToConsole".}: proc (fmt: cstring) {.cdecl, varargs, raises: [].}
+        logToConsole {.importc: "logToConsole".}: PDLog
         error {.importc: "error".}: proc (fmt: cstring) {.cdecl, varargs, raises: [].}
         getLanguage {.importsdk.}: proc (): PDLanguage
         getCurrentTimeMilliseconds {.importsdk.}: proc (): cuint
