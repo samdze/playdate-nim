@@ -7,9 +7,7 @@
 ## completely self contained.
 ##
 
-type
-    PDRealloc* = proc (p: pointer; size: csize_t): pointer {.tags: [], raises: [], cdecl, gcsafe.}
-    PDLog* = proc (fmt: cstring) {.cdecl, varargs, raises: [].}
+import ../bindings/types
 
 var pdrealloc*: PDRealloc
 var pdlog*: PDLog
