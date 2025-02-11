@@ -1,3 +1,4 @@
+import util/initreqs
 
 type SDKArrayObj[T] = object
     len: int
@@ -6,7 +7,7 @@ type SDKArray*[T] = ref SDKArrayObj[T]
 
 proc `=destroy`*[T](this: var SDKArrayObj[T]) =
     if this.data != nil:
-        deallocImpl(this.data)
+        discard pdrealloc(this.data, 0)
 
 proc `[]`*[T](this: SDKArray[T]; i: Natural): lent T =
     assert i < this.len

@@ -127,7 +127,7 @@ proc bounds*(this: LCDSprite): PDRect =
 proc setImage*(this: LCDSprite, image: LCDBitmap, flip: LCDBitmapFlip) =
     privateAccess(PlaydateSprite)
     privateAccess(LCDBitmap)
-    playdate.sprite.setImage(this.resource, if image != nil: image.resource else: nil, flip)
+    playdate.sprite.setImage(this.resource, image.resource, flip)
     this.bitmap = image
 
 proc getImage*(this: LCDSprite): LCDBitmap =

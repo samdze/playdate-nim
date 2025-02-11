@@ -2,13 +2,26 @@ name: Build
 on: [push, pull_request]
 jobs:
 
+  compile-example-project-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/actions/macos-build-setup
+      with:
+        nim-version: 2.0.8
+    - uses: ./.github/actions/project-setup
+      with:
+        working-directory: ./playdate_example
+    - run: nimble simulator
+      working-directory: ./playdate_example
+  
   example-project:
-    runs-on: ubuntu-latest
-    container: nimlang/choosenim
     strategy:
       matrix:
         target: [ device, simulator ]
         nim-version: [ 2.0.8 ]
+    runs-on: ubuntu-latest
+    container: nimlang/choosenim
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/build-setup
@@ -40,6 +53,7 @@ jobs:
     strategy:
       matrix:
         nim-version: [ 2.0.8 ]
+        build-flags: [ noflag, memProfiler, memtrace, memrecord ]
     steps:
 
     - uses: actions/checkout@v3
@@ -62,6 +76,9 @@ jobs:
         export HOME="/config"
         pulseaudio -D --exit-idle-time=-1
         pactl load-module module-null-sink sink_name=SpeakerOutput sink_properties=device.description="Dummy_Output"
+
+    - run: echo 'switch("d", "${{ matrix.build-flags }}")' >> configs.nims
+      working-directory: ./tests
 
     - run: nimble simulator
       working-directory: ./tests
