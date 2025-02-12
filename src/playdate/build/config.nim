@@ -18,16 +18,6 @@ const testing = headlessTesting or nimbleTesting
 # This does not make the playdate api callable, only the types (header files) are available.
 const useHostOS = defined(useHostOS)
 
-# Path to the playdate src directory when checked out locally
-const localPlaydatePath = currentSourcePath / "../../../../src"
-
-# The path to the nimble playdate package
-let nimblePlaydatePath =
-    if dirExists(localPlaydatePath / "playdate"):
-        localPlaydatePath
-    else:
-        gorgeEx("nimble path playdate").output.split("\n")[0]
-
 if not testing and not useHostOS:
     switch("noMain", "on")
 switch("backend", "c")
@@ -180,4 +170,4 @@ else:
         switch("compile", sdkPath() / "C_API" / "buildsupport" / "setup.c")
 
     # Overrides the nim memory management code to ensure it uses the playdate allocator
-    patchFile("stdlib", "malloc", nimblePlaydatePath / "playdate/bindings/malloc")
+    patchFile("stdlib", "malloc", currentSourcePath().parentDir() /../ "bindings" / "malloc")
