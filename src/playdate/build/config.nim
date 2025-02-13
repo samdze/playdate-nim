@@ -1,9 +1,7 @@
-import os, strutils
+import std/[os, strutils], utils
 
 when defined(device):
     import strformat
-
-import utils
 
 # This file is designed to be `included` directly from a `config.nims` file, which will make `switch` and `task`
 # implicitly available. This block just fixes auto-complete in IDEs.
@@ -18,15 +16,7 @@ const testing = headlessTesting or nimbleTesting
 # This does not make the playdate api callable, only the types (header files) are available.
 const useHostOS = defined(useHostOS)
 
-# Path to the playdate src directory when checked out locally
-const localPlaydatePath = currentSourcePath / "../../../../src"
-
-# The path to the nimble playdate package
-let nimblePlaydatePath =
-    if dirExists(localPlaydatePath / "playdate"):
-        localPlaydatePath
-    else:
-        gorgeEx("nimble path playdate").output.split("\n")[0]
+let playdateSdkPath = sdkPath()
 
 if not testing and not useHostOS:
     switch("noMain", "on")
@@ -47,7 +37,7 @@ switch("passC", "-DTARGET_EXTENSION=1")
 switch("passC", "-Wall")
 switch("passC", "-Wno-unknown-pragmas")
 switch("passC", "-Wdouble-promotion")
-switch("passC", "-I" & sdkPath() / "C_API")
+switch("passC", "-I" & playdateSdkPath / "C_API")
 
 if not useHostOS:
     echo "Setting os to any"
@@ -79,7 +69,7 @@ when defined(device):
 
     switch("passL", "-nostartfiles")
     switch("passL", "-mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -D__FPU_USED=1")
-    switch("passL", "-T" & sdkPath() / "C_API" / "buildsupport" / "link_map.ld")
+    switch("passL", "-T" & playdateSdkPath / "C_API" / "buildsupport" / "link_map.ld")
     switch("passL", "-Wl,-Map=game.map,--cref,--gc-sections,--emit-relocs")
     switch("passL", "--entry eventHandlerShim")
     switch("passL", "-lc -lm -lgcc")
@@ -177,7 +167,7 @@ else:
     # they get compiled in the correct nimcache folder.
     # Windows doesn't like having setup.c compiled.
     if defined(device) or not defined(windows):
-        switch("compile", sdkPath() / "C_API" / "buildsupport" / "setup.c")
+        switch("compile", playdateSdkPath / "C_API" / "buildsupport" / "setup.c")
 
     # Overrides the nim memory management code to ensure it uses the playdate allocator
-    patchFile("stdlib", "malloc", nimblePlaydatePath / "playdate/bindings/malloc")
+    patchFile("stdlib", "malloc", currentSourcePath().parentDir() /../ "bindings" / "malloc")

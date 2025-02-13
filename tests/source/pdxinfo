@@ -1,4 +1,0 @@
-name=Playdate Tests
-author=Samuele Zolfanelli
-description=Unit tests for the Playdate Nim bindings
-bundleId=com.samdze.playdate_tests
