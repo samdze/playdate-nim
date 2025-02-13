@@ -1,3 +1,6 @@
 *.pdx
 source/pdex.*
 *.dSYM
+playdate_example.pdx.zip
+playdate_example.pdx
+source/pdxinfo

@@ -14,7 +14,11 @@
 
 {.push stackTrace: off.}
 
-import ../util/initreqs
+when (compiles do:
+    import playdate/util/initreqs):
+    import playdate/util/initreqs
+else:
+    import ../util/initreqs
 
 when defined(memProfiler):
 

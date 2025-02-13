@@ -17,7 +17,13 @@ runs:
     - run: nimble --accept refresh
       shell: bash
 
-    - run: nimble install
+    - run: nimble install --verbose
+      shell: bash
+
+    - run: echo "/github/home/.nimble/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - run: which pdn
       shell: bash
 
     - name: Locally publish playdate nimble package
