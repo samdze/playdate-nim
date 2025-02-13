@@ -177,7 +177,7 @@ proc runSimulator*(conf: PlaydateConf) =
     when defined(windows):
         exec(conf.sdkPath / "bin" / "PlaydateSimulator.exe", conf.pdxName)
     elif defined(macosx):
-        exec("open", conf.sdkPath / "bin" / "Playdate\\ Simulator.app", conf.pdxName)
+        exec("open", conf.sdkPath / "bin" / "Playdate Simulator.app", conf.pdxName)
     else:
         exec(conf.sdkPath / "bin" / "PlaydateSimulator", conf.pdxName)
 
