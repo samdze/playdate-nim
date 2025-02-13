@@ -1,4 +1,4 @@
-import system/ansi_c, sparsemap, initreqs
+import system/ansi_c, sparsemap, initreqs, ../bindings/types
 
 proc mprotect(a1: pointer, a2: int, a3: cint): cint {.importc, header: "<sys/mman.h>".}
 
