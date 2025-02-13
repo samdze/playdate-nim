@@ -2,6 +2,7 @@
 
 import std/[importutils, lists, sequtils]
 
+import domain/lcdbitmap
 import graphics {.all.}
 import types {.all.}
 import bindings/[api, utils]
