@@ -1,4 +1,0 @@
-name=Playdate Example
-author=Samuele Zolfanelli
-description=An example application using the Playdate Nim bindings
-bundleId=com.samdze.playdate_example

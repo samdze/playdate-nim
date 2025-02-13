@@ -6,6 +6,7 @@ htmldocs/
 src/tests/
 pdex.bin
 *.pdx
+tests/source/pdxinfo
 
 # macOS general
 .DS_Store
@@ -59,3 +60,8 @@ tests/playdate_tests
 
 # IntelliJ IDEA
 .idea
+nimble.develop
+nimble.paths
+
+# Binaries
+pdn

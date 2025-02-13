@@ -12,9 +12,9 @@ jobs:
     - uses: ./.github/actions/project-setup
       with:
         working-directory: ./playdate_example
-    - run: nimble simulator
+    - run: pdn simulator
       working-directory: ./playdate_example
-  
+
   example-project:
     strategy:
       matrix:
@@ -30,7 +30,7 @@ jobs:
     - uses: ./.github/actions/project-setup
       with:
         working-directory: ./playdate_example
-    - run: nimble ${{ matrix.target }}
+    - run: pdn ${{ matrix.target }}
       working-directory: ./playdate_example
 
   tests:
@@ -77,10 +77,7 @@ jobs:
         pulseaudio -D --exit-idle-time=-1
         pactl load-module module-null-sink sink_name=SpeakerOutput sink_properties=device.description="Dummy_Output"
 
-    - run: echo 'switch("d", "${{ matrix.build-flags }}")' >> configs.nims
-      working-directory: ./tests
-
-    - run: nimble simulator
+    - run: pdn simulator -d:${{ matrix.build-flags }}
       working-directory: ./tests
 
       # The first time the simulator runs, it prompts the user with an alert. Obviously, we're running headless,
@@ -99,4 +96,4 @@ jobs:
       working-directory: ./tests
       run: |
         export HOME="/config"
-        xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator tests.pdx
+        xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator playdate_tests.pdx
