@@ -1,6 +1,6 @@
 import std/importutils
-import ../bindings/[api, types, graphics] # todo add playdate folder to path so we can import relative to that folder
-import ../bindings/graphics # is it ok to import this here?
+import bindings/[api, types, graphics]
+import bindings/graphics
 
 type
     LCDBitmapObj = object of RootObj
