@@ -1,5 +1,4 @@
 import graphics
-import domain/lcdbitmap
 import std/[importutils, bitops, math, strutils]
 
 privateAccess(BitmapData)
