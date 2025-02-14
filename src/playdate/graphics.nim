@@ -2,6 +2,7 @@
 
 import std/importutils
 
+import system
 import bindings/[api, types]
 import bindings/graphics
 import domain/lcdbitmap {.all.}
@@ -55,7 +56,7 @@ proc getInfo*(this: LCDVideoPlayer): tuple[width: int, height: int, frameRate: f
 proc getContext*(this: LCDVideoPlayer): LCDBitmap =
     privateAccess(PlaydateVideo)
     let bitmapPtr = playdate.graphics.video.getContext(this.resource)
-    # echo(fmt"video context: {bitmapPtr.repr}")
+    playdate.system.logToConsole(fmt"video context: {bitmapPtr.repr}")
     if this.context == nil or this.context.resource != bitmapPtr:
         this.context = bitmapPtr(bitmapPtr)
     return this.context
