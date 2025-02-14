@@ -1,6 +1,5 @@
 import std/importutils
 import ../bindings/[api, types, graphics]
-import ../bindings/graphics
 
 type
     LCDBitmapObj = object of RootObj
