@@ -111,6 +111,13 @@ You can also build for simulator and launch it in one command:
 pdn simulate
 ```
 
+Note that the `pdn` command attempts to configure your environment as needed to
+complete the build. This includes creating a `pdxinfo` file automatically, updating your
+`config.nims`, and adding entries to your `.gitignore`. If you don't want this behavior, you
+can add the `--no-auto-config` flag, which will disable this.
+
+## Examples
+
 The example project `playdate_example` also contains VSCode launch configurations to build, start and debug your Nim application from the editor.
 
 Each project contains a `config.nims` file that can be edited to customize how the project should be built, e.g. adding libraries or other external code.
