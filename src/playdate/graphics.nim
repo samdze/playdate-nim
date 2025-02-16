@@ -5,7 +5,7 @@ import std/importutils
 import system
 import bindings/[api, types]
 import bindings/graphics
-import domain/lcdbitmap {.all.}
+import lcdbitmap {.all.}
 export lcdbitmap
 
 # Only export public symbols, then import all

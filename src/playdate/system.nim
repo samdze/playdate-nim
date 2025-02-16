@@ -6,7 +6,7 @@ import sequtils
 
 import bindings/[api, types]
 import bindings/system
-import domain/lcdbitmap {.all.}
+import lcdbitmap {.all.}
 
 # Only export public symbols, then import all
 export system
