@@ -37,6 +37,16 @@ proc update(): int =
     if kButtonA in buttonState.pushed:
         samplePlayer.play(1, 1.0)
 
+    if kButtonB in buttonState.pushed:
+        let testErrorProc = proc(): int =
+                # intentional division by 0 error
+                return 1 div 0
+        discard runCatchingTyped(
+            fun = testErrorProc,
+            fatal = false,
+            messagePrefix = "Intentional Error: "
+        )
+
     let goalX = x.toFloat
     let goalY = y.toFloat
     let res = sprite.moveWithCollisions(goalX, goalY)

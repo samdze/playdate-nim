@@ -12,6 +12,9 @@ export system
 {.hint[DuplicateModuleImport]: off.}
 import bindings/system {.all.}
 
+import std/sugar
+import std/strutils
+
 template fmt*(arg: typed): string =
     try: &(arg) except: arg
 
@@ -33,9 +36,41 @@ proc getSecondsSinceEpoch* (this: ptr PlaydateSys): tuple[seconds: uint, millise
 type PDCallbackFunction* = proc(): int {.raises: [].}
 var updateCallback: PDCallbackFunction = nil
 
+proc runCatchingTyped*[T](fun: () -> T, fatal: bool = false, messagePrefix: string=""): T =
+    try:
+        return fun()
+    except:
+        let exception = getCurrentException()
+        var message: string = ""
+        try:
+            message = &"{messagePrefix}: {getCurrentExceptionMsg()}\n{exception.getStackTrace()}"
+            # replace line number notation from (90) to :90, which is more common and can be picked up as source link
+            message = message.replace('(', ':')
+            message = message.replace(")", "")
+        except:
+            message = getCurrentExceptionMsg() & exception.getStackTrace()
+
+        for line in message.splitLines():
+            # Log the error to the console, total stack trace might be too long for single call
+            playdate.system.logToConsole(line)
+
+        if fatal:
+            playdate.system.error("FATAL:" & getCurrentExceptionMsg())
+
+proc runCatchingVoid*(fun: () -> void, fatal: bool = false, messagePrefix: string = "") =
+    let typedFun = proc(): int32 = 
+            fun()
+            return 1
+        
+    discard runCatchingTyped(
+        typedFun,
+        fatal,
+        messagePrefix
+    )
+
 proc privateUpdate(userdata: pointer): cint {.cdecl.} =
     if updateCallback != nil:
-        return updateCallback().cint
+        return runCatchingTyped(updateCallback, fatal = true).cint
     else:
         playdate.system.error("No update callback defined.")
         return 0
