@@ -1,4 +1,5 @@
-import std/[sequtils, strutils, os, times, strformat, osproc, sets, json, jsonutils], utils
+import std/[sequtils, strutils, os, strformat, osproc, sets, json]
+import utils, pdxinfo, nimbledump
 
 type
     BuildKind* = enum SimulatorBuild, DeviceBuild
@@ -9,18 +10,6 @@ type
         nimbleArgs*: seq[string]
         dump*: NimbleDump
         noAutoConfig*: bool
-
-    NimbleDump* = ref object
-        ## The data pulled from running `nimble dump --json`
-        name*, version*, nimblePath*, author*, desc*, license*: string
-
-proc getNimbleDump*(): NimbleDump =
-    ## Executes nimble with the given set of arguments
-    let (output, exitCode) = execCmdEx("nimble dump --json")
-    if exitCode != 0:
-        echo output
-        raise BuildFail.newException(fmt"Unable to extract nimble dump for package")
-    return parseJson(output).jsonTo(NimbleDump, Joptions(allowExtraKeys: true))
 
 proc exec*(command: string, args: varargs[string]) =
     ## Executes nimble with the given set of arguments
@@ -89,47 +78,12 @@ proc updateConfig(conf: PlaydateConf) =
 
     "configs.nims".fileAppend(fmt"\n\n# Added by pdn\nimport {configFile}\n")
 
-proc writePdxInfo(conf: PlaydateConf) =
-    ## Writes the pdx info file
-
-    let buildId = now().format("yyyyMMddhhmmss")
-
-    let (output, exitCode) = execCmdEx("git rev-parse HEAD")
-    let commit = if exitCode == 0: output[0..<8] else: conf.dump.version
-
-    let cartridgeName = conf.dump.name
-        .replace("_", " ")
-        .split(" ")
-        .map(proc(s: string): string = s.capitalizeAscii())
-        .join(" ")
-    let bundleAuthor = conf.dump.author
-        .toLower()
-        .replace(" ", "")
-        .replace("-", "")
-        .replace("_", "")
-    let bundleProjectName = conf.dump.name
-        .toLower()
-        .replace(" ", "")
-        .replace("-", "")
-        .replace("_", "")
-
-    let pdx = fmt"""
-        name={cartridgeName}
-        author={conf.dump.author}
-        description={conf.dump.desc}
-        bundleId=com.{bundleAuthor}.{bundleProjectName}
-        imagePath=launcher
-        version={commit}
-        buildNumber={buildId}
-        """.dedent()
-
-    createDir("source")
-    writeFile("source" / "pdxinfo", pdx)
-
 proc configureBuild*(conf: PlaydateConf) =
     if not conf.noAutoConfig:
         conf.updateConfig
-        conf.writePdxInfo
+        echo "Writing pdxinfo"
+        conf.dump.toPdxInfo.join(readPdx("./pdxinfo")).write
+        echo "Updating gitignore"
         conf.updateGitIgnore
 
 proc bundlePDX*(conf: PlaydateConf) =
