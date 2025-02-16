@@ -58,8 +58,8 @@ sdktype:
         setAutoLockDisabled {.importc: "setAutoLockDisabled".}: proc (disable: cint) {.
             cdecl, raises: [].}
         
-        setMenuImage {.importsdk.}: proc (bitmap: LCDBitmapPtr;
-            xOffset: cint)
+        setMenuImage {.importc: "setMenuImage".}: proc (bitmap: LCDBitmapPtr;
+            xOffset: cint) {.cdecl, raises: [].}
         addMenuItem {.importc: "addMenuItem".}: proc (title: cstring;
             callback: PDMenuItemCallbackFunctionRaw; userdata: pointer): PDMenuItemPtr {.
             cdecl, raises: [].}

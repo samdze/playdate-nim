@@ -5,10 +5,11 @@
 ##
 
 import playdate/api
-import ../[t_buttons, t_graphics, t_nineslice, t_files, t_midi, t_scoreboards]
+import ../[ t_system, t_buttons, t_graphics, t_nineslice, t_files, t_midi, t_scoreboards]
 
 proc runTests() {.raises: [].} =
     try:
+        execSystemTests(false)
         execButtonsTests()
         execGraphicsTests(true)
         execNineSliceTests(true)
