@@ -186,12 +186,10 @@ proc removeAllMenuItems*(this: ptr PlaydateSys) =
         item.active = false
     menuItems.setLen(0)
     this.removeAllMenuItems()
-# ---
 
 proc setMenuImage*(this: ptr PlaydateSys, image: LCDBitmap, xOffset: int32 = 0) =
     privateAccess(PlaydateSys)
     this.setMenuImage(
-        # if image != nil: image.resource else: nil
         image.resource,
         xOffset.cint
     )
