@@ -1,5 +1,5 @@
 import std/[parseopt, strutils, os, macros, options]
-import playdate/build/[utils, actions]
+import playdate/build/[utils, actions, nimbledump]
 
 type
     BuildCommand = enum simulate, simulator, device, clean, bundle
