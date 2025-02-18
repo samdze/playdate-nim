@@ -1,6 +1,6 @@
 {.push raises: [].}
 
-import utils, types
+import utils, types, ../util/initreqs
 
 type LCDRect* {.importc: "LCDRect", header: "pd_api.h".} = object
     left* {.importc.}: int # int32?
@@ -73,8 +73,10 @@ type LCDBitmapTablePtr {.importc: "LCDBitmapTable*", header: "pd_api.h".} = poin
 type LCDFontPtr {.importc: "LCDFont*", header: "pd_api.h".} = pointer
 type LCDFontObj = object
     resource: LCDFontPtr
+
 proc `=destroy`(this: var LCDFontObj) =
-    discard utils.realloc(this.resource, 0)
+    discard pdrealloc(this.resource, 0)
+
 type LCDFont* = ref LCDFontObj
 
 type LCDFontDataPtr {.importc: "LCDFontData*", header: "pd_api.h".} = object
@@ -83,15 +85,19 @@ type LCDFontData* = LCDFontDataPtr
 type LCDFontPagePtr {.importc: "LCDFontPage*", header: "pd_api.h".} = pointer
 type LCDFontPageObj = object
     resource: LCDFontPagePtr
+
 proc `=destroy`(this: var LCDFontPageObj) =
-    discard utils.realloc(this.resource, 0)
+    discard pdrealloc(this.resource, 0)
+
 type LCDFontPage* = ref LCDFontPageObj
 
 type LCDFontGlyphPtr {.importc: "LCDFontGlyph*", header: "pd_api.h".} = pointer
 type LCDFontGlyphObj = object
     resource: LCDFontGlyphPtr
+
 proc `=destroy`(this: var LCDFontGlyphObj) =
-    discard utils.realloc(this.resource, 0)
+    discard pdrealloc(this.resource, 0)
+
 type LCDFontGlyph* = ref LCDFontGlyphObj
 
 type LCDVideoPlayerRaw {.importc: "LCDVideoPlayer", header: "pd_api.h".} = object
@@ -186,6 +192,8 @@ sdktype:
             table: LCDBitmapTablePtr; outerr: ptr cstring) {.cdecl, raises: [].}
         getTableBitmap {.importc: "getTableBitmap".}: proc (table: LCDBitmapTablePtr;
             idx: cint): LCDBitmapPtr {.cdecl, raises: [].}
+        getBitmapTableInfo {.importc: "getBitmapTableInfo".}: proc (table: LCDBitmapTablePtr;
+            outCount: ptr cint; outCellsWide: ptr cint) {.cdecl, raises: [].}
 
         loadFont {.importc: "loadFont".}: proc (path: cstring, outErr: ptr cstring): LCDFontPtr {.cdecl, raises: [].}
 

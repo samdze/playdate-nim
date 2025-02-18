@@ -3,6 +3,10 @@ import playdate/api
 const FONT_PATH = "/System/Fonts/Asheville-Sans-14-Bold.pft"
 const NIM_IMAGE_PATH = "/images/nim_logo"
 const PLAYDATE_NIM_IMAGE_PATH = "/images/playdate_nim"
+const BACKGROUND_MUSIC_PATH = "/audio/finally_see_the_light"
+const BACKGROUND_MUSIC_SAMPLE_RATE = 48_000
+const BACKGROUND_MUSIC_FADE_IN_SECONDS = 4.0
+const BACKGROUND_MUSIC_FADE_IN_SAMPLES = (BACKGROUND_MUSIC_SAMPLE_RATE * BACKGROUND_MUSIC_FADE_IN_SECONDS).int32
 
 var font: LCDFont
 
@@ -19,18 +23,18 @@ var y = int(LCD_ROWS / 2) + 32
 
 proc update(): int =
     # playdate is the global PlaydateAPI instance, available when playdate/api is imported
-    let buttonsState = playdate.system.getButtonsState()
+    let buttonState = playdate.system.getButtonState()
 
-    if kButtonRight in buttonsState.current:
+    if kButtonRight in buttonState.current:
         x += 10
-    if kButtonLeft in buttonsState.current:
+    if kButtonLeft in buttonState.current:
         x -= 10
-    if kButtonUp in buttonsState.current:
+    if kButtonUp in buttonState.current:
         y -= 10
-    if kButtonDown in buttonsState.current:
+    if kButtonDown in buttonState.current:
         y += 10
 
-    if kButtonA in buttonsState.pushed:
+    if kButtonA in buttonState.pushed:
         samplePlayer.play(1, 1.0)
 
     let goalX = x.toFloat
@@ -74,12 +78,17 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
         # Errors are handled through exceptions
         try:
             samplePlayer = playdate.sound.newSamplePlayer("/audio/jingle")
+
+            samplePlayer.finishCallback = proc(player: SamplePlayer) =
+                playdate.system.logToConsole("Sound finished playing.")
         except:
             playdate.system.logToConsole(getCurrentExceptionMsg())
         # Inline try/except
-        filePlayer = try: playdate.sound.newFilePlayer("/audio/finally_see_the_light") except: nil
+        filePlayer = try: playdate.sound.newFilePlayer(BACKGROUND_MUSIC_PATH) except: nil
 
         filePlayer.play(0)
+        fileplayer.volume = 0.0 # first set folume to 0%
+        filePlayer.fadeVolume(1.0, 1.0, BACKGROUND_MUSIC_FADE_IN_SAMPLES, nil) # then fade to 100%
 
         # Add a checkmark menu item that plays a sound when switched and unpaused
         discard playdate.system.addCheckmarkMenuItem("Checkmark", false,

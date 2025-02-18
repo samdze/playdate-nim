@@ -1,6 +1,11 @@
 import macros
 
-var realloc*: proc(p: pointer, size: csize_t): pointer {.cdecl.}
+iterator items*[T](rawField: ptr UncheckedArray[T], len: Natural): T =
+    ## iterate through a C array
+    ## To convert to a Nim seq:
+    ## `cArray.items(count).toSeq`
+    for i in 0..<len:
+        yield rawField[i]
 
 func toNimSymbol(typeSymbol: string): string =
     case typeSymbol:

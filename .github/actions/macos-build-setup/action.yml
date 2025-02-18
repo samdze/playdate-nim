@@ -1,0 +1,39 @@
+name: macos build setup
+inputs:
+  nim-version:
+    required: true
+runs:
+  using: "composite"
+  steps:
+
+    - name: Git safe directory
+      shell: bash
+      run: git config --global --add safe.directory "$(pwd)"
+
+    - uses: iffy/install-nim@v5
+      with:
+        version: ${{ inputs.nim-version }}
+    - run: nimble --accept refresh
+      shell: bash
+
+    - run: nimble install
+      shell: bash
+
+    - name: Locally publish playdate nimble package
+      shell: bash
+      if: ${{ startsWith(inputs.nim-version, '1.') }}
+      run: nimble develop
+
+    - name: Install Playdate SDK
+      id: playdate
+      uses: pd-rs/get-playdate-sdk@0.4
+      with:
+        version: latest # possible values: version `x.x.x` or `latest` by default
+
+    - name: print playdate sdk info
+      shell: bash
+      run: |
+        echo "SDK path env: $PLAYDATE_SDK_PATH"
+        echo "SDK root out: ${{ steps.playdate.outputs.root }}"
+        echo "SDK version: ${{ steps.playdate.outputs.version }}"
+        pdc --version # because SDK/bin already in PATH

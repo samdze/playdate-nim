@@ -1,6 +1,6 @@
 {.push raises: [].}
 
-import graphics, system, file, display, sprite, sound, lua
+import graphics, system, file, display, sprite, sound, scoreboards, lua
 
 type PlaydateAPI* {.importc: "PlaydateAPI", header: "pd_api.h".} = object
     system* {.importc: "system".}: ptr PlaydateSys
@@ -9,6 +9,7 @@ type PlaydateAPI* {.importc: "PlaydateAPI", header: "pd_api.h".} = object
     sprite* {.importc: "sprite".}: ptr PlaydateSprite
     display* {.importc: "display".}: ptr PlaydateDisplay
     sound* {.importc: "sound".}: ptr PlaydateSound
+    scoreboards* {.importc: "scoreboards".}: ptr PlaydateScoreboards
     lua* {.importc: "lua".}: ptr PlaydateLua
     # json* {.importc: "json".}: ptr PlaydateJSON # Unavailable, use std/json
 

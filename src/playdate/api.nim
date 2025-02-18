@@ -1,14 +1,13 @@
 {.push raises: [].}
 
 import macros
-import std/importutils
+import std/importutils, util/initreqs
 
-import bindings/utils {.all.} as memory
-import bindings/api
+import bindings/[api, initreqs]
 export api
 
-import graphics, system, file, sprite, display, sound, lua, json, utils, types
-export graphics, system, file, sprite, display, sound, lua, json, utils, types
+import graphics, system, file, sprite, display, sound, scoreboards, lua, json, utils, types, nineslice
+export graphics, system, file, sprite, display, sound, scoreboards, lua, json, utils, types, nineslice
 
 macro initSDK*() =
     return quote do:
@@ -16,10 +15,11 @@ macro initSDK*() =
 
         proc eventHandler(playdateAPI: ptr PlaydateAPI, event: PDSystemEvent, arg: uint32): cint {.cdecl, exportc.} =
             privateAccess(PlaydateSys)
+            privateAccess(PlaydateFile)
             if event == kEventInit:
+                initPrereqs(playdateAPI.system.realloc, playdateAPI.system.logToConsole)
                 NimMain()
                 api.playdate = playdateAPI
-                memory.realloc = playdateAPI.system.realloc
             handler(event, arg)
             return 0
 

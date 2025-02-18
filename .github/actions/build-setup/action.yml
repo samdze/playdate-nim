@@ -1,0 +1,54 @@
+name: Common build setup
+inputs:
+  nim-version:
+    required: true
+runs:
+  using: "composite"
+  steps:
+
+    - name: Git safe directory
+      shell: bash
+      run: git config --global --add safe.directory "$(pwd)"
+
+    - name: Install Nim
+      shell: bash
+      run: choosenim -y update ${{ inputs.nim-version }}
+
+    - run: nimble --accept refresh
+      shell: bash
+
+    - run: nimble install --verbose
+      shell: bash
+
+    - run: echo "/github/home/.nimble/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - run: which pdn
+      shell: bash
+
+    - name: Locally publish playdate nimble package
+      shell: bash
+      if: ${{ startsWith(inputs.nim-version, '1.') }}
+      run: nimble develop
+
+    # Some of the apt dependencies require input from the installer. This disables those
+    # prompts so we can do a headless install
+    - name: Force non-interactive apt installations
+      shell: bash
+      run: echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+
+    - name: Update Apt dependencies
+      shell: bash
+      run: apt-get update
+
+    - name: Install apt dependencies
+      shell: bash
+      run: apt-get install -y libpng16-16 gcc-arm-none-eabi wget
+
+    - name: Download playdate SDK
+      shell: bash
+      run: wget -qO- https://download.panic.com/playdate_sdk/linux/playdatesdk-latest.tar.gz | tar xvz
+
+    - name: Set PLAYDATE_SDK_PATH
+      shell: bash
+      run: echo "PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d))" >> "$GITHUB_ENV"

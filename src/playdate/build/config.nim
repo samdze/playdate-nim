@@ -1,8 +1,7 @@
-import os
+import std/[os, strutils], utils
+
 when defined(device):
     import strformat
-
-import utils
 
 # This file is designed to be `included` directly from a `config.nims` file, which will make `switch` and `task`
 # implicitly available. This block just fixes auto-complete in IDEs.
@@ -10,10 +9,16 @@ when not compiles(task):
     import system/nimscript
 
 const headlessTesting = defined(simulator) and declared(test)
-const nimbleTesting = not defined(simulator) and not defined(devide) and declared(test)
+const nimbleTesting = not defined(simulator) and not defined(device) and declared(test)
 const testing = headlessTesting or nimbleTesting
 
-if not testing:
+# Use the host OS for compilation. This is useful when running supporting development tools that import the playdate SDK or where the os module needs to be available.
+# This does not make the playdate api callable, only the types (header files) are available.
+const useHostOS = defined(useHostOS)
+
+let playdateSdkPath = sdkPath()
+
+if not testing and not useHostOS:
     switch("noMain", "on")
 switch("backend", "c")
 switch("mm", "arc")
@@ -32,10 +37,16 @@ switch("passC", "-DTARGET_EXTENSION=1")
 switch("passC", "-Wall")
 switch("passC", "-Wno-unknown-pragmas")
 switch("passC", "-Wdouble-promotion")
-switch("passC", "-I" & sdkPath() / "C_API")
+switch("passC", "-I" & playdateSdkPath / "C_API")
+
+if not useHostOS:
+    echo "Setting os to any"
+    switch("os", "any")
+switch("define", "useMalloc")
+switch("define", "standalone")
+switch("threads", "off")
 
 when defined(device):
-    switch("os", "any")
     switch("gcc.options.always", "")
 
     switch("nimcache", nimcacheDir() / "device")
@@ -43,11 +54,8 @@ when defined(device):
     switch("app", "console")
     switch("cpu", "arm")
     switch("checks", "off")
-    switch("threads", "off")
     switch("assertions", "off")
     switch("hotCodeReloading", "off")
-    switch("define", "useMalloc")
-    switch("define", "standalone")
 
     let heapSize = 8388208
     let stackSize = 61800
@@ -61,14 +69,17 @@ when defined(device):
 
     switch("passL", "-nostartfiles")
     switch("passL", "-mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -D__FPU_USED=1")
-    switch("passL", "-T" & sdkPath() / "C_API" / "buildsupport" / "link_map.ld")
+    switch("passL", "-T" & playdateSdkPath / "C_API" / "buildsupport" / "link_map.ld")
     switch("passL", "-Wl,-Map=game.map,--cref,--gc-sections,--emit-relocs")
     switch("passL", "--entry eventHandlerShim")
     switch("passL", "-lc -lm -lgcc")
 
     if defined(release):
         switch("define", "release")
-        switch("opt", "speed")
+        # Normally, one would use opt = speed, which implies O3 (optimization level 3),
+        # but O2 outperforms O3 on the Playdate
+        switch("opt", "none")
+        switch("passC", "-O2")
         switch("debuginfo", "off")
         switch("index", "off")
         switch("stackTrace", "off")
@@ -114,14 +125,12 @@ when defined(simulator):
     switch("opt", "none")
 
     switch("define", "debug")
-    switch("define", "nimAllocPagesViaMalloc")
-    switch("define", "nimPage256")
 
     switch("passC", "-DTARGET_SIMULATOR=1")
     switch("passC", "-Wstrict-prototypes")
 
-if nimbleTesting:
-    # Compiling for tests.
+if useHostOS or nimbleTesting:
+    # Compiling for host system environment.
     switch("define", "simulator")
     switch("nimcache", nimcacheDir() / "simulator")
     
@@ -154,8 +163,11 @@ if nimbleTesting:
     switch("passC", "-DTARGET_SIMULATOR=1")
     switch("passC", "-Wstrict-prototypes")
 else:
-    # Add extra files to compile last, so that 
+    # Add extra files to compile last, so that
     # they get compiled in the correct nimcache folder.
     # Windows doesn't like having setup.c compiled.
     if defined(device) or not defined(windows):
-        switch("compile", sdkPath() / "C_API" / "buildsupport" / "setup.c")
+        switch("compile", playdateSdkPath / "C_API" / "buildsupport" / "setup.c")
+
+    # Overrides the nim memory management code to ensure it uses the playdate allocator
+    patchFile("stdlib", "malloc", currentSourcePath().parentDir() /../ "bindings" / "malloc")

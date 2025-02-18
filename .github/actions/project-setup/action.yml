@@ -1,0 +1,12 @@
+name: Common setup steps for a playdate nimble project
+inputs:
+  working-directory:
+    required: true
+runs:
+  using: "composite"
+  steps:
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: nimble install --depsOnly --accept

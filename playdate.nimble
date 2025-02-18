@@ -1,13 +1,13 @@
 # Package
 
-version       = "0.13.0"
+version       = "0.22.0"
 author        = "Samuele Zolfanelli"
 description   = "Playdate Nim bindings with extra features."
 license       = "MIT"
 srcDir        = "src"
-
+installExt    = @["nim"]
+bin           = @["pdn"]
 
 # Dependencies
 
-requires "nim >= 1.6.10"
-# requires "nimble < 0.14.0"
+requires "nim >= 2.0.0"

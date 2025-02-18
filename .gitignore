@@ -7,6 +7,7 @@ src/tests/
 pdex.bin
 *.pdx
 docs
+tests/source/pdxinfo
 
 # macOS general
 .DS_Store
@@ -57,3 +58,11 @@ $RECYCLE.BIN/
 tests/t_*
 !tests/t_*.*
 tests/playdate_tests
+
+# IntelliJ IDEA
+.idea
+nimble.develop
+nimble.paths
+
+# Binaries
+pdn

@@ -84,10 +84,20 @@ proc remove*(this: LCDSprite) =
     # spritesData.remove(dataNode[])
     playdate.sprite.setUserdata(this.resource, nil)
 
-proc removeSprites*(this: ptr PlaydateSprite, sprites: seq[LCDSprite]) =
+proc removeSprites*(this: ptr PlaydateSprite, sprites: openarray[LCDSprite]) =
     privateAccess(PlaydateSprite)
-    let spritePointers = sprites.map(proc(s: LCDSprite): LCDSpritePtr = return s.resource)
-    this.removeSprites(cast[ptr LCDSpritePtr](unsafeAddr(spritePointers[0])), spritePointers.len.cint)
+
+    var count = 0
+    var spritePointers: array[10, LCDSpritePtr]
+    for sprite in sprites:
+        if count == 10:
+            count = 0
+            this.removeSprites(addr spritePointers[0], count.cint)
+        spritePointers[count] = sprite.resource
+        count += 1
+    if count > 0:
+        this.removeSprites(addr spritePointers[0], count.cint)
+
     for i, s in sprites:
         let dataNode = cast[ptr DoublyLinkedNodeObj[LCDSprite]](this.getUserdata(s.resource))
         if dataNode == nil:
@@ -117,7 +127,7 @@ proc bounds*(this: LCDSprite): PDRect =
 proc setImage*(this: LCDSprite, image: LCDBitmap, flip: LCDBitmapFlip) =
     privateAccess(PlaydateSprite)
     privateAccess(LCDBitmap)
-    playdate.sprite.setImage(this.resource, if image != nil: image.resource else: nil, flip)
+    playdate.sprite.setImage(this.resource, image.resource, flip)
     this.bitmap = image
 
 proc getImage*(this: LCDSprite): LCDBitmap =
