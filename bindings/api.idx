@@ -1,0 +1,4 @@
+nimTitle	api	bindings/api.html	module src/playdate/bindings/api		0
+nim	PlaydateAPI	bindings/api.html#PlaydateAPI	object PlaydateAPI		5
+nim	PDSystemEvent	bindings/api.html#PDSystemEvent	enum PDSystemEvent		16
+nim	playdate	bindings/api.html#playdate	var playdate		21

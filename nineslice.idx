@@ -1,0 +1,4 @@
+nimTitle	nineslice	nineslice.html	module src/playdate/nineslice		0
+nim	NineSlice	nineslice.html#NineSlice	type NineSlice		21
+nim	newNineSlice	nineslice.html#newNineSlice,LCDBitmap	proc newNineSlice(source: LCDBitmap): NineSlice		102
+nim	draw	nineslice.html#draw,LCDBitmap,NineSlice	proc draw(target: var LCDBitmap; source: NineSlice)		154

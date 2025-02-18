@@ -1,0 +1,18 @@
+nimTitle	scoreboards	scoreboards.html	module src/playdate/scoreboards		0
+nim	PDScore	scoreboards.html#PDScore	object PDScore		15
+nim	PDScoresList	scoreboards.html#PDScoresList	object PDScoresList		19
+nim	PDBoard	scoreboards.html#PDBoard	object PDBoard		27
+nim	PDBoardsList	scoreboards.html#PDBoardsList	object PDBoardsList		30
+nim	PDResultSuccess	scoreboards.html#PDResultSuccess	PDResultKind.PDResultSuccess		34
+nim	PDResultUnavailable	scoreboards.html#PDResultUnavailable	PDResultKind.PDResultUnavailable		34
+nim	PDResultError	scoreboards.html#PDResultError	PDResultKind.PDResultError		34
+nim	PDResultKind	scoreboards.html#PDResultKind	enum PDResultKind		34
+nim	PDResult	scoreboards.html#PDResult	object PDResult		40
+nim	PersonalBestCallback	scoreboards.html#PersonalBestCallback	type PersonalBestCallback		46
+nim	AddScoreCallback	scoreboards.html#AddScoreCallback	type AddScoreCallback		47
+nim	BoardsListCallback	scoreboards.html#BoardsListCallback	type BoardsListCallback		48
+nim	ScoresCallback	scoreboards.html#ScoresCallback	type ScoresCallback		49
+nim	getPersonalBest	scoreboards.html#getPersonalBest,ptr.PlaydateScoreboards,string,PersonalBestCallback	proc getPersonalBest(this: ptr PlaydateScoreboards; boardID: string;\n                callback: PersonalBestCallback): int32		97
+nim	addScore	scoreboards.html#addScore,ptr.PlaydateScoreboards,string,uint32,AddScoreCallback	proc addScore(this: ptr PlaydateScoreboards; boardID: string; value: uint32;\n         callback: AddScoreCallback): int32		103
+nim	getScoreboards	scoreboards.html#getScoreboards,ptr.PlaydateScoreboards,BoardsListCallback	proc getScoreboards(this: ptr PlaydateScoreboards; callback: BoardsListCallback): int32		109
+nim	getScores	scoreboards.html#getScores,ptr.PlaydateScoreboards,string,ScoresCallback	proc getScores(this: ptr PlaydateScoreboards; boardID: string;\n          callback: ScoresCallback): int32		114

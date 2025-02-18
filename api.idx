@@ -1,0 +1,2 @@
+nimTitle	api	api.html	module src/playdate/api		0
+nim	initSDK	api.html#initSDK.m	macro initSDK()		12

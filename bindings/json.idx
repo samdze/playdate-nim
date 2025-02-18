@@ -1,0 +1,13 @@
+nimTitle	json	bindings/json.html	module src/playdate/bindings/json		0
+nim	JSONValueUnion	bindings/json.html#JSONValueUnion	object JSONValueUnion		8
+nim	JSONValueType	bindings/json.html#JSONValueType	enum JSONValueType		16
+nim	JSONValue	bindings/json.html#JSONValue	object JSONValue		19
+nim	intValue	bindings/json.html#intValue,JSONValue	proc intValue(this: JSONValue): int		23
+nim	floatValue	bindings/json.html#floatValue,JSONValue	proc floatValue(this: JSONValue): float		36
+nim	boolValue	bindings/json.html#boolValue,JSONValue	proc boolValue(this: JSONValue): bool		49
+nim	stringValue	bindings/json.html#stringValue,JSONValue	proc stringValue(this: JSONValue): string		52
+nim	JSONDecoder	bindings/json.html#JSONDecoder	object JSONDecoder		55
+nim	JSONReader	bindings/json.html#JSONReader	object JSONReader		75
+nim	WriteFunc	bindings/json.html#WriteFunc	type WriteFunc		81
+nim	JSONEncoder	bindings/json.html#JSONEncoder	object JSONEncoder		82
+nim	PlaydateJSON	bindings/json.html#PlaydateJSON	object PlaydateJSON		108

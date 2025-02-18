@@ -1,0 +1,16 @@
+nimTitle	lua	lua.html	module src/playdate/lua		0
+nim	LuaError	lua.html#LuaError	object LuaError		14
+nim	addFunction	lua.html#addFunction,ptr.PlaydateLua,LuaNimFunction,string	proc addFunction(this: ptr PlaydateLua; function: LuaNimFunction; name: string)		16
+nim	getArgCount	lua.html#getArgCount,ptr.PlaydateLua	proc getArgCount(this: ptr PlaydateLua): int		27
+nim	getArgType	lua.html#getArgType,ptr.PlaydateLua,int	proc getArgType(this: ptr PlaydateLua; position: int): LuaType		31
+nim	getArgClass	lua.html#getArgClass,ptr.PlaydateLua,int	proc getArgClass(this: ptr PlaydateLua; position: int): string		38
+nim	argIsNil	lua.html#argIsNil,ptr.PlaydateLua,int	proc argIsNil(this: ptr PlaydateLua; position: int): bool		46
+nim	getArgBool	lua.html#getArgBool,ptr.PlaydateLua,int	proc getArgBool(this: ptr PlaydateLua; position: int): bool		52
+nim	getArgFloat	lua.html#getArgFloat,ptr.PlaydateLua,int	proc getArgFloat(this: ptr PlaydateLua; position: int): float32		58
+nim	getArgInt	lua.html#getArgInt,ptr.PlaydateLua,int	proc getArgInt(this: ptr PlaydateLua; position: int): int		64
+nim	getArgString	lua.html#getArgString,ptr.PlaydateLua,int	proc getArgString(this: ptr PlaydateLua; position: int): string		70
+nim	pushBool	lua.html#pushBool,ptr.PlaydateLua,bool	proc pushBool(this: ptr PlaydateLua; value: bool)		84
+nim	pushInt	lua.html#pushInt,ptr.PlaydateLua,int	proc pushInt(this: ptr PlaydateLua; value: int)		88
+nim	pushFloat	lua.html#pushFloat,ptr.PlaydateLua,float32	proc pushFloat(this: ptr PlaydateLua; value: float32)		92
+nim	pushString	lua.html#pushString,ptr.PlaydateLua,string	proc pushString(this: ptr PlaydateLua; value: string)		96
+nim	callFunction	lua.html#callFunction,ptr.PlaydateLua,string,int	proc callFunction(this: ptr PlaydateLua; name: string; argsCount: int = 0)		116

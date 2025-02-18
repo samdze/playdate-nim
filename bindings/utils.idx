@@ -1,0 +1,4 @@
+nimTitle	utils	bindings/utils.html	module src/playdate/bindings/utils		0
+nim	items	bindings/utils.html#items.i,ptr.UncheckedArray[T],Natural	iterator items[T](rawField: ptr UncheckedArray[T]; len: Natural): T		3
+nim	generateSDKPtrProcDef	bindings/utils.html#generateSDKPtrProcDef,NimNode,string,string,string	proc generateSDKPtrProcDef(rawProcDef: NimNode; rawProcName: string;\n                      typeName: string; procName: string): NimNode		95
+nim	sdktype	bindings/utils.html#sdktype.m,untyped	macro sdktype(ast: untyped): untyped		266

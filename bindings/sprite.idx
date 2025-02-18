@@ -1,0 +1,10 @@
+nimTitle	sprite	bindings/sprite.html	module src/playdate/bindings/sprite		0
+nim	SpriteCollisionResponseType	bindings/sprite.html#SpriteCollisionResponseType	enum SpriteCollisionResponseType		3
+nim	PDRect	bindings/sprite.html#PDRect	object PDRect		7
+nim	PDRectMake	bindings/sprite.html#PDRectMake,cfloat,cfloat,cfloat,cfloat	proc PDRectMake(x: cfloat; y: cfloat; width: cfloat; height: cfloat): PDRect		13
+nim	CollisionPoint	bindings/sprite.html#CollisionPoint	object CollisionPoint		17
+nim	CollisionVector	bindings/sprite.html#CollisionVector	object CollisionVector		21
+nim	SpriteCollisionInfo	bindings/sprite.html#SpriteCollisionInfo	object SpriteCollisionInfo		27
+nim	SpriteQueryInfo	bindings/sprite.html#SpriteQueryInfo	object SpriteQueryInfo		40
+nim	PlaydateSprite	bindings/sprite.html#PlaydateSprite	object PlaydateSprite		55
+nim	getSpriteCount	bindings/sprite.html#getSpriteCount,ptr.PlaydateSprite	proc getSpriteCount(this: ptr PlaydateSprite): int		54

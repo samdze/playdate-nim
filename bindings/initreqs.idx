@@ -1,0 +1,3 @@
+nimTitle	initreqs	bindings/initreqs.html	module src/playdate/bindings/initreqs		0
+nim	pdrealloc	bindings/initreqs.html#pdrealloc	var pdrealloc		6
+nim	initPrereqs	bindings/initreqs.html#initPrereqs,auto	proc initPrereqs(realloc: auto)		8

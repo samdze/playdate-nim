@@ -1,0 +1,4 @@
+nimTitle	initreqs	util/initreqs.html	module src/playdate/util/initreqs		0
+nim	pdrealloc	util/initreqs.html#pdrealloc	var pdrealloc		12
+nim	pdlog	util/initreqs.html#pdlog	var pdlog		13
+nim	initPrereqs	util/initreqs.html#initPrereqs,PDRealloc,PDLog	proc initPrereqs(realloc: PDRealloc; log: PDLog)		15

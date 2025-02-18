@@ -1,0 +1,13 @@
+nimTitle	scoreboards	bindings/scoreboards.html	module src/playdate/bindings/scoreboards		0
+nim	PDScoreRaw	bindings/scoreboards.html#PDScoreRaw	object PDScoreRaw		6
+nim	PDScorePtr	bindings/scoreboards.html#PDScorePtr	type PDScorePtr		11
+nim	PDScoresListRaw	bindings/scoreboards.html#PDScoresListRaw	object PDScoresListRaw		13
+nim	PDScoresListPtr	bindings/scoreboards.html#PDScoresListPtr	type PDScoresListPtr		21
+nim	PDBoardRaw	bindings/scoreboards.html#PDBoardRaw	object PDBoardRaw		23
+nim	PDBoardsListRaw	bindings/scoreboards.html#PDBoardsListRaw	object PDBoardsListRaw		27
+nim	PDBoardsListPtr	bindings/scoreboards.html#PDBoardsListPtr	type PDBoardsListPtr		32
+nim	PersonalBestCallbackRaw	bindings/scoreboards.html#PersonalBestCallbackRaw	type PersonalBestCallbackRaw		34
+nim	AddScoreCallbackRaw	bindings/scoreboards.html#AddScoreCallbackRaw	type AddScoreCallbackRaw		35
+nim	BoardsListCallbackRaw	bindings/scoreboards.html#BoardsListCallbackRaw	type BoardsListCallbackRaw		36
+nim	ScoresCallbackRaw	bindings/scoreboards.html#ScoresCallbackRaw	type ScoresCallbackRaw		37
+nim	PlaydateScoreboards	bindings/scoreboards.html#PlaydateScoreboards	object PlaydateScoreboards		40

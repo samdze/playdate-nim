@@ -1,0 +1,33 @@
+nimTitle	system	system.html	module src/playdate/system		0
+nim	fmt	system.html#fmt.t,typed	template fmt(arg: typed): string		15
+nim	logToConsole	system.html#logToConsole,ptr.PlaydateSys,string	proc logToConsole(this: ptr PlaydateSys; str: string)		18
+nim	error	system.html#error,ptr.PlaydateSys,string	proc error(this: ptr PlaydateSys; str: string)		22
+nim	getSecondsSinceEpoch	system.html#getSecondsSinceEpoch,ptr.PlaydateSys	proc getSecondsSinceEpoch(this: ptr PlaydateSys): tuple[seconds: uint,\n    milliseconds: uint]		26
+nim	PDCallbackFunction	system.html#PDCallbackFunction	type PDCallbackFunction		33
+nim	setUpdateCallback	system.html#setUpdateCallback,ptr.PlaydateSys,PDCallbackFunction	proc setUpdateCallback(this: ptr PlaydateSys; update: PDCallbackFunction)		43
+nim	getButtonState	system.html#getButtonState,ptr.PlaydateSys	proc getButtonState(this: ptr PlaydateSys): tuple[current: PDButtons,\n    pushed: PDButtons, released: PDButtons]		49
+nim	getAccelerometer	system.html#getAccelerometer,ptr.PlaydateSys	proc getAccelerometer(this: ptr PlaydateSys): tuple[x: float32, y: float32,\n    z: float32]		55
+nim	isCrankDocked	system.html#isCrankDocked,ptr.PlaydateSys	proc isCrankDocked(this: ptr PlaydateSys): bool		61
+nim	setCrankSoundsEnabled	system.html#setCrankSoundsEnabled,ptr.PlaydateSys,bool	proc setCrankSoundsEnabled(this: ptr PlaydateSys; enabled: bool): bool		65
+nim	getFlipped	system.html#getFlipped,ptr.PlaydateSys	proc getFlipped(this: ptr PlaydateSys): bool		69
+nim	setAutoLockEnabled	system.html#setAutoLockEnabled,ptr.PlaydateSys,bool	proc setAutoLockEnabled(this: ptr PlaydateSys; enabled: bool)		73
+nim	isActive	system.html#isActive,PDMenuItem	proc isActive(this: PDMenuItem): bool		81
+nim	title=	system.html#title=,PDMenuItem,string	proc title=(this: PDMenuItem; title: string)		85
+nim	title	system.html#title,PDMenuItem	proc title(this: PDMenuItem): string		90
+nim	remove	system.html#remove,PDMenuItem	proc remove(this: PDMenuItem)		95
+nim	value=	system.html#value=,PDMenuItemCheckmark,bool	proc value=(this: PDMenuItemCheckmark; checked: bool)		112
+nim	value	system.html#value,PDMenuItemCheckmark	proc value(this: PDMenuItemCheckmark): bool		117
+nim	value=	system.html#value=,PDMenuItemOptions,int	proc value=(this: PDMenuItemOptions; index: int)		122
+nim	value	system.html#value,PDMenuItemOptions	proc value(this: PDMenuItemOptions): int		127
+nim	PDMenuItemButtonCallbackFunction	system.html#PDMenuItemButtonCallbackFunction	type PDMenuItemButtonCallbackFunction		132
+nim	PDMenuItemCheckmarkCallbackFunction	system.html#PDMenuItemCheckmarkCallbackFunction	type PDMenuItemCheckmarkCallbackFunction		133
+nim	PDMenuItemOptionsCallbackFunction	system.html#PDMenuItemOptionsCallbackFunction	type PDMenuItemOptionsCallbackFunction		134
+nim	addMenuItem	system.html#addMenuItem,ptr.PlaydateSys,string,PDMenuItemButtonCallbackFunction	proc addMenuItem(this: ptr PlaydateSys; title: string;\n            callback: PDMenuItemButtonCallbackFunction): PDMenuItemButton		148
+nim	addCheckmarkMenuItem	system.html#addCheckmarkMenuItem,ptr.PlaydateSys,string,bool,PDMenuItemCheckmarkCallbackFunction	proc addCheckmarkMenuItem(this: ptr PlaydateSys; title: string; checked: bool;\n                     callback: PDMenuItemCheckmarkCallbackFunction): PDMenuItemCheckmark		157
+nim	addOptionsMenuItem	system.html#addOptionsMenuItem,ptr.PlaydateSys,string,seq[string],PDMenuItemOptionsCallbackFunction	proc addOptionsMenuItem(this: ptr PlaydateSys; title: string; options: seq[string];\n                   callback: PDMenuItemOptionsCallbackFunction): PDMenuItemOptions		166
+nim	getAllMenuItems	system.html#getAllMenuItems,ptr.PlaydateSys	proc getAllMenuItems(this: ptr PlaydateSys): seq[PDMenuItem]		178
+nim	removeAllMenuItems	system.html#removeAllMenuItems,ptr.PlaydateSys	proc removeAllMenuItems(this: ptr PlaydateSys)		181
+nim	getReduceFlashing	system.html#getReduceFlashing,ptr.PlaydateSys	proc getReduceFlashing(this: ptr PlaydateSys): bool		190
+nim	randomize	system.html#randomize,ptr.PlaydateSys	proc randomize(this: ptr PlaydateSys)		197
+nimgrp	value=	system.html#value=-procs-all	proc		112
+nimgrp	value	system.html#value-procs-all	proc		117

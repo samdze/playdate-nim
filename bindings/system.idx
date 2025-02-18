@@ -1,0 +1,19 @@
+nimTitle	system	bindings/system.html	module src/playdate/bindings/system		0
+nim	PDButton	bindings/system.html#PDButton	enum PDButton		6
+nim	PDButtons	bindings/system.html#PDButtons	type PDButtons		10
+nim	PDLanguage	bindings/system.html#PDLanguage	enum PDLanguage		12
+nim	PDMenuItem	bindings/system.html#PDMenuItem	type PDMenuItem		17
+nim	PDMenuItemButton	bindings/system.html#PDMenuItemButton	type PDMenuItemButton		20
+nim	PDMenuItemCheckmark	bindings/system.html#PDMenuItemCheckmark	type PDMenuItemCheckmark		22
+nim	PDMenuItemOptions	bindings/system.html#PDMenuItemOptions	type PDMenuItemOptions		24
+nim	PDPeripherals	bindings/system.html#PDPeripherals	enum PDPeripherals		27
+nim	PlaydateSys	bindings/system.html#PlaydateSys	object PlaydateSys		36
+nim	getLanguage	bindings/system.html#getLanguage,ptr.PlaydateSys	proc getLanguage(this: ptr PlaydateSys): PDLanguage		42
+nim	getCurrentTimeMilliseconds	bindings/system.html#getCurrentTimeMilliseconds,ptr.PlaydateSys	proc getCurrentTimeMilliseconds(this: ptr PlaydateSys): uint		43
+nim	drawFPS	bindings/system.html#drawFPS,ptr.PlaydateSys,int,int	proc drawFPS(this: ptr PlaydateSys; x: int; y: int)		45
+nim	getCrankChange	bindings/system.html#getCrankChange,ptr.PlaydateSys	proc getCrankChange(this: ptr PlaydateSys): float32		52
+nim	getCrankAngle	bindings/system.html#getCrankAngle,ptr.PlaydateSys	proc getCrankAngle(this: ptr PlaydateSys): float32		53
+nim	setMenuImage	bindings/system.html#setMenuImage,ptr.PlaydateSys,LCDBitmapPtr,int	proc setMenuImage(this: ptr PlaydateSys; bitmap: LCDBitmapPtr; xOffset: int)		62
+nim	getElapsedTime	bindings/system.html#getElapsedTime,ptr.PlaydateSys	proc getElapsedTime(this: ptr PlaydateSys): float32		89
+nim	getBatteryPercentage	bindings/system.html#getBatteryPercentage,ptr.PlaydateSys	proc getBatteryPercentage(this: ptr PlaydateSys): float32		91
+nim	getBatteryVoltage	bindings/system.html#getBatteryVoltage,ptr.PlaydateSys	proc getBatteryVoltage(this: ptr PlaydateSys): float32		35

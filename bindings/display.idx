@@ -1,0 +1,7 @@
+nimTitle	display	bindings/display.html	module src/playdate/bindings/display		0
+nim	PlaydateDisplay	bindings/display.html#PlaydateDisplay	object PlaydateDisplay		6
+nim	getWidth	bindings/display.html#getWidth,ptr.PlaydateDisplay	proc getWidth(this: ptr PlaydateDisplay): int		8
+nim	getHeight	bindings/display.html#getHeight,ptr.PlaydateDisplay	proc getHeight(this: ptr PlaydateDisplay): int		9
+nim	setScale	bindings/display.html#setScale,ptr.PlaydateDisplay,uint	proc setScale(this: ptr PlaydateDisplay; s: uint)		10
+nim	setMosaic	bindings/display.html#setMosaic,ptr.PlaydateDisplay,uint,uint	proc setMosaic(this: ptr PlaydateDisplay; x: uint; y: uint)		11
+nim	setOffset	bindings/display.html#setOffset,ptr.PlaydateDisplay,int,int	proc setOffset(this: ptr PlaydateDisplay; x: int; y: int)		5

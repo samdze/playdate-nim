@@ -1,0 +1,20 @@
+nimTitle	file	file.html	module src/playdate/file		0
+nim	SDFile	file.html#SDFile	type SDFile		18
+nim	listFiles	file.html#listFiles,ptr.PlaydateFile,string,bool	proc listFiles(this: ptr PlaydateFile; path: string; showHidden: bool = false): seq[\n    string]		41
+nim	stat	file.html#stat,ptr.PlaydateFile,string	proc stat(this: ptr PlaydateFile; path: string): FileStat		47
+nim	exists	file.html#exists,ptr.PlaydateFile,string	proc exists(this: ptr PlaydateFile; path: string): bool		53
+nim	unlink	file.html#unlink,ptr.PlaydateFile,string,bool	proc unlink(this: ptr PlaydateFile; path: string; recursive: bool)		58
+nim	mkdir	file.html#mkdir,ptr.PlaydateFile,string	proc mkdir(this: ptr PlaydateFile; path: string)		62
+nim	rename	file.html#rename,ptr.PlaydateFile,string,string	proc rename(this: ptr PlaydateFile; fromName: string; to: string)		66
+nim	close	file.html#close,SDFile	proc close(this: SDFile)		70
+nim	flush	file.html#flush,SDFile	proc flush(this: SDFile): int		74
+nim	open	file.html#open,ptr.PlaydateFile,string,FileOptions	proc open(this: ptr PlaydateFile; path: string; mode: FileOptions): SDFile		78
+nim	read	file.html#read,SDFile,uint	proc read(this: SDFile; length: uint): tuple[bytes: seq[byte], length: int]		82
+nim	read	file.html#read,SDFile	proc read(this: SDFile): seq[byte]		88
+nim	readString	file.html#readString,SDFile	proc readString(this: SDFile): string		95
+nim	seek	file.html#seek,SDFile,int,int	proc seek(this: SDFile; pos: int; whence: int)		102
+nim	tell	file.html#tell,SDFile	proc tell(this: SDFile): int		106
+nim	write	file.html#write,SDFile,seq[byte],uint	proc write(this: SDFile; buffer: seq[byte]; length: uint): int		110
+nim	write	file.html#write,SDFile,string	proc write(this: SDFile; content: string): int		115
+nimgrp	write	file.html#write-procs-all	proc		110
+nimgrp	read	file.html#read-procs-all	proc		82

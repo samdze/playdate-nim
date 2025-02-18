@@ -1,0 +1,10 @@
+nimTitle	types	types.html	module src/playdate/types		0
+nim	SDKArray	types.html#SDKArray	type SDKArray		6
+nim	`=destroy`	types.html#=destroy,SDKArrayObj[T]	proc `=destroy`[T](this: var SDKArrayObj[T])		8
+nim	`[]`	types.html#[],SDKArray[T],Natural	proc `[]`[T](this: SDKArray[T]; i: Natural): lent T		12
+nim	`[]=`	types.html#[]=,SDKArray[T],Natural,sinkT	proc `[]=`[T](this: var SDKArray[T]; i: Natural; y: sink T)		16
+nim	len	types.html#len,SDKArray[T]	proc len[T](this: SDKArray[T]): int		20
+nim	items	types.html#items.i,SDKArray[T]	iterator items[T](this: SDKArray[T]): lent T		22
+nim	mitems	types.html#mitems.i,SDKArray[T]	iterator mitems[T](this: var SDKArray[T]): var T		28
+nim	pairs	types.html#pairs.i,SDKArray[T]	iterator pairs[T](this: SDKArray[T]): tuple[key: int, val: T]		34
+nim	mpairs	types.html#mpairs.i,SDKArray[T]	iterator mpairs[T](this: var SDKArray[T]): tuple[key: int, val: var T]		40

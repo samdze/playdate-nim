@@ -1,0 +1,2 @@
+nimTitle	json	json.html	module src/playdate/json		0
+nim	newJSONDecoder	json.html#newJSONDecoder,ptr.PlaydateJSON	proc newJSONDecoder(this: ptr PlaydateJSON): JSONDecoderRes		25

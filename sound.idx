@@ -1,0 +1,84 @@
+nimTitle	sound	sound.html	module src/playdate/sound		0
+nim	AudioSample	sound.html#AudioSample	type AudioSample		17
+nim	PDSoundCallbackFunction	sound.html#PDSoundCallbackFunction	type PDSoundCallbackFunction		19
+nim	newAudioSample	sound.html#newAudioSample,ptr.PlaydateSound,int32	proc newAudioSample(this: ptr PlaydateSound; bytes: int32): AudioSample		26
+nim	newAudioSample	sound.html#newAudioSample,ptr.PlaydateSound,string	proc newAudioSample(this: ptr PlaydateSound; path: string): AudioSample		31
+nim	load	sound.html#load,AudioSample,string	proc load(this: AudioSample; path: string)		39
+nim	getLength	sound.html#getLength,AudioSample	proc getLength(this: AudioSample): float32		44
+nim	SoundSource	sound.html#SoundSource	type SoundSource		52
+nim	FilePlayer	sound.html#FilePlayer	type FilePlayer		59
+nim	PDFilePlayerCallbackFunction	sound.html#PDFilePlayerCallbackFunction	type PDFilePlayerCallbackFunction		61
+nim	newFilePlayer	sound.html#newFilePlayer,ptr.PlaydateSound	proc newFilePlayer(this: ptr PlaydateSound): FilePlayer		68
+nim	newFilePlayer	sound.html#newFilePlayer,ptr.PlaydateSound,string	proc newFilePlayer(this: ptr PlaydateSound; path: string): FilePlayer		73
+nim	load	sound.html#load,FilePlayer,string	proc load(this: FilePlayer; path: string)		80
+nim	play	sound.html#play,FilePlayer,int	proc play(this: FilePlayer; repeat: int)		86
+nim	isPlaying	sound.html#isPlaying,FilePlayer	proc isPlaying(this: FilePlayer): bool		91
+nim	pause	sound.html#pause,FilePlayer	proc pause(this: FilePlayer)		96
+nim	stop	sound.html#stop,FilePlayer	proc stop(this: FilePlayer)		101
+nim	volume	sound.html#volume,FilePlayer	proc volume(this: FilePlayer): tuple[left: float32, right: float32]		106
+nim	volume=	sound.html#volume=,FilePlayer,float32	proc volume=(this: FilePlayer; volume: float32)		113
+nim	setVolume	sound.html#setVolume,FilePlayer,float32,float32	proc setVolume(this: FilePlayer; left: float32; right: float32)		118
+nim	getLength	sound.html#getLength,FilePlayer	proc getLength(this: FilePlayer): float32		123
+nim	offset	sound.html#offset,FilePlayer	proc offset(this: FilePlayer): float32		128
+nim	offset=	sound.html#offset=,FilePlayer,float32	proc offset=(this: FilePlayer; offset: float32)		133
+nim	setFinishCallback	sound.html#setFinishCallback,FilePlayer,PDFilePlayerCallbackFunction	proc setFinishCallback(this: FilePlayer; callback: PDFilePlayerCallbackFunction)		148
+nim	fadeVolume	sound.html#fadeVolume,FilePlayer,float32,float32,int32,PDFilePlayerCallbackFunction	proc fadeVolume(this: FilePlayer; left, right: float32; len: int32;\n           callback: PDFilePlayerCallbackFunction)		157
+nim	finishCallback	sound.html#finishCallback,FilePlayer	proc finishCallback(this: FilePlayer): PDFilePlayerCallbackFunction		166
+nim	finishCallback=	sound.html#finishCallback=,FilePlayer,PDFilePlayerCallbackFunction	proc finishCallback=(this: FilePlayer; callback: PDFilePlayerCallbackFunction)		169
+nim	SamplePlayer	sound.html#SamplePlayer	type SamplePlayer		177
+nim	PDSamplePlayerCallbackFunction	sound.html#PDSamplePlayerCallbackFunction	type PDSamplePlayerCallbackFunction		179
+nim	newSamplePlayer	sound.html#newSamplePlayer,ptr.PlaydateSound	proc newSamplePlayer(this: ptr PlaydateSound): SamplePlayer		187
+nim	sample	sound.html#sample,SamplePlayer	proc sample(this: SamplePlayer): AudioSample		192
+nim	sample=	sound.html#sample=,SamplePlayer,AudioSample	proc sample=(this: SamplePlayer; sample: AudioSample)		195
+nim	newSamplePlayer	sound.html#newSamplePlayer,ptr.PlaydateSound,string	proc newSamplePlayer(this: ptr PlaydateSound; path: string): SamplePlayer		201
+nim	volume	sound.html#volume,SamplePlayer	proc volume(this: SamplePlayer): tuple[left: float32, right: float32]		207
+nim	volume=	sound.html#volume=,SamplePlayer,float32	proc volume=(this: SamplePlayer; volume: float32)		214
+nim	setVolume	sound.html#setVolume,SamplePlayer,float32,float32	proc setVolume(this: SamplePlayer; left: float32; right: float32)		219
+nim	offset=	sound.html#offset=,SamplePlayer,float32	proc offset=(this: SamplePlayer; offset: float32)		224
+nim	offset	sound.html#offset,SamplePlayer	proc offset(this: SamplePlayer): float32		229
+nim	play	sound.html#play,SamplePlayer,int,float32	proc play(this: SamplePlayer; repeat: int; rate: float32)		234
+nim	stop	sound.html#stop,SamplePlayer	proc stop(this: SamplePlayer)		239
+nim	isPlaying	sound.html#isPlaying,SamplePlayer	proc isPlaying(this: SamplePlayer): bool		244
+nim	setPaused	sound.html#setPaused,SamplePlayer,bool	proc setPaused(this: SamplePlayer; paused: bool)		249
+nim	rate=	sound.html#rate=,SamplePlayer,float32	proc rate=(this: SamplePlayer; rate: float32)		254
+nim	rate	sound.html#rate,SamplePlayer	proc rate(this: SamplePlayer): float32		259
+nim	setFinishCallback	sound.html#setFinishCallback,SamplePlayer,PDSamplePlayerCallbackFunction	proc setFinishCallback(this: SamplePlayer; callback: PDSamplePlayerCallbackFunction)		269
+nim	finishCallback	sound.html#finishCallback,SamplePlayer	proc finishCallback(this: SamplePlayer): PDSamplePlayerCallbackFunction		278
+nim	finishCallback=	sound.html#finishCallback=,SamplePlayer,PDSamplePlayerCallbackFunction	proc finishCallback=(this: SamplePlayer; callback: PDSamplePlayerCallbackFunction)		281
+nim	setPlayRange	sound.html#setPlayRange,SamplePlayer,int32,int32	proc setPlayRange(this: SamplePlayer; start: int32; end: int32)		284
+nim	setHeadphoneChangedCallback	sound.html#setHeadphoneChangedCallback,ptr.PlaydateSound,proc(bool,bool)	proc setHeadphoneChangedCallback(this: ptr PlaydateSound;\n                            changed: proc (headphone: bool; microphone: bool))		296
+nim	getHeadphoneState	sound.html#getHeadphoneState,ptr.PlaydateSound	proc getHeadphoneState(this: ptr PlaydateSound): tuple[headphone: bool,\n    microphone: bool]		304
+nim	setOutputsActive	sound.html#setOutputsActive,ptr.PlaydateSound,bool,bool	proc setOutputsActive(this: ptr PlaydateSound; headphone: bool; speaker: bool)		310
+nim	SoundSequence	sound.html#SoundSequence	type SoundSequence		318
+nim	PDSoundSequenceCallbackFunction	sound.html#PDSoundSequenceCallbackFunction	type PDSoundSequenceCallbackFunction		320
+nim	`=destroy`	sound.html#=destroy,SoundSequenceObj	proc `=destroy`(this: var SoundSequenceObj)		322
+nim	newSequence	sound.html#newSequence,ptr.PlaydateSoundSequence	proc newSequence(this: ptr PlaydateSoundSequence): SoundSequence		326
+nim	loadMIDIFile	sound.html#loadMIDIFile,SoundSequence,string	proc loadMIDIFile(this: var SoundSequence; path: string)		334
+nim	getTime	sound.html#getTime,SoundSequence	proc getTime(this: SoundSequence): uint32		338
+nim	setTime	sound.html#setTime,SoundSequence,uint32	proc setTime(this: SoundSequence; time: uint32)		342
+nim	setLoops	sound.html#setLoops,SoundSequence,int32,int32,int32	proc setLoops(this: SoundSequence; loopstart, loopend, loops: int32)		346
+nim	allNotesOff	sound.html#allNotesOff,SoundSequence	proc allNotesOff(this: SoundSequence)		350
+nim	isPlaying	sound.html#isPlaying,SoundSequence	proc isPlaying(this: SoundSequence): bool		354
+nim	getLength	sound.html#getLength,SoundSequence	proc getLength(this: SoundSequence): uint32		358
+nim	play	sound.html#play,SoundSequence,SequenceFinishedCallback	proc play(this: SoundSequence; finishCallback: SequenceFinishedCallback = nil)		362
+nim	stop	sound.html#stop,SoundSequence	proc stop(this: SoundSequence)		366
+nim	getCurrentStep	sound.html#getCurrentStep,SoundSequence	proc getCurrentStep(this: SoundSequence): int32		370
+nim	setCurrentStep	sound.html#setCurrentStep,SoundSequence,int32,int32,int32	proc setCurrentStep(this: SoundSequence; step, timeOffset, playNotes: int32)		374
+nim	getTempo	sound.html#getTempo,SoundSequence	proc getTempo(this: SoundSequence): float32		378
+nim	setTempo	sound.html#setTempo,SoundSequence,float32	proc setTempo(this: SoundSequence; stepsPerSecond: float32)		382
+nimgrp	newsampleplayer	sound.html#newSamplePlayer-procs-all	proc		187
+nimgrp	newaudiosample	sound.html#newAudioSample-procs-all	proc		26
+nimgrp	play	sound.html#play-procs-all	proc		86
+nimgrp	isplaying	sound.html#isPlaying-procs-all	proc		91
+nimgrp	offset	sound.html#offset-procs-all	proc		128
+nimgrp	setvolume	sound.html#setVolume-procs-all	proc		118
+nimgrp	finishcallback=	sound.html#finishCallback=-procs-all	proc		169
+nimgrp	finishcallback	sound.html#finishCallback-procs-all	proc		166
+nimgrp	stop	sound.html#stop-procs-all	proc		101
+nimgrp	volume=	sound.html#volume=-procs-all	proc		113
+nimgrp	newfileplayer	sound.html#newFilePlayer-procs-all	proc		68
+nimgrp	offset=	sound.html#offset=-procs-all	proc		133
+nimgrp	load	sound.html#load-procs-all	proc		39
+nimgrp	getlength	sound.html#getLength-procs-all	proc		44
+nimgrp	volume	sound.html#volume-procs-all	proc		106
+nimgrp	setfinishcallback	sound.html#setFinishCallback-procs-all	proc		148

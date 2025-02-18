@@ -1,0 +1,7 @@
+nimTitle	types	bindings/types.html	module src/playdate/bindings/types		0
+nim	ConstChar	bindings/types.html#ConstChar	type ConstChar		2
+nim	ConstCharPtr	bindings/types.html#ConstCharPtr	type ConstCharPtr		3
+nim	Char	bindings/types.html#Char	type Char		4
+nim	LCDBitmapPtr	bindings/types.html#LCDBitmapPtr	type LCDBitmapPtr		5
+nim	PDLog	bindings/types.html#PDLog	type PDLog		7
+nim	PDRealloc	bindings/types.html#PDRealloc	type PDRealloc		10

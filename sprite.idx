@@ -1,0 +1,61 @@
+nimTitle	sprite	sprite.html	module src/playdate/sprite		0
+nim	LCDSprite	sprite.html#LCDSprite	type LCDSprite		23
+nim	LCDSpriteCollisionFilterProc	sprite.html#LCDSpriteCollisionFilterProc	type LCDSpriteCollisionFilterProc		25
+nim	LCDSpriteDrawFunction	sprite.html#LCDSpriteDrawFunction	type LCDSpriteDrawFunction		26
+nim	LCDSpriteUpdateFunction	sprite.html#LCDSpriteUpdateFunction	type LCDSpriteUpdateFunction		27
+nim	setAlwaysRedraw	sprite.html#setAlwaysRedraw,ptr.PlaydateSprite,bool	proc setAlwaysRedraw(this: ptr PlaydateSprite; flag: bool)		40
+nim	moveTo	sprite.html#moveTo,LCDSprite,cfloat,cfloat	proc moveTo(this: LCDSprite; x: cfloat; y: cfloat)		44
+nim	moveBy	sprite.html#moveBy,LCDSprite,cfloat,cfloat	proc moveBy(this: LCDSprite; x: cfloat; y: cfloat)		48
+nim	newSprite	sprite.html#newSprite,ptr.PlaydateSprite	proc newSprite(this: ptr PlaydateSprite): LCDSprite		53
+nim	copy	sprite.html#copy,LCDSprite	proc copy(this: LCDSprite): LCDSprite		58
+nim	add	sprite.html#add,LCDSprite	proc add(this: LCDSprite)		63
+nim	remove	sprite.html#remove,LCDSprite	proc remove(this: LCDSprite)		74
+nim	removeSprites	sprite.html#removeSprites,ptr.PlaydateSprite,openArray[LCDSprite]	proc removeSprites(this: ptr PlaydateSprite; sprites: openArray[LCDSprite])		87
+nim	removeAllSprites	sprite.html#removeAllSprites,ptr.PlaydateSprite	proc removeAllSprites(this: ptr PlaydateSprite)		112
+nim	bounds=	sprite.html#bounds=,LCDSprite,PDRect	proc bounds=(this: LCDSprite; bounds: PDRect)		119
+nim	bounds	sprite.html#bounds,LCDSprite	proc bounds(this: LCDSprite): PDRect		123
+nim	setImage	sprite.html#setImage,LCDSprite,LCDBitmap,LCDBitmapFlip	proc setImage(this: LCDSprite; image: LCDBitmap; flip: LCDBitmapFlip)		127
+nim	getImage	sprite.html#getImage,LCDSprite	proc getImage(this: LCDSprite): LCDBitmap		133
+nim	setSize	sprite.html#setSize,LCDSprite,float32,float32	proc setSize(this: LCDSprite; width: float32; height: float32)		137
+nim	zIndex=	sprite.html#zIndex=,LCDSprite,int16	proc zIndex=(this: LCDSprite; zIndex: int16)		141
+nim	zIndex	sprite.html#zIndex,LCDSprite	proc zIndex(this: LCDSprite): int16		145
+nim	setDrawMode	sprite.html#setDrawMode,LCDSprite,LCDBitmapDrawMode	proc setDrawMode(this: LCDSprite; mode: LCDBitmapDrawMode)		149
+nim	imageFlip=	sprite.html#imageFlip=,LCDSprite,LCDBitmapFlip	proc imageFlip=(this: LCDSprite; flip: LCDBitmapFlip)		153
+nim	imageFlip	sprite.html#imageFlip,LCDSprite	proc imageFlip(this: LCDSprite): LCDBitmapFlip		157
+nim	setClipRect	sprite.html#setClipRect,LCDSprite,LCDRect	proc setClipRect(this: LCDSprite; clipRect: LCDRect)		161
+nim	clearClipRect	sprite.html#clearClipRect,LCDSprite	proc clearClipRect(this: LCDSprite)		165
+nim	setClipRectsInRange	sprite.html#setClipRectsInRange,LCDRect,int,int	proc setClipRectsInRange(clipRect: LCDRect; startZ: int; endZ: int)		169
+nim	clearClipRectsInRange	sprite.html#clearClipRectsInRange,int,int	proc clearClipRectsInRange(startZ: int; endZ: int)		173
+nim	updatesEnabled=	sprite.html#updatesEnabled=,LCDSprite,bool	proc updatesEnabled=(this: LCDSprite; enabled: bool)		177
+nim	updatesEnabled	sprite.html#updatesEnabled,LCDSprite	proc updatesEnabled(this: LCDSprite): bool		181
+nim	collisionsEnabled=	sprite.html#collisionsEnabled=,LCDSprite,bool	proc collisionsEnabled=(this: LCDSprite; flag: bool)		185
+nim	collisionsEnabled	sprite.html#collisionsEnabled,LCDSprite	proc collisionsEnabled(this: LCDSprite): bool		189
+nim	visible=	sprite.html#visible=,LCDSprite,bool	proc visible=(this: LCDSprite; flag: bool)		193
+nim	visible	sprite.html#visible,LCDSprite	proc visible(this: LCDSprite): bool		197
+nim	setOpaque	sprite.html#setOpaque,LCDSprite,bool	proc setOpaque(this: LCDSprite; flag: bool)		201
+nim	markDirty	sprite.html#markDirty,LCDSprite	proc markDirty(this: LCDSprite)		205
+nim	tag=	sprite.html#tag=,LCDSprite,uint8	proc tag=(this: LCDSprite; tag: uint8)		209
+nim	tag	sprite.html#tag,LCDSprite	proc tag(this: LCDSprite): uint8		213
+nim	setIgnoresDrawOffset	sprite.html#setIgnoresDrawOffset,LCDSprite,bool	proc setIgnoresDrawOffset(this: LCDSprite; flag: bool)		217
+nim	setUpdateFunction	sprite.html#setUpdateFunction,LCDSprite,LCDSpriteUpdateFunction	proc setUpdateFunction(this: LCDSprite; update: LCDSpriteUpdateFunction)		227
+nim	setDrawFunction	sprite.html#setDrawFunction,LCDSprite,LCDSpriteDrawFunction	proc setDrawFunction(this: LCDSprite; draw: LCDSpriteDrawFunction)		238
+nim	getPosition	sprite.html#getPosition,LCDSprite	proc getPosition(this: LCDSprite): tuple[x: float32, y: float32]		246
+nim	collideRect=	sprite.html#collideRect=,LCDSprite,PDRect	proc collideRect=(this: LCDSprite; collideRect: PDRect)		253
+nim	collideRect	sprite.html#collideRect,LCDSprite	proc collideRect(this: LCDSprite): PDRect		257
+nim	clearCollideRect	sprite.html#clearCollideRect,LCDSprite	proc clearCollideRect(this: LCDSprite)		261
+nim	setCollisionResponseFunction	sprite.html#setCollisionResponseFunction,LCDSprite,LCDSpriteCollisionFilterProc	proc setCollisionResponseFunction(this: LCDSprite;\n                             filter: LCDSpriteCollisionFilterProc)		272
+nim	sprite	sprite.html#sprite,SpriteCollisionInfo	proc sprite(this: SpriteCollisionInfo): LCDSprite		278
+nim	other	sprite.html#other,SpriteCollisionInfo	proc other(this: SpriteCollisionInfo): LCDSprite		286
+nim	checkCollisions	sprite.html#checkCollisions,LCDSprite,float32,float32	proc checkCollisions(this: LCDSprite; goalX: float32; goalY: float32): tuple[\n    actualX: float32, actualY: float32,\n    collisions: SDKArray[SpriteCollisionInfo]]		308
+nim	moveWithCollisions	sprite.html#moveWithCollisions,LCDSprite,float32,float32	proc moveWithCollisions(this: LCDSprite; goalX: float32; goalY: float32): tuple[\n    actualX: float32, actualY: float32,\n    collisions: SDKArray[SpriteCollisionInfo]]		321
+nim	querySpritesAtPoint	sprite.html#querySpritesAtPoint,ptr.PlaydateSprite,float32,float32	proc querySpritesAtPoint(this: ptr PlaydateSprite; x, y: float32): seq[LCDSprite]		333
+nim	querySpritesInRect	sprite.html#querySpritesInRect,ptr.PlaydateSprite,float32,float32,float32,float32	proc querySpritesInRect(this: ptr PlaydateSprite; x, y, width, height: float32): seq[\n    LCDSprite]		345
+nim	querySpritesAlongLine	sprite.html#querySpritesAlongLine,ptr.PlaydateSprite,float32,float32,float32,float32	proc querySpritesAlongLine(this: ptr PlaydateSprite; x1, y1, x2, y2: float32): seq[\n    LCDSprite]		357
+nim	querySpriteInfoAlongLine	sprite.html#querySpriteInfoAlongLine,ptr.PlaydateSprite,float32,float32,float32,float32	proc querySpriteInfoAlongLine(this: ptr PlaydateSprite; x1, y1, x2, y2: float32): SDKArray[\n    SpriteQueryInfo]		369
+nim	overlappingSprites	sprite.html#overlappingSprites,LCDSprite	proc overlappingSprites(this: LCDSprite): seq[LCDSprite]		376
+nim	allOverlappingSprites	sprite.html#allOverlappingSprites,ptr.PlaydateSprite	proc allOverlappingSprites(this: ptr PlaydateSprite): seq[LCDSprite]		388
+nim	setStencilPattern	sprite.html#setStencilPattern,LCDSprite,array[,uint8]	proc setStencilPattern(this: LCDSprite; pattern: array[8, uint8])		400
+nim	clearStencil	sprite.html#clearStencil,LCDSprite	proc clearStencil(this: LCDSprite)		404
+nim	setStencilImage	sprite.html#setStencilImage,LCDSprite,LCDBitmap,bool	proc setStencilImage(this: LCDSprite; stencil: LCDBitmap; tile: bool)		409
+nim	setCenter	sprite.html#setCenter,LCDSprite,float32,float32	proc setCenter(this: LCDSprite; x: float32; y: float32)		415
+nim	getCenter	sprite.html#getCenter,LCDSprite	proc getCenter(this: LCDSprite): tuple[x: float32, y: float32]		419

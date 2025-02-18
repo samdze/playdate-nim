@@ -1,0 +1,7 @@
+nimTitle	file	bindings/file.html	module src/playdate/bindings/file		0
+nim	FileOptions	bindings/file.html#FileOptions	enum FileOptions		7
+nim	FileStat	bindings/file.html#FileStat	type FileStat		22
+nim	SEEK_SET	bindings/file.html#SEEK_SET	const SEEK_SET		26
+nim	SEEK_CUR	bindings/file.html#SEEK_CUR	const SEEK_CUR		27
+nim	SEEK_END	bindings/file.html#SEEK_END	const SEEK_END		28
+nim	PlaydateFile	bindings/file.html#PlaydateFile	object PlaydateFile		31

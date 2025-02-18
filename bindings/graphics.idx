@@ -1,0 +1,43 @@
+nimTitle	graphics	bindings/graphics.html	module src/playdate/bindings/graphics		0
+nim	LCDRect	bindings/graphics.html#LCDRect	object LCDRect		5
+nim	makeLCDRect	bindings/graphics.html#makeLCDRect,int,int,int,int	proc makeLCDRect(x: int; y: int; width: int; height: int): LCDRect		11
+nim	translateLCDRect	bindings/graphics.html#translateLCDRect,LCDRect,int,int	proc translateLCDRect(rect: LCDRect; dx: int; dy: int): LCDRect		14
+nim	LCD_COLUMNS	bindings/graphics.html#LCD_COLUMNS	const LCD_COLUMNS		16
+nim	LCD_ROWS	bindings/graphics.html#LCD_ROWS	const LCD_ROWS		17
+nim	LCD_ROWSIZE	bindings/graphics.html#LCD_ROWSIZE	const LCD_ROWSIZE		18
+nim	LCD_SCREEN_RECT	bindings/graphics.html#LCD_SCREEN_RECT	const LCD_SCREEN_RECT		19
+nim	LCDBitmapDrawMode	bindings/graphics.html#LCDBitmapDrawMode	enum LCDBitmapDrawMode		22
+nim	LCDBitmapFlip	bindings/graphics.html#LCDBitmapFlip	enum LCDBitmapFlip		27
+nim	LCDSolidColor	bindings/graphics.html#LCDSolidColor	enum LCDSolidColor		30
+nim	LCDLineCapStyle	bindings/graphics.html#LCDLineCapStyle	enum LCDLineCapStyle		33
+nim	LCDFontLanguage	bindings/graphics.html#LCDFontLanguage	enum LCDFontLanguage		36
+nim	PDStringEncoding	bindings/graphics.html#PDStringEncoding	enum PDStringEncoding		39
+nim	LCDPattern	bindings/graphics.html#LCDPattern	type LCDPattern		44
+nim	LCDColor	bindings/graphics.html#LCDColor	type LCDColor		54
+nim	makeLCDPattern	bindings/graphics.html#makeLCDPattern,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8	proc makeLCDPattern(r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, ra, rb, rc, rd, re, rf: uint8): LCDPattern		61
+nim	makeLCDOpaquePattern	bindings/graphics.html#makeLCDOpaquePattern,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8	proc makeLCDOpaquePattern(r0, r1, r2, r3, r4, r5, r6, r7: uint8): LCDPattern		64
+nim	LCDPolygonFillRule	bindings/graphics.html#LCDPolygonFillRule	enum LCDPolygonFillRule		67
+nim	LCDFont	bindings/graphics.html#LCDFont	type LCDFont		80
+nim	LCDFontData	bindings/graphics.html#LCDFontData	type LCDFontData		83
+nim	LCDFontPage	bindings/graphics.html#LCDFontPage	type LCDFontPage		92
+nim	LCDFontGlyph	bindings/graphics.html#LCDFontGlyph	type LCDFontGlyph		101
+nim	PlaydateVideo	bindings/graphics.html#PlaydateVideo	object PlaydateVideo		107
+nim	PlaydateGraphics	bindings/graphics.html#PlaydateGraphics	object PlaydateGraphics		124
+nim	clear	bindings/graphics.html#clear,ptr.PlaydateGraphics,LCDColor	proc clear(this: ptr PlaydateGraphics; color: LCDColor)		126
+nim	setDrawOffset	bindings/graphics.html#setDrawOffset,ptr.PlaydateGraphics,int,int	proc setDrawOffset(this: ptr PlaydateGraphics; dx: int; dy: int)		132
+nim	setClipRect	bindings/graphics.html#setClipRect,ptr.PlaydateGraphics,int,int,int,int	proc setClipRect(this: ptr PlaydateGraphics; x: int; y: int; width: int; height: int)		133
+nim	setTextTracking	bindings/graphics.html#setTextTracking,ptr.PlaydateGraphics,int	proc setTextTracking(this: ptr PlaydateGraphics; tracking: int)		140
+nim	drawLine	bindings/graphics.html#drawLine,ptr.PlaydateGraphics,int,int,int,int,int,LCDColor	proc drawLine(this: ptr PlaydateGraphics; x1: int; y1: int; x2: int; y2: int;\n         width: int; color: LCDColor)		149
+nim	fillTriangle	bindings/graphics.html#fillTriangle,ptr.PlaydateGraphics,int,int,int,int,int,int,LCDColor	proc fillTriangle(this: ptr PlaydateGraphics; x1: int; y1: int; x2: int; y2: int;\n             x3: int; y3: int; color: LCDColor)		151
+nim	drawRect	bindings/graphics.html#drawRect,ptr.PlaydateGraphics,int,int,int,int,LCDColor	proc drawRect(this: ptr PlaydateGraphics; x: int; y: int; width: int; height: int;\n         color: LCDColor)		153
+nim	fillRect	bindings/graphics.html#fillRect,ptr.PlaydateGraphics,int,int,int,int,LCDColor	proc fillRect(this: ptr PlaydateGraphics; x: int; y: int; width: int; height: int;\n         color: LCDColor)		155
+nim	drawEllipse	bindings/graphics.html#drawEllipse,ptr.PlaydateGraphics,int,int,int,int,int,float32,float32,LCDColor	proc drawEllipse(this: ptr PlaydateGraphics; x: int; y: int; width: int; height: int;\n            lineWidth: int; startAngle: float32; endAngle: float32;\n            color: LCDColor)		158
+nim	fillEllipse	bindings/graphics.html#fillEllipse,ptr.PlaydateGraphics,int,int,int,int,float32,float32,LCDColor	proc fillEllipse(this: ptr PlaydateGraphics; x: int; y: int; width: int; height: int;\n            startAngle: float32; endAngle: float32; color: LCDColor)		160
+nim	drawText	bindings/graphics.html#drawText,ptr.PlaydateGraphics,string,uint,PDStringEncoding,int,int	proc drawText(this: ptr PlaydateGraphics; text: string; len: uint;\n         encoding: PDStringEncoding; x: int; y: int): int		165
+nim	clearBitmap	bindings/graphics.html#clearBitmap,ptr.PlaydateGraphics,LCDBitmapPtr,LCDColor	proc clearBitmap(this: ptr PlaydateGraphics; bitmap: LCDBitmapPtr; bgcolor: LCDColor)		180
+nim	markUpdatedRows	bindings/graphics.html#markUpdatedRows,ptr.PlaydateGraphics,int,int	proc markUpdatedRows(this: ptr PlaydateGraphics; start: int; to: int)		215
+nim	display	bindings/graphics.html#display,ptr.PlaydateGraphics	proc display(this: ptr PlaydateGraphics)		124
+nim	setColorToPattern	bindings/graphics.html#setColorToPattern,ptr.PlaydateGraphics,LCDPatternPtr,LCDBitmapPtr,int,int	proc setColorToPattern(this: ptr PlaydateGraphics; color: LCDPatternPtr;\n                  bitmap: LCDBitmapPtr; x: int; y: int)		219
+nim	checkMaskCollision	bindings/graphics.html#checkMaskCollision,ptr.PlaydateGraphics,LCDBitmapPtr,int,int,LCDBitmapFlip,LCDBitmapPtr,int,int,LCDBitmapFlip,LCDRect	proc checkMaskCollision(this: ptr PlaydateGraphics; bitmap1: LCDBitmapPtr; x1: int;\n                   y1: int; flip1: LCDBitmapFlip; bitmap2: LCDBitmapPtr;\n                   x2: int; y2: int; flip2: LCDBitmapFlip; rect: LCDRect): int		222
+nim	setScreenClipRect	bindings/graphics.html#setScreenClipRect,ptr.PlaydateGraphics,int,int,int,int	proc setScreenClipRect(this: ptr PlaydateGraphics; x: int; y: int; width: int;\n                  height: int)		224
+nim	setTextLeading	bindings/graphics.html#setTextLeading,ptr.PlaydateGraphics,int	proc setTextLeading(this: ptr PlaydateGraphics; lineHeightAdjustment: int)		123

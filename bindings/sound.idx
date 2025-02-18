@@ -1,0 +1,3 @@
+nimTitle	sound	bindings/sound.html	module src/playdate/bindings/sound		0
+nim	PlaydateSound	bindings/sound.html#PlaydateSound	object PlaydateSound		126
+nim	getCurrentTime	bindings/sound.html#getCurrentTime,ptr.PlaydateSound	proc getCurrentTime(this: ptr PlaydateSound): uint32		125
