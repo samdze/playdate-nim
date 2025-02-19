@@ -8,7 +8,7 @@ type
     CliConfig = object
         ## Configurations collected from the Cli
         command: BuildCommand
-        noAutoConfig: bool
+        noAutoConfig, showVersion: bool
         sdkPath: Option[string]
         extraArgs: seq[string]
 
@@ -29,11 +29,18 @@ proc getCliConfig(): CliConfig =
             case key
             of "sdk-path": result.sdkPath = some(val)
             of "no-auto-config": result.noAutoConfig = true
+            of "v", "version": result.showVersion = true
             else: addExtraArg()
         of cmdEnd:
             discard
 
 let build = getCliConfig()
+
+if build.showVersion:
+    const NimblePkgVersion {.strdefine.} = ""
+    const hash = staticExec("git rev-parse --short HEAD")
+    echo "Playdate nim version ", NimblePkgVersion, " ", hash
+    quit(QuitSuccess)
 
 let dump = getNimbleDump()
 
