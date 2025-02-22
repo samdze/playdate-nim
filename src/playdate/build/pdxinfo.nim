@@ -2,7 +2,8 @@ import std/[os, parsecfg, streams, strutils, strformat, times, osproc], nimbledu
 
 type PdxInfo* = object
     ## Details used to populate the pdxinfo file
-    name*, author*, description*, bundleId*, imagePath*, version*, buildNumber*: string
+    name*, author*, description*, bundleId*, imagePath*, version*: string
+    buildNumber*, launchSoundPath*, contentWarning*, contentWarning2*: string
 
 proc `$`*(pdx: PdxInfo): string =
     for key, value in pdx.fieldPairs:

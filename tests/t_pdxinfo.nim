@@ -31,6 +31,9 @@ suite "Pdxinfo generation":
             imagePath=launcher
             version=1.2.3
             buildNumber=20250216
+            launchSoundPath=path/to/launch/sound/file
+            contentWarning="Beware the Jabberwock, my son!"
+            contentWarning2="The jaws that bite, the claws that catch!"
             """).parsePdx("[stream]")
 
         check($pdx == """
@@ -41,6 +44,9 @@ suite "Pdxinfo generation":
             imagePath=launcher
             version=1.2.3
             buildNumber=20250216
+            launchSoundPath=path/to/launch/sound/file
+            contentWarning=Beware the Jabberwock, my son!
+            contentWarning2=The jaws that bite, the claws that catch!
             """.dedent())
 
     test "Join together multiple pdxinfo objects":
