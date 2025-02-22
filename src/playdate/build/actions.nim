@@ -94,7 +94,7 @@ proc bundlePDX*(conf: PlaydateConf) =
 proc mv(source, target: string) =
     echo fmt"Moving {source} to {target}"
     if not source.fileExists and not source.dirExists:
-        raise BuildFail.newException(fmt"Expecting the '{source}' to exist, but it doesn't")
+        raise BuildFail.newException(fmt"Expecting the file '{source}' to exist, but it doesn't")
     moveFile(source, target)
 
 proc rm(target: string) =
@@ -125,6 +125,8 @@ proc simulatorBuild*(conf: PlaydateConf) =
 
 proc runSimulator*(conf: PlaydateConf) =
     ## Executes the simulator
+    simulatorBuild(conf)
+
     if not conf.pdxName.dirExists:
         raise BuildFail.newException(fmt"PDX does not exist: {conf.pdxName.absolutePath}")
 

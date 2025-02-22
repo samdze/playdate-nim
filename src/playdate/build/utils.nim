@@ -1,4 +1,4 @@
-import std/[os, options]
+import std/os
 
 type
     BuildFail* = object of Defect
@@ -12,12 +12,12 @@ const SDK_ENV_VAR* = "PLAYDATE_SDK_PATH"
 
 const playdateSdkPath {.strDefine.} = ""
 
-proc sdkPath*(inputParam: Option[string] = none(string)): string =
+proc sdkPath*(inputParam: string = ""): string =
     ## Returns the path of the playdate SDK
     let sdkPathCache = getConfigDir() / "playdate-nim" / SDK_ENV_VAR
 
-    if inputParam.isSome:
-        result = inputParam.get
+    if inputParam != "":
+        result = inputParam
     elif playdateSdkPath != "":
         result = playdateSdkPath
     elif getEnv(SDK_ENV_VAR) != "":
