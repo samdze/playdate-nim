@@ -61,7 +61,7 @@ var p = newParser:
     defineBuild("simulate", SimulatorBuild, runSimulator, "Execute a build and run the simulator")
     defineBuild("device", DeviceBuild, deviceBuild, "Execute a build for device")
     defineBuild("clean", SimulatorBuild, runClean, "Removes build artifacts")
-    defineBuild("bundle", SimulatorBuild, bundlePDX, "Executes the bundling step without rebuilding the whole project")
+    defineBuild("bundle", SimulatorBuild, bundlePDX, "Runs the Playdate compiler (pdc) and creates a pdx.zip")
 
 try:
     p.run()
