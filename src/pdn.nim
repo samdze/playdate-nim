@@ -14,10 +14,9 @@ template read(options, key: untyped; typ: typedesc): auto =
         return default(typ)
     )()
 
-let dump = getNimbleDump()
-
 proc parseConf(kind: BuildKind, options: auto): PlaydateConf =
     # Builds a `PlaydateConf` from the parsed CLI options
+    let dump = getNimbleDump()
     return PlaydateConf(
         dump: dump,
         kind: kind,
