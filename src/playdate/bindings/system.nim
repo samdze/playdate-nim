@@ -31,6 +31,8 @@ type PDCallbackFunctionRaw {.importc: "PDCallbackFunction", header: "pd_api.h".}
 
 type PDMenuItemCallbackFunctionRaw {.importc: "PDMenuItemCallbackFunction", header: "pd_api.h".} = proc(userdata: pointer) {.cdecl.}
 
+type PDSerialMessageCallback = proc(msg: ConstChar) {.cdecl.}
+
 # System
 sdktype:
     type PlaydateSys* {.importc: "const struct playdate_sys", header: "pd_api.h".} = object
@@ -90,3 +92,6 @@ sdktype:
         resetElapsedTime* {.importc: "resetElapsedTime".}: proc () {.cdecl, raises: [].} ##  1.4
         getBatteryPercentage {.importsdk.}: proc (): cfloat
         getBatteryVoltage {.importsdk.}: proc (): cfloat
+
+        setSerialMessageCallback {.importc: "setSerialMessageCallback".}:
+            proc(callback: PDSerialMessageCallback) {.cdecl, raises: [].}

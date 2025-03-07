@@ -150,6 +150,10 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
             playdate.system.logToConsole("This below is an expected error:")
             playdate.system.logToConsole(getCurrentExceptionMsg())
 
+        # Log any serial messages we receive
+        playdate.system.setSerialMessageCallback do (msg: string) -> void:
+            playdate.system.logToConsole(fmt"Serial message: {msg}")
+
         # Set the update callback
         playdate.system.setUpdateCallback(update)
 

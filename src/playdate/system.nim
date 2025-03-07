@@ -198,6 +198,14 @@ proc getReduceFlashing* (this: ptr PlaydateSys): bool =
     privateAccess(PlaydateSys)
     return this.getReduceFlashing() == 1
 
+var serialMsgCallback: proc(msg: string)
+
+proc privateSerialMessageCallback(msg: ConstChar) {.cdecl, raises: [].} = serialMsgCallback($msg)
+
+proc setSerialMessageCallback*(this: ptr PlaydateSys, callback: proc(msg: string)) =
+    privateAccess(PlaydateSys)
+    serialMsgCallback = callback
+    this.setSerialMessageCallback(privateSerialMessageCallback)
 
 import std/random
 
