@@ -44,14 +44,14 @@ proc runCatchingTyped*[T](fun: () -> T, fatal: bool = false, messagePrefix: stri
         var message: string = ""
         try:
             message = &"{messagePrefix}: {getCurrentExceptionMsg()}\n{exception.getStackTrace()}"
-            # replace line number notation from (90) to :90, which is more common and can be picked up as source link
+            # replace line number notation from (90) to :90, which is more common and can be picked up as source link in IDEs
             message = message.replace('(', ':')
             message = message.replace(")", "")
         except:
             message = getCurrentExceptionMsg() & exception.getStackTrace()
 
         for line in message.splitLines():
-            # Log the error to the console, total stack trace might be too long for single call
+            # Log the error to the console line-by-line, total stack trace might be too long for single call
             playdate.system.logToConsole(line)
 
         if fatal:
@@ -60,7 +60,7 @@ proc runCatchingTyped*[T](fun: () -> T, fatal: bool = false, messagePrefix: stri
 proc runCatchingVoid*(fun: () -> void, fatal: bool = false, messagePrefix: string = "") =
     let typedFun = proc(): int32 = 
             fun()
-            return 1
+            return 0
         
     discard runCatchingTyped(
         typedFun,
