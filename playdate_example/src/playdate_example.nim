@@ -39,11 +39,11 @@ proc update(): int =
 
     if kButtonB in buttonState.pushed:
         let testErrorProc = proc(): int =
-                # intentional division by 0 error to showcase error catching behavior
-                # use fatal = true to make the error pause the game
-                return 1 div 0
+            # intentional division by 0 error to showcase error catching behavior
+            return 1 div 0
         discard runCatchingTyped(
             fun = testErrorProc,
+            # use fatal = true to make the error pause the game
             fatal = false,
             messagePrefix = "Intentional Error: "
         )
