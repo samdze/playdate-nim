@@ -49,7 +49,7 @@ jobs:
     - uses: ./.github/actions/build-setup
       with:
         nim-version: ${{ matrix.nim-version }}
-    - run: nimble test
+    - run: nimble test --warning[BareExcept]:off
 
   headless-tests:
     runs-on: ubuntu-latest
