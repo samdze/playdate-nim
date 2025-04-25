@@ -41,11 +41,11 @@ proc update(): int =
         let testErrorProc = proc(): int =
             # intentional division by 0 error to showcase error catching behavior
             return 1 div 0
-        discard runCatchingTyped(
-            fun = testErrorProc,
+        discard runCatching(
+            body = testErrorProc,
             # use fatal = true to make the error pause the game
             fatal = false,
-            messagePrefix = "Intentional Error: "
+            messagePrefix = "Intentional Error"
         )
 
     let goalX = x.toFloat

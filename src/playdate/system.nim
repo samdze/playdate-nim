@@ -36,38 +36,28 @@ proc getSecondsSinceEpoch* (this: ptr PlaydateSys): tuple[seconds: uint, millise
 type PDCallbackFunction* = proc(): int {.raises: [].}
 var updateCallback: PDCallbackFunction = nil
 
-proc runCatchingTyped*[T](fun: () -> T, fatal: bool = false, messagePrefix: string=""): T =
+proc logException*(exception: ref Exception, fatal: bool = false, messagePrefix: string = "") =
+    ## if fatal is true, the game will pause
+    var message = &"{messagePrefix}: {exception.msg}\n{exception.getStackTrace()}"
+
+    for line in message.splitLines():
+        # Log the error to the console line-by-line, total stack trace might be too long for single call
+        playdate.system.logToConsole(line)
+
+    if fatal:
+        playdate.system.error("FATAL:" & exception.msg)
+
+template runCatching*(body: typed, fatal: bool = false, messagePrefix: string = ""): auto =
+    ## if fatal is true, the game will pause
     try:
-        return fun()
-    except:
-        let exception = getCurrentException()
-        var message: string = ""
-        try:
-            message = &"{messagePrefix}: {getCurrentExceptionMsg()}\n{exception.getStackTrace()}"
-        except:
-            message = getCurrentExceptionMsg() & exception.getStackTrace()
-
-        for line in message.splitLines():
-            # Log the error to the console line-by-line, total stack trace might be too long for single call
-            playdate.system.logToConsole(line)
-
-        if fatal:
-            playdate.system.error("FATAL:" & getCurrentExceptionMsg())
-
-proc runCatchingVoid*(fun: () -> void, fatal: bool = false, messagePrefix: string = "") =
-    let typedFun = proc(): int32 = 
-            fun()
-            return 0
-        
-    discard runCatchingTyped(
-        typedFun,
-        fatal,
-        messagePrefix
-    )
+        body()
+    except Exception as e:
+        logException(e, fatal, messagePrefix)
+        return result # default value for inferred return type
 
 proc privateUpdate(userdata: pointer): cint {.cdecl.} =
     if updateCallback != nil:
-        return runCatchingTyped(updateCallback, fatal = true).cint
+        return runCatching(body = updateCallback).cint
     else:
         playdate.system.error("No update callback defined.")
         return 0
@@ -76,7 +66,6 @@ proc setUpdateCallback*(this: ptr PlaydateSys, update: PDCallbackFunction) =
     privateAccess(PlaydateSys)
     updateCallback = update
     this.setUpdateCallback(privateUpdate, playdate)
-# ---
 
 proc getButtonState* (this: ptr PlaydateSys): tuple[current: PDButtons, pushed: PDButtons, released: PDButtons] =
     privateAccess(PlaydateSys)
