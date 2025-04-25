@@ -54,7 +54,8 @@ template runCatching*(body: typed, fatal: bool = false, messagePrefix: string = 
         body()
     except Exception as e:
         logException(e, fatal, messagePrefix)
-        result # default value for inferred return type
+        when compiles(result): # result is only defined if body is a proc that has a return type
+            result # default value for inferred return type
 
 proc privateUpdate(userdata: pointer): cint {.cdecl.} =
     if updateCallback != nil:
