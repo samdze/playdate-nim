@@ -44,9 +44,6 @@ proc runCatchingTyped*[T](fun: () -> T, fatal: bool = false, messagePrefix: stri
         var message: string = ""
         try:
             message = &"{messagePrefix}: {getCurrentExceptionMsg()}\n{exception.getStackTrace()}"
-            # replace line number notation from (90) to :90, which is more common and can be picked up as source link in IDEs
-            message = message.replace('(', ':')
-            message = message.replace(")", "")
         except:
             message = getCurrentExceptionMsg() & exception.getStackTrace()
 
