@@ -6,6 +6,7 @@ import sequtils
 
 import bindings/[api, types]
 import bindings/system
+import lcdbitmap {.all.}
 
 # Only export public symbols, then import all
 export system
@@ -53,7 +54,7 @@ template runCatching*(body: typed, fatal: bool = false, messagePrefix: string = 
         body()
     except Exception as e:
         logException(e, fatal, messagePrefix)
-        return result # default value for inferred return type
+        result # default value for inferred return type
 
 proc privateUpdate(userdata: pointer): cint {.cdecl.} =
     if updateCallback != nil:
@@ -206,12 +207,26 @@ proc removeAllMenuItems*(this: ptr PlaydateSys) =
         item.active = false
     menuItems.setLen(0)
     this.removeAllMenuItems()
-# ---
+
+proc setMenuImage*(this: ptr PlaydateSys, image: LCDBitmap, xOffset: int32 = 0) =
+    privateAccess(PlaydateSys)
+    this.setMenuImage(
+        image.resource,
+        xOffset.cint
+    )
 
 proc getReduceFlashing* (this: ptr PlaydateSys): bool =
     privateAccess(PlaydateSys)
     return this.getReduceFlashing() == 1
 
+var serialMsgCallback: proc(msg: string)
+
+proc privateSerialMessageCallback(msg: ConstChar) {.cdecl, raises: [].} = serialMsgCallback($msg)
+
+proc setSerialMessageCallback*(this: ptr PlaydateSys, callback: proc(msg: string)) =
+    privateAccess(PlaydateSys)
+    serialMsgCallback = callback
+    this.setSerialMessageCallback(privateSerialMessageCallback)
 
 import std/random
 

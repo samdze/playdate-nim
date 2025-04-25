@@ -116,6 +116,12 @@ complete the build. This includes creating a `pdxinfo` file automatically, updat
 `config.nims`, and adding entries to your `.gitignore`. If you don't want this behavior, you
 can add the `--no-auto-config` flag, which will disable this.
 
+### Custom pdxinfo values
+
+Running `pdn` will automatically generate a `pdxinfo` file based on the project
+details in your packages `nimble` file. If you need to customize these values, you can
+add a `pdxinfo` file to the root of your package.
+
 ## Examples
 
 The example project `playdate_example` also contains VSCode launch configurations to build, start and debug your Nim application from the editor.

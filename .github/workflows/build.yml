@@ -33,6 +33,11 @@ jobs:
     - run: pdn ${{ matrix.target }}
       working-directory: ./playdate_example
 
+    - run: grep "name=Playdate Example" ./playdate_example/source/pdxinfo
+    - run: grep "bundleId=com.samuelezolfanelli.playdate_example" ./playdate_example/source/pdxinfo
+    - run: grep "version=" ./playdate_example/source/pdxinfo
+    - run: grep "buildNumber=" ./playdate_example/source/pdxinfo
+
   tests:
     runs-on: ubuntu-latest
     container: nimlang/choosenim

@@ -1,0 +1,21 @@
+name: Documentation Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  docs:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    container: nimlang/nim
+    steps:
+    - uses: actions/checkout@v3
+    - run: git config --global --add safe.directory "$(pwd)"
+    - run: nimble -y doc --index:on --out:docs --project src/playdate/api.nim
+    - run: cp docs/api.html docs/index.html
+    - name: Deploy documents
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ !env.ACT }}
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs
