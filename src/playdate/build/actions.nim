@@ -76,7 +76,7 @@ proc updateConfig(conf: PlaydateConf) =
 
     echo "Updating config.nims to include build configurations"
 
-    "configs.nims".fileAppend(fmt"\n\n# Added by pdn\nimport {configFile}\n")
+    "configs.nims".fileAppend(&"\n\n# Added by pdn\nimport {configFile}\n")
 
 proc configureBuild(conf: PlaydateConf) =
     if not conf.noAutoConfig:
