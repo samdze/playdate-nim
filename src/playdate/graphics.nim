@@ -334,8 +334,11 @@ proc set*(view: var BitmapView, x, y: int, color: LCDSolidColor) =
     if (color == kColorBlack): set(view, x, y) else: clear(view, x, y)
 
 proc getDebugBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
-    privateAccess(PlaydateGraphics)
+  privateAccess(PlaydateGraphics)
+  when defined(simulator):
     return bitmapPtr(this.getDebugBitmap()) # do not free: system owns this
+  else:
+    return bitmapPtr(nil) # Debug bitmap not available on device
 
 proc copyFrameBufferBitmap*(this: ptr PlaydateGraphics): LCDBitmap =
     privateAccess(PlaydateGraphics)
@@ -483,7 +486,7 @@ proc layoutTextInRect(this: LCDFont, text: string, x, y, width, height: int,
     lineHeightAdjustment: int = 0, truncationString: string = "...",
     alignment: TextAlignment = kTextAlignmentLeft, draw: bool = true
 ): TextInRectResult {.discardable.} =
-    
+
     if text.len == 0:
         return
 
@@ -491,13 +494,13 @@ proc layoutTextInRect(this: LCDFont, text: string, x, y, width, height: int,
     result.textWasTruncated = true
     if width <= 0 or height <= 0:
         return
-    
+
     let fontHeight = this.getFontHeight().int
     let lineHeight = fontHeight + lineHeightAdjustment
 
     if height < fontHeight:
         return
-    
+
     let truncationWidth = this.getTextWidth(truncationString)
     let textWidth = this.getTextWidth(text)
     if width < textWidth and width < truncationWidth:
@@ -546,14 +549,14 @@ proc layoutTextInRect(this: LCDFont, text: string, x, y, width, height: int,
         drawAlignedLine(truncatedWord)
         # Return the remaining word.
         return word.substr(truncatedWord.len)
-    
+
     proc drawTruncatedLine(line: var string) =
         line.add(truncationString)
 
         while this.getTextWidth(line) > width and (line.len - truncationString.len) > 0:
             line.delete((line.len - truncationString.len - 1)..<line.len)
             line.add(truncationString)
-        
+
         drawAlignedLine(line)
 
     var currentLine = newStringOfCap(maxLineLenght)
@@ -606,13 +609,13 @@ proc layoutTextInRect(this: LCDFont, text: string, x, y, width, height: int,
                                 currentLine.add(word)
                             # We're at the first word in the line again.
                             firstWordInLine = true
-                    
+
                     if not token.isSep:
                         firstWordInLine = false
 
             if not currentLine.isEmptyOrWhitespace():
                 drawAlignedLine(currentLine)
-    
+
     return TextInRectResult(width: maxLineWidth, height: drawY - y + fontHeight, textWasTruncated: truncated)
 
 proc drawTextInRect*(this: LCDFont, text: string, x, y, width, height: int,
@@ -620,7 +623,7 @@ proc drawTextInRect*(this: LCDFont, text: string, x, y, width, height: int,
 ): TextInRectResult {.discardable.} =
     let previousFont: LCDFont = playdate.graphics.getFont()
     playdate.graphics.setFont(this)
-    
+
     result = layoutTextInRect(this, text, x, y, width, height, lineHeightAdjustment, truncationString, alignment, true)
 
     playdate.graphics.setFont(previousFont)
@@ -628,7 +631,7 @@ proc drawTextInRect*(this: LCDFont, text: string, x, y, width, height: int,
 proc getTextSizeInRect*(this: LCDFont, text: string, x, y, width, height: int,
     lineHeightAdjustment: int = 0, truncationString: string = "...", alignment: TextAlignment = kTextAlignmentLeft
 ): TextInRectResult =
-    
+
     return layoutTextInRect(this, text, x, y, width, height, lineHeightAdjustment, truncationString, alignment, false)
 
 proc drawTextInRect*(this: ptr PlaydateGraphics, text: string, x, y, width, height: int,
