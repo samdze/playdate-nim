@@ -13,6 +13,9 @@ export system
 {.hint[DuplicateModuleImport]: off.}
 import bindings/system {.all.}
 
+import std/sugar
+import std/strutils
+
 template fmt*(arg: typed): string =
     try: &(arg) except: arg
 
@@ -34,9 +37,29 @@ proc getSecondsSinceEpoch* (this: ptr PlaydateSys): tuple[seconds: uint, millise
 type PDCallbackFunction* = proc(): int {.raises: [].}
 var updateCallback: PDCallbackFunction = nil
 
+proc logException*(exception: ref Exception, fatal: bool = false, messagePrefix: string = "") =
+    ## if fatal is true, the game will pause
+    var message = &"{messagePrefix}: {exception.msg}\n{exception.getStackTrace()}"
+
+    for line in message.splitLines():
+        # Log the error to the console line-by-line, total stack trace might be too long for single call
+        playdate.system.logToConsole(line)
+
+    if fatal:
+        playdate.system.error("FATAL:" & exception.msg)
+
+template runCatching*(body: typed, fatal: bool = false, messagePrefix: string = ""): auto =
+    ## if fatal is true, the game will pause
+    try:
+        body()
+    except Exception as e:
+        logException(e, fatal, messagePrefix)
+        when compiles(result): # result is only defined if body is a proc that has a return type
+            result # default value for inferred return type
+
 proc privateUpdate(userdata: pointer): cint {.cdecl.} =
     if updateCallback != nil:
-        return updateCallback().cint
+        return runCatching(body = updateCallback).cint
     else:
         playdate.system.error("No update callback defined.")
         return 0
@@ -45,7 +68,6 @@ proc setUpdateCallback*(this: ptr PlaydateSys, update: PDCallbackFunction) =
     privateAccess(PlaydateSys)
     updateCallback = update
     this.setUpdateCallback(privateUpdate, playdate)
-# ---
 
 proc getButtonState* (this: ptr PlaydateSys): tuple[current: PDButtons, pushed: PDButtons, released: PDButtons] =
     privateAccess(PlaydateSys)
