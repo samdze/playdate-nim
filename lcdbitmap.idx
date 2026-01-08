@@ -1,0 +1,5 @@
+nimTitle	lcdbitmap	lcdbitmap.html	module src/playdate/lcdbitmap		0
+nim	LCDBitmap	lcdbitmap.html#LCDBitmap	object LCDBitmap		10
+nim	bitmapPtr	lcdbitmap.html#bitmapPtr.c,LCDBitmapPtr	converter bitmapPtr(point: LCDBitmapPtr): auto		24
+nim	`==`	lcdbitmap.html#==,LCDBitmap,LCDBitmapPtr	proc `==`(bitmap: LCDBitmap; point: LCDBitmapPtr): bool		30
+nim	isNil	lcdbitmap.html#isNil,LCDBitmap	proc isNil(bitmap: LCDBitmap): bool		39

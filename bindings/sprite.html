@@ -16,10 +16,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="../nimdoc.out.css?v=2.2.0">
+<link rel="stylesheet" type="text/css" href="../nimdoc.out.css?v=2.2.6">
 
 <!-- JS -->
-<script type="text/javascript" src="../dochack.js?v=2.2.0"></script>
+<script type="text/javascript" src="../dochack.js?v=2.2.6"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -76,16 +76,9 @@
   drawSprites* {.importc: &quot;drawSprites&quot;.}: proc () {.cdecl, raises: [].}
   updateAndDrawSprites* {.importc: &quot;updateAndDrawSprites&quot;.}: proc () {.cdecl,
       raises: [].}
-  ## Collisions
   resetCollisionWorld* {.importc: &quot;resetCollisionWorld&quot;.}: proc () {.cdecl,
-      raises: [].}
-  ## Caller is responsible for freeing the returned array for all collision methods
-  ## Added in 1.7
-  ## Added in 1.10
-  ## added in 2.1">PlaydateSprite</a></li>
+      raises: [].}">PlaydateSprite</a></li>
 <li><a class="reference" href="#SpriteCollisionInfo" title="SpriteCollisionInfo {.importc: &quot;SpriteCollisionInfo&quot;, header: &quot;pd_api.h&quot;, bycopy.} = object
-  ## The sprite being moved
-  ## The sprite colliding with the sprite being moved
   responseType* {.importc: &quot;responseType&quot;.}: SpriteCollisionResponseType ## The result of collisionResponse
   overlaps* {.importc: &quot;overlaps&quot;.}: uint8 ## True if the sprite was overlapping other when the collision started. False if it didn’t overlap but tunneled through other.
   ti* {.importc: &quot;ti&quot;.}: cfloat ## A number between 0 and 1 indicating how far along the movement to the goal the collision occurred
@@ -182,13 +175,8 @@
   <span class="Identifier">drawSprites</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;drawSprites&quot;</span>.}<span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span> {.<span class="Identifier">cdecl</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}
   <span class="Identifier">updateAndDrawSprites</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;updateAndDrawSprites&quot;</span>.}<span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span> {.<span class="Identifier">cdecl</span><span class="Other">,</span>
       <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}
-  <span class="Comment">## Collisions</span>
   <span class="Identifier">resetCollisionWorld</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;resetCollisionWorld&quot;</span>.}<span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Other">)</span> {.<span class="Identifier">cdecl</span><span class="Other">,</span>
-      <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}
-  <span class="Comment">## Caller is responsible for freeing the returned array for all collision methods</span>
-  <span class="Comment">## Added in 1.7</span>
-  <span class="Comment">## Added in 1.10</span>
-  <span class="Comment">## added in 2.1</span></pre></dt>
+      <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -197,8 +185,6 @@
 </div>
 <div id="SpriteCollisionInfo">
   <dt><pre><a href="sprite.html#SpriteCollisionInfo"><span class="Identifier">SpriteCollisionInfo</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;SpriteCollisionInfo&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Comment">## The sprite being moved</span>
-  <span class="Comment">## The sprite colliding with the sprite being moved</span>
   <span class="Identifier">responseType</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;responseType&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#SpriteCollisionResponseType"><span class="Identifier">SpriteCollisionResponseType</span></a> <span class="Comment">## The result of collisionResponse</span>
   <span class="Identifier">overlaps</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;overlaps&quot;</span>.}<span class="Other">:</span> <span class="Identifier">uint8</span> <span class="Comment">## True if the sprite was overlapping other when the collision started. False if it didn’t overlap but tunneled through other.</span>
   <span class="Identifier">ti</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;ti&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span> <span class="Comment">## A number between 0 and 1 indicating how far along the movement to the goal the collision occurred</span>
@@ -277,7 +263,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-02-22 18:46:12 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-08 16:04:56 UTC</small>
       </div>
     </div>
   </div>

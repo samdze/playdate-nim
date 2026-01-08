@@ -7,7 +7,7 @@ nim	PDBoardRaw	bindings/scoreboards.html#PDBoardRaw	object PDBoardRaw		23
 nim	PDBoardsListRaw	bindings/scoreboards.html#PDBoardsListRaw	object PDBoardsListRaw		27
 nim	PDBoardsListPtr	bindings/scoreboards.html#PDBoardsListPtr	type PDBoardsListPtr		32
 nim	PersonalBestCallbackRaw	bindings/scoreboards.html#PersonalBestCallbackRaw	type PersonalBestCallbackRaw		34
-nim	AddScoreCallbackRaw	bindings/scoreboards.html#AddScoreCallbackRaw	type AddScoreCallbackRaw		35
-nim	BoardsListCallbackRaw	bindings/scoreboards.html#BoardsListCallbackRaw	type BoardsListCallbackRaw		36
-nim	ScoresCallbackRaw	bindings/scoreboards.html#ScoresCallbackRaw	type ScoresCallbackRaw		37
-nim	PlaydateScoreboards	bindings/scoreboards.html#PlaydateScoreboards	object PlaydateScoreboards		40
+nim	AddScoreCallbackRaw	bindings/scoreboards.html#AddScoreCallbackRaw	type AddScoreCallbackRaw		36
+nim	BoardsListCallbackRaw	bindings/scoreboards.html#BoardsListCallbackRaw	type BoardsListCallbackRaw		38
+nim	ScoresCallbackRaw	bindings/scoreboards.html#ScoresCallbackRaw	type ScoresCallbackRaw		40
+nim	PlaydateScoreboards	bindings/scoreboards.html#PlaydateScoreboards	object PlaydateScoreboards		46
