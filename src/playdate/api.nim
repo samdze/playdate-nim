@@ -26,8 +26,12 @@ macro initSDK*() =
         initPrereqs(playdateAPI.system.realloc, playdateAPI.system.logToConsole)
         NimMain()
         api.playdate = playdateAPI
-      handler(event, arg)
-      return 0
+
+      when typeof(handler(event, arg)) is SomeInteger:
+        return handler(event, arg).cint
+      else:
+        handler(event, arg)
+        return 0
 
 when not defined(simulator):
   proc fini() {.cdecl, exportc: "_fini".} =
