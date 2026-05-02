@@ -158,8 +158,8 @@ type
   BitmapDataObj* = object
     width*: int
     height*: int
-    rowbytes: int
-    data: ptr UncheckedArray[uint8]
+    rowbytes*: int
+    data*: ptr UncheckedArray[uint8]
 
   BitmapData* = ref BitmapDataObj
 
