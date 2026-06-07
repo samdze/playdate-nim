@@ -256,5 +256,18 @@ proc setSerialMessageCallback*(this: ptr PlaydateSys, callback: proc(msg: string
 
 import std/random
 
+proc shouldDisplay24HourTime*(this: ptr PlaydateSys): bool =
+  privateAccess(PlaydateSys)
+  return this.shouldDisplay24HourTime() != 0
+
+proc convertEpochToDateTime*(this: ptr PlaydateSys, epoch: uint): PDDateTime =
+  privateAccess(PlaydateSys)
+  this.convertEpochToDateTime(epoch.cuint, addr(result))
+
+proc convertDateTimeToEpoch*(this: ptr PlaydateSys, datetime: PDDateTime): uint =
+  privateAccess(PlaydateSys)
+  var dt = datetime
+  return this.convertDateTimeToEpoch(addr(dt)).uint
+
 proc randomize*(this: ptr PlaydateSys) =
   randomize(this.getSecondsSinceEpoch().milliseconds.int64)

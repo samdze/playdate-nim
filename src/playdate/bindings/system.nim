@@ -121,3 +121,11 @@ sdktype:
 
     setSerialMessageCallback {.importc: "setSerialMessageCallback".}:
       proc(callback: PDSerialMessageCallback) {.cdecl, raises: [].}
+
+    getTimezoneOffset {.importsdk.}: proc(): cint
+    shouldDisplay24HourTime {.importc: "shouldDisplay24HourTime".}:
+      proc(): cint {.cdecl, raises: [].}
+    convertEpochToDateTime {.importc: "convertEpochToDateTime".}:
+      proc(epoch: cuint, datetime: ptr PDDateTime) {.cdecl, raises: [].}
+    convertDateTimeToEpoch {.importc: "convertDateTimeToEpoch".}:
+      proc(datetime: ptr PDDateTime): cuint {.cdecl, raises: [].}

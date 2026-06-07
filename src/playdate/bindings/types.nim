@@ -1,3 +1,7 @@
+type PDDateTime* = object
+  year*: uint16
+  month*, day*, weekday*, hour*, minute*, second*: uint8
+
 type
   ConstChar* {.importc: "const char*".} = cstring
   ConstCharPtr* {.importc: "const char**".} = cstring
