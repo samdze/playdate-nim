@@ -1,4 +1,4 @@
-import unittest, playdate/api
+import unittest, playdate/api, std/streams
 
 proc createFile(name: string, body: string = "") =
   var handle = playdate.file.open(name, kFileWrite)
@@ -51,3 +51,28 @@ proc execFilesTest*() =
       createFile("original_file.txt")
       playdate.file.rename("original_file.txt", "renamed_file.txt")
       check(playdate.file.exists("renamed_file.txt"))
+
+    test "Writing and reading through a Stream":
+      block:
+        let stream = playdate.file.open("stream_data.txt", kFileWrite).toStream()
+        stream.writeLine("first line")
+        stream.write("second line")
+        stream.close()
+
+      let stream = playdate.file.open("stream_data.txt", kFileReadData).toStream()
+      check(stream.readLine() == "first line")
+      check(stream.readAll() == "second line")
+      check(stream.atEnd())
+      stream.close()
+
+    test "Seeking within a Stream":
+      block:
+        let stream = playdate.file.open("stream_seek.txt", kFileWrite).toStream()
+        stream.write("0123456789")
+        stream.close()
+
+      let stream = playdate.file.open("stream_seek.txt", kFileReadData).toStream()
+      stream.setPosition(5)
+      check(stream.getPosition() == 5)
+      check(stream.readAll() == "56789")
+      stream.close()
