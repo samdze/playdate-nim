@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>src/playdate/graphics</title>
+<title>playdate/graphics</title>
 
 <!-- Google fonts -->
 <link href='https://fonts.googleapis.com/css?family=Lato:400,600,900' rel='stylesheet' type='text/css'/>
@@ -16,15 +16,18 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.2.6">
+<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.2.10">
 
 <!-- JS -->
-<script type="text/javascript" src="dochack.js?v=2.2.6"></script>
+<script type="text/javascript" src="dochack.js?v=2.2.10"></script>
 </head>
 <body>
   <div class="document" id="documentId">
+    <input type="checkbox" id="nav-toggle" hidden>
+    <label for="nav-toggle" id="nav-burger">&#9776;</label>
+    <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
-      <h1 class="title">src/playdate/graphics</h1>
+      <h1 class="title">playdate/graphics</h1>
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
@@ -62,7 +65,9 @@
 <li><a class="reference" href="#BitmapData" title="BitmapData = ref BitmapDataObj">BitmapData</a></li>
 <li><a class="reference" href="#BitmapDataObj" title="BitmapDataObj = object
   width*: int
-  height*: int">BitmapDataObj</a></li>
+  height*: int
+  rowbytes*: int
+  data*: ptr UncheckedArray[uint8]">BitmapDataObj</a></li>
 <li><a class="reference" href="#BitmapView" title="BitmapView = DisplayFrame | AnyBitmapData">BitmapView</a></li>
 <li><a class="reference" href="#DisplayFrame" title="DisplayFrame = distinct ptr array[52 * 240, uint8]">DisplayFrame</a></li>
 <li><a class="reference" href="#LCDBitmapTable" title="LCDBitmapTable = ref LCDBitmapTableObj">LCDBitmapTable</a></li>
@@ -87,7 +92,7 @@
 </ul>
 <ul class="simple nested-toc-section">clear
   <li><a class="reference" href="#clear%2CLCDBitmap%2CLCDColor" title="clear(this: LCDBitmap; color: LCDColor)">clear(this: LCDBitmap; color: LCDColor)</a></li>
-<li><a class="reference" href="#clear%2CBitmapView%2Cint%2Cint" title="clear(view: var BitmapView; x, y: int)">clear(view: var BitmapView; x, y: int)</a></li>
+<li><a class="reference" href="#clear%2CBitmapView%2Cint%2Cint" title="clear(view: BitmapView; x, y: int)">clear(view: BitmapView; x, y: int)</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">copy
@@ -318,9 +323,9 @@
 
 </ul>
 <ul class="simple nested-toc-section">set
-  <li><a class="reference" href="#set%2CLCDBitmap%2Cint%2Cint%2CLCDSolidColor" title="set(this: var LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)">set(this: var LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)</a></li>
-<li><a class="reference" href="#set%2CBitmapView%2Cint%2Cint" title="set(view: var BitmapView; x, y: int)">set(view: var BitmapView; x, y: int)</a></li>
-<li><a class="reference" href="#set%2CBitmapView%2Cint%2Cint%2CLCDSolidColor" title="set(view: var BitmapView; x, y: int; color: LCDSolidColor)">set(view: var BitmapView; x, y: int; color: LCDSolidColor)</a></li>
+  <li><a class="reference" href="#set%2CLCDBitmap%2Cint%2Cint%2CLCDSolidColor" title="set(this: LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)">set(this: LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)</a></li>
+<li><a class="reference" href="#set%2CBitmapView%2Cint%2Cint" title="set(view: BitmapView; x, y: int)">set(view: BitmapView; x, y: int)</a></li>
+<li><a class="reference" href="#set%2CBitmapView%2Cint%2Cint%2CLCDSolidColor" title="set(view: BitmapView; x, y: int; color: LCDSolidColor)">set(view: BitmapView; x, y: int; color: LCDSolidColor)</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">setBitmapMask
@@ -384,7 +389,7 @@
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
     <div id="AnyBitmapData">
-  <dt><pre><a href="graphics.html#AnyBitmapData"><span class="Identifier">AnyBitmapData</span></a> <span class="Other">=</span> <a href="graphics.html#BitmapDataObj"><span class="Identifier">BitmapDataObj</span></a> <span class="Operator">|</span> <a href="graphics.html#BitmapData"><span class="Identifier">BitmapData</span></a></pre></dt>
+  <dt><pre><a href="#AnyBitmapData"><span class="Identifier">AnyBitmapData</span></a> <span class="Other">=</span> <a href="#BitmapDataObj"><span class="Identifier">BitmapDataObj</span></a> <span class="Operator">|</span> <a href="#BitmapData"><span class="Identifier">BitmapData</span></a></pre></dt>
   <dd>
     
     
@@ -392,7 +397,7 @@
   </dd>
 </div>
 <div id="BitmapData">
-  <dt><pre><a href="graphics.html#BitmapData"><span class="Identifier">BitmapData</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <a href="graphics.html#BitmapDataObj"><span class="Identifier">BitmapDataObj</span></a></pre></dt>
+  <dt><pre><a href="#BitmapData"><span class="Identifier">BitmapData</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <a href="#BitmapDataObj"><span class="Identifier">BitmapDataObj</span></a></pre></dt>
   <dd>
     
     
@@ -400,9 +405,11 @@
   </dd>
 </div>
 <div id="BitmapDataObj">
-  <dt><pre><a href="graphics.html#BitmapDataObj"><span class="Identifier">BitmapDataObj</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <dt><pre><a href="#BitmapDataObj"><span class="Identifier">BitmapDataObj</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">width</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
-  <span class="Identifier">height</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span></pre></dt>
+  <span class="Identifier">height</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+  <span class="Identifier">rowbytes</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+  <span class="Identifier">data</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><span class="Identifier">uint8</span><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -410,7 +417,7 @@
   </dd>
 </div>
 <div id="BitmapView">
-  <dt><pre><a href="graphics.html#BitmapView"><span class="Identifier">BitmapView</span></a> <span class="Other">=</span> <a href="graphics.html#DisplayFrame"><span class="Identifier">DisplayFrame</span></a> <span class="Operator">|</span> <a href="graphics.html#AnyBitmapData"><span class="Identifier">AnyBitmapData</span></a></pre></dt>
+  <dt><pre><a href="#BitmapView"><span class="Identifier">BitmapView</span></a> <span class="Other">=</span> <a href="#DisplayFrame"><span class="Identifier">DisplayFrame</span></a> <span class="Operator">|</span> <a href="#AnyBitmapData"><span class="Identifier">AnyBitmapData</span></a></pre></dt>
   <dd>
     
     Types that allow the manipulation of individual pixels.
@@ -418,7 +425,7 @@
   </dd>
 </div>
 <div id="DisplayFrame">
-  <dt><pre><a href="graphics.html#DisplayFrame"><span class="Identifier">DisplayFrame</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Keyword">ptr</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">52</span> <span class="Operator">*</span> <span class="DecNumber">240</span><span class="Other">,</span> <span class="Identifier">uint8</span><span class="Other">]</span></pre></dt>
+  <dt><pre><a href="#DisplayFrame"><span class="Identifier">DisplayFrame</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Keyword">ptr</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">52</span> <span class="Operator">*</span> <span class="DecNumber">240</span><span class="Other">,</span> <span class="Identifier">uint8</span><span class="Other">]</span></pre></dt>
   <dd>
     
     The raw bytes in a display frame buffer.
@@ -426,7 +433,7 @@
   </dd>
 </div>
 <div id="LCDBitmapTable">
-  <dt><pre><a href="graphics.html#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Identifier">LCDBitmapTableObj</span></pre></dt>
+  <dt><pre><a href="#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Identifier">LCDBitmapTableObj</span></pre></dt>
   <dd>
     
     
@@ -434,7 +441,7 @@
   </dd>
 </div>
 <div id="LCDVideoPlayer">
-  <dt><pre><a href="graphics.html#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Identifier">LCDVideoPlayerObj</span></pre></dt>
+  <dt><pre><a href="#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Identifier">LCDVideoPlayerObj</span></pre></dt>
   <dd>
     
     
@@ -442,7 +449,7 @@
   </dd>
 </div>
 <div id="TextAlignment">
-  <dt><pre><a href="graphics.html#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <dt><pre><a href="#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
   <span class="Identifier">kTextAlignmentLeft</span><span class="Other">,</span> <span class="Identifier">kTextAlignmentCenter</span><span class="Other">,</span> <span class="Identifier">kTextAlignmentRight</span></pre></dt>
   <dd>
     
@@ -451,7 +458,7 @@
   </dd>
 </div>
 <div id="TextInRectResult">
-  <dt><pre><a href="graphics.html#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <dt><pre><a href="#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">width</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">height</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">textWasTruncated</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
@@ -469,7 +476,7 @@
   <dl class="item">
     <div id="$-procs-all">
   <div id="$">
-  <dt><pre><span class="Keyword">proc</span> <a href="#%24"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="graphics.html#BitmapView"><span class="Identifier">BitmapView</span></a> <span class="Operator">|</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#%24"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="#BitmapView"><span class="Identifier">BitmapView</span></a> <span class="Operator">|</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Render a string version of a bitmap view
@@ -488,7 +495,7 @@
   </dd>
 </div>
 <div id="clear,BitmapView,int,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#clear%2CBitmapView%2Cint%2Cint"><span class="Identifier">clear</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="graphics.html#BitmapView"><span class="Identifier">BitmapView</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">func</span> <a href="#clear%2CBitmapView%2Cint%2Cint"><span class="Identifier">clear</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="#BitmapView"><span class="Identifier">BitmapView</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Clears the color from a pixel at the given coordinate.
@@ -586,7 +593,7 @@
 <div id="drawTextAligned-procs-all">
   <div id="drawTextAligned,LCDFont,string,int,int,TextAlignment,int">
   <dt><pre><span class="Keyword">proc</span> <a href="#drawTextAligned%2CLCDFont%2Cstring%2Cint%2Cint%2CTextAlignment%2Cint"><span class="Identifier">drawTextAligned</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDFont"><span class="Identifier">LCDFont</span></a><span class="Other">;</span> <span class="Identifier">text</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span>
-                     <span class="Identifier">alignment</span><span class="Other">:</span> <a href="graphics.html#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentCenter</span><span class="Other">;</span>
+                     <span class="Identifier">alignment</span><span class="Other">:</span> <a href="#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentCenter</span><span class="Other">;</span>
                      <span class="Identifier">lineHeightAdjustment</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
@@ -597,7 +604,7 @@
 </div>
 <div id="drawTextAligned,ptr.PlaydateGraphics,string,int,int,TextAlignment,int">
   <dt><pre><span class="Keyword">proc</span> <a href="#drawTextAligned%2Cptr.PlaydateGraphics%2Cstring%2Cint%2Cint%2CTextAlignment%2Cint"><span class="Identifier">drawTextAligned</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">;</span> <span class="Identifier">text</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span>
-                     <span class="Identifier">alignment</span><span class="Other">:</span> <a href="graphics.html#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentCenter</span><span class="Other">;</span>
+                     <span class="Identifier">alignment</span><span class="Other">:</span> <a href="#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentCenter</span><span class="Other">;</span>
                      <span class="Identifier">lineHeightAdjustment</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
@@ -613,7 +620,7 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#drawTextInRect%2CLCDFont%2Cstring%2Cint%2Cint%2Cint%2Cint%2Cint%2Cstring%2CTextAlignment"><span class="Identifier">drawTextInRect</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDFont"><span class="Identifier">LCDFont</span></a><span class="Other">;</span> <span class="Identifier">text</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">,</span> <span class="Identifier">width</span><span class="Other">,</span> <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span>
                     <span class="Identifier">lineHeightAdjustment</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">;</span>
                     <span class="Identifier">truncationString</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;...&quot;</span><span class="Other">;</span>
-                    <span class="Identifier">alignment</span><span class="Other">:</span> <a href="graphics.html#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentLeft</span><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> {.
+                    <span class="Identifier">alignment</span><span class="Other">:</span> <a href="#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentLeft</span><span class="Other">)</span><span class="Other">:</span> <a href="#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> {.
     <span class="Identifier">discardable</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -625,7 +632,7 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#drawTextInRect%2Cptr.PlaydateGraphics%2Cstring%2Cint%2Cint%2Cint%2Cint%2Cint%2Cstring%2CTextAlignment"><span class="Identifier">drawTextInRect</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">;</span> <span class="Identifier">text</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
                     <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">,</span> <span class="Identifier">width</span><span class="Other">,</span> <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">lineHeightAdjustment</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">;</span>
                     <span class="Identifier">truncationString</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;...&quot;</span><span class="Other">;</span>
-                    <span class="Identifier">alignment</span><span class="Other">:</span> <a href="graphics.html#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentLeft</span><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> {.
+                    <span class="Identifier">alignment</span><span class="Other">:</span> <a href="#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentLeft</span><span class="Other">)</span><span class="Other">:</span> <a href="#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> {.
     <span class="Identifier">discardable</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -672,7 +679,7 @@
   </dd>
 </div>
 <div id="get,BitmapView,int,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#get%2CBitmapView%2Cint%2Cint"><span class="Identifier">get</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="graphics.html#BitmapView"><span class="Identifier">BitmapView</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDSolidColor"><span class="Identifier">LCDSolidColor</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">proc</span> <a href="#get%2CBitmapView%2Cint%2Cint"><span class="Identifier">get</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="#BitmapView"><span class="Identifier">BitmapView</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDSolidColor"><span class="Identifier">LCDSolidColor</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Returns the color of a pixel at the given coordinate.
@@ -683,7 +690,7 @@
 </div>
 <div id="getBitmap-procs-all">
   <div id="getBitmap,LCDBitmapTable,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getBitmap%2CLCDBitmapTable%2Cint"><span class="Identifier">getBitmap</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="graphics.html#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#getBitmap%2CLCDBitmapTable%2Cint"><span class="Identifier">getBitmap</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -707,7 +714,7 @@
 </div>
 <div id="getBitmapTableInfo-procs-all">
   <div id="getBitmapTableInfo,LCDBitmapTable">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getBitmapTableInfo%2CLCDBitmapTable"><span class="Identifier">getBitmapTableInfo</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="graphics.html#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">count</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">cellsWide</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">]</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#getBitmapTableInfo%2CLCDBitmapTable"><span class="Identifier">getBitmapTableInfo</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">count</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">cellsWide</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">]</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -719,7 +726,7 @@
 </div>
 <div id="getContext-procs-all">
   <div id="getContext,LCDVideoPlayer">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getContext%2CLCDVideoPlayer"><span class="Identifier">getContext</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="graphics.html#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">)</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#getContext%2CLCDVideoPlayer"><span class="Identifier">getContext</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">)</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -731,7 +738,7 @@
 </div>
 <div id="getData-procs-all">
   <div id="getData,LCDBitmap">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getData%2CLCDBitmap"><span class="Identifier">getData</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#BitmapData"><span class="Identifier">BitmapData</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#getData%2CLCDBitmap"><span class="Identifier">getData</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">)</span><span class="Other">:</span> <a href="#BitmapData"><span class="Identifier">BitmapData</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -743,7 +750,7 @@
 </div>
 <div id="getDataObj-procs-all">
   <div id="getDataObj,LCDBitmap">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getDataObj%2CLCDBitmap"><span class="Identifier">getDataObj</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#BitmapDataObj"><span class="Identifier">BitmapDataObj</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#getDataObj%2CLCDBitmap"><span class="Identifier">getDataObj</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">)</span><span class="Other">:</span> <a href="#BitmapDataObj"><span class="Identifier">BitmapDataObj</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -779,7 +786,7 @@
 </div>
 <div id="getDisplayFrame-procs-all">
   <div id="getDisplayFrame,ptr.PlaydateGraphics">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getDisplayFrame%2Cptr.PlaydateGraphics"><span class="Identifier">getDisplayFrame</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#DisplayFrame"><span class="Identifier">DisplayFrame</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#getDisplayFrame%2Cptr.PlaydateGraphics"><span class="Identifier">getDisplayFrame</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">)</span><span class="Other">:</span> <a href="#DisplayFrame"><span class="Identifier">DisplayFrame</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -827,7 +834,7 @@
 </div>
 <div id="getFrame-procs-all">
   <div id="getFrame,ptr.PlaydateGraphics">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getFrame%2Cptr.PlaydateGraphics"><span class="Identifier">getFrame</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#DisplayFrame"><span class="Identifier">DisplayFrame</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#getFrame%2Cptr.PlaydateGraphics"><span class="Identifier">getFrame</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">)</span><span class="Other">:</span> <a href="#DisplayFrame"><span class="Identifier">DisplayFrame</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -851,7 +858,7 @@
 </div>
 <div id="getInfo-procs-all">
   <div id="getInfo,LCDVideoPlayer">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getInfo%2CLCDVideoPlayer"><span class="Identifier">getInfo</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="graphics.html#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">width</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#getInfo%2CLCDVideoPlayer"><span class="Identifier">getInfo</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">width</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span>
     <span class="Identifier">frameRate</span><span class="Other">:</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">frameCount</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">currentFrame</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
@@ -903,7 +910,7 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#getTextSizeInRect%2CLCDFont%2Cstring%2Cint%2Cint%2Cint%2Cint%2Cint%2Cstring%2CTextAlignment"><span class="Identifier">getTextSizeInRect</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDFont"><span class="Identifier">LCDFont</span></a><span class="Other">;</span> <span class="Identifier">text</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">,</span> <span class="Identifier">width</span><span class="Other">,</span> <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span>
                        <span class="Identifier">lineHeightAdjustment</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">;</span>
                        <span class="Identifier">truncationString</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;...&quot;</span><span class="Other">;</span>
-                       <span class="Identifier">alignment</span><span class="Other">:</span> <a href="graphics.html#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentLeft</span><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> {.
+                       <span class="Identifier">alignment</span><span class="Other">:</span> <a href="#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentLeft</span><span class="Other">)</span><span class="Other">:</span> <a href="#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -915,7 +922,7 @@
   <dt><pre><span class="Keyword">proc</span> <a href="#getTextSizeInRect%2Cptr.PlaydateGraphics%2Cstring%2Cint%2Cint%2Cint%2Cint%2Cint%2Cstring%2CTextAlignment"><span class="Identifier">getTextSizeInRect</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">;</span> <span class="Identifier">text</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
                        <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">,</span> <span class="Identifier">width</span><span class="Other">,</span> <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">lineHeightAdjustment</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">;</span>
                        <span class="Identifier">truncationString</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;...&quot;</span><span class="Other">;</span>
-                       <span class="Identifier">alignment</span><span class="Other">:</span> <a href="graphics.html#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentLeft</span><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> {.
+                       <span class="Identifier">alignment</span><span class="Other">:</span> <a href="#TextAlignment"><span class="Identifier">TextAlignment</span></a> <span class="Other">=</span> <span class="Identifier">kTextAlignmentLeft</span><span class="Other">)</span><span class="Other">:</span> <a href="#TextInRectResult"><span class="Identifier">TextInRectResult</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -940,7 +947,7 @@
 </div>
 <div id="height-procs-all">
   <div id="height,DisplayFrame">
-  <dt><pre><span class="Keyword">proc</span> <a href="#height%2CDisplayFrame"><span class="Identifier">height</span></a><span class="Other">(</span><span class="Identifier">frame</span><span class="Other">:</span> <a href="graphics.html#DisplayFrame"><span class="Identifier">DisplayFrame</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#height%2CDisplayFrame"><span class="Identifier">height</span></a><span class="Other">(</span><span class="Identifier">frame</span><span class="Other">:</span> <a href="#DisplayFrame"><span class="Identifier">DisplayFrame</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -969,7 +976,7 @@
   </dd>
 </div>
 <div id="load,LCDBitmapTable,string">
-  <dt><pre><span class="Keyword">proc</span> <a href="#load%2CLCDBitmapTable%2Cstring"><span class="Identifier">load</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="graphics.html#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a><span class="Other">;</span> <span class="Identifier">path</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#load%2CLCDBitmapTable%2Cstring"><span class="Identifier">load</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a><span class="Other">;</span> <span class="Identifier">path</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1015,7 +1022,7 @@
 <div id="newBitmapTable-procs-all">
   <div id="newBitmapTable,ptr.PlaydateGraphics,int,int,int">
   <dt><pre><span class="Keyword">proc</span> <a href="#newBitmapTable%2Cptr.PlaydateGraphics%2Cint%2Cint%2Cint"><span class="Identifier">newBitmapTable</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">;</span> <span class="Identifier">count</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">width</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span>
-                    <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+                    <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1024,7 +1031,7 @@
   </dd>
 </div>
 <div id="newBitmapTable,ptr.PlaydateGraphics,string">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newBitmapTable%2Cptr.PlaydateGraphics%2Cstring"><span class="Identifier">newBitmapTable</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">;</span> <span class="Identifier">path</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#newBitmapTable%2Cptr.PlaydateGraphics%2Cstring"><span class="Identifier">newBitmapTable</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">;</span> <span class="Identifier">path</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="#LCDBitmapTable"><span class="Identifier">LCDBitmapTable</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1048,7 +1055,7 @@
 </div>
 <div id="newVideoPlayer-procs-all">
   <div id="newVideoPlayer,ptr.PlaydateVideo,string">
-  <dt><pre><span class="Keyword">proc</span> <a href="#newVideoPlayer%2Cptr.PlaydateVideo%2Cstring"><span class="Identifier">newVideoPlayer</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateVideo"><span class="Identifier">PlaydateVideo</span></a><span class="Other">;</span> <span class="Identifier">path</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="graphics.html#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#newVideoPlayer%2Cptr.PlaydateVideo%2Cstring"><span class="Identifier">newVideoPlayer</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/graphics.html#PlaydateVideo"><span class="Identifier">PlaydateVideo</span></a><span class="Other">;</span> <span class="Identifier">path</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1072,7 +1079,7 @@
 </div>
 <div id="renderFrame-procs-all">
   <div id="renderFrame,LCDVideoPlayer,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#renderFrame%2CLCDVideoPlayer%2Cint"><span class="Identifier">renderFrame</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="graphics.html#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">CatchableError</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#renderFrame%2CLCDVideoPlayer%2Cint"><span class="Identifier">renderFrame</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">;</span> <span class="Identifier">index</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">CatchableError</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1107,7 +1114,7 @@
 </div>
 <div id="set-procs-all">
   <div id="set,LCDBitmap,int,int,LCDSolidColor">
-  <dt><pre><span class="Keyword">proc</span> <a href="#set%2CLCDBitmap%2Cint%2Cint%2CLCDSolidColor"><span class="Identifier">set</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">color</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDSolidColor"><span class="Identifier">LCDSolidColor</span></a> <span class="Other">=</span> <span class="Identifier">kColorBlack</span><span class="Other">)</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#set%2CLCDBitmap%2Cint%2Cint%2CLCDSolidColor"><span class="Identifier">set</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">color</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDSolidColor"><span class="Identifier">LCDSolidColor</span></a> <span class="Other">=</span> <span class="Identifier">kColorBlack</span><span class="Other">)</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1116,7 +1123,7 @@
   </dd>
 </div>
 <div id="set,BitmapView,int,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#set%2CBitmapView%2Cint%2Cint"><span class="Identifier">set</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="graphics.html#BitmapView"><span class="Identifier">BitmapView</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">func</span> <a href="#set%2CBitmapView%2Cint%2Cint"><span class="Identifier">set</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="#BitmapView"><span class="Identifier">BitmapView</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Sets the pixel at x, y to black.
@@ -1124,7 +1131,7 @@
   </dd>
 </div>
 <div id="set,BitmapView,int,int,LCDSolidColor">
-  <dt><pre><span class="Keyword">proc</span> <a href="#set%2CBitmapView%2Cint%2Cint%2CLCDSolidColor"><span class="Identifier">set</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="graphics.html#BitmapView"><span class="Identifier">BitmapView</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">color</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDSolidColor"><span class="Identifier">LCDSolidColor</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><span class="Keyword">func</span> <a href="#set%2CBitmapView%2Cint%2Cint%2CLCDSolidColor"><span class="Identifier">set</span></a><span class="Other">(</span><span class="Identifier">view</span><span class="Other">:</span> <a href="#BitmapView"><span class="Identifier">BitmapView</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">color</span><span class="Other">:</span> <a href="bindings/graphics.html#LCDSolidColor"><span class="Identifier">LCDSolidColor</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     Sets the specific color of a pixel at the given coordinate.
@@ -1148,7 +1155,7 @@
 </div>
 <div id="setContext-procs-all">
   <div id="setContext,LCDVideoPlayer,LCDBitmap">
-  <dt><pre><span class="Keyword">proc</span> <a href="#setContext%2CLCDVideoPlayer%2CLCDBitmap"><span class="Identifier">setContext</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="graphics.html#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">;</span> <span class="Identifier">context</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">)</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#setContext%2CLCDVideoPlayer%2CLCDBitmap"><span class="Identifier">setContext</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">;</span> <span class="Identifier">context</span><span class="Other">:</span> <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a><span class="Other">)</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">CatchableError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1198,7 +1205,7 @@
 </div>
 <div id="useScreenContext-procs-all">
   <div id="useScreenContext,LCDVideoPlayer">
-  <dt><pre><span class="Keyword">proc</span> <a href="#useScreenContext%2CLCDVideoPlayer"><span class="Identifier">useScreenContext</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="graphics.html#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#useScreenContext%2CLCDVideoPlayer"><span class="Identifier">useScreenContext</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <a href="#LCDVideoPlayer"><span class="Identifier">LCDVideoPlayer</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1210,7 +1217,7 @@
 </div>
 <div id="width-procs-all">
   <div id="width,DisplayFrame">
-  <dt><pre><span class="Keyword">proc</span> <a href="#width%2CDisplayFrame"><span class="Identifier">width</span></a><span class="Other">(</span><span class="Identifier">frame</span><span class="Other">:</span> <a href="graphics.html#DisplayFrame"><span class="Identifier">DisplayFrame</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#width%2CDisplayFrame"><span class="Identifier">width</span></a><span class="Other">(</span><span class="Identifier">frame</span><span class="Other">:</span> <a href="#DisplayFrame"><span class="Identifier">DisplayFrame</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">auto</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
                                         <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -1244,7 +1251,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-08 16:04:57 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:58:35 UTC</small>
       </div>
     </div>
   </div>

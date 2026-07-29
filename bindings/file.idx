@@ -1,4 +1,4 @@
-nimTitle	file	bindings/file.html	module src/playdate/bindings/file		0
+nimTitle	file	bindings/file.html	module playdate/bindings/file		0
 nim	FileOptions	bindings/file.html#FileOptions	enum FileOptions		7
 nim	FileStat	bindings/file.html#FileStat	type FileStat		24
 nim	SEEK_SET	bindings/file.html#SEEK_SET	const SEEK_SET		28

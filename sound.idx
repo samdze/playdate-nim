@@ -1,4 +1,4 @@
-nimTitle	sound	sound.html	module src/playdate/sound		0
+nimTitle	sound	sound.html	module playdate/sound		0
 nim	AudioSample	sound.html#AudioSample	type AudioSample		18
 nim	PDSoundCallbackFunction	sound.html#PDSoundCallbackFunction	type PDSoundCallbackFunction		20
 nim	newAudioSample	sound.html#newAudioSample,ptr.PlaydateSound,int32	proc newAudioSample(this: ptr PlaydateSound; bytes: int32): AudioSample		27

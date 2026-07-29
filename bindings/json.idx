@@ -1,4 +1,4 @@
-nimTitle	json	bindings/json.html	module src/playdate/bindings/json		0
+nimTitle	json	bindings/json.html	module playdate/bindings/json		0
 nim	JSONValueUnion	bindings/json.html#JSONValueUnion	object JSONValueUnion		10
 nim	JSONValueType	bindings/json.html#JSONValueType	enum JSONValueType		18
 nim	JSONValue	bindings/json.html#JSONValue	object JSONValue		28

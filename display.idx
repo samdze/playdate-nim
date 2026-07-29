@@ -1,4 +1,4 @@
-nimTitle	display	display.html	module src/playdate/display		0
+nimTitle	display	display.html	module playdate/display		0
 nim	setInverted	display.html#setInverted,ptr.PlaydateDisplay,bool	proc setInverted(this: ptr PlaydateDisplay; inverted: bool)		16
 nim	setFlipped	display.html#setFlipped,ptr.PlaydateDisplay,bool,bool	proc setFlipped(this: ptr PlaydateDisplay; x: bool; y: bool)		20
 nim	getRefreshRate	display.html#getRefreshRate,ptr.PlaydateDisplay	proc getRefreshRate(this: ptr PlaydateDisplay): float32		24

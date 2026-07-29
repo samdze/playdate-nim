@@ -1,7 +1,8 @@
-nimTitle	types	bindings/types.html	module src/playdate/bindings/types		0
-nim	ConstChar	bindings/types.html#ConstChar	type ConstChar		2
-nim	ConstCharPtr	bindings/types.html#ConstCharPtr	type ConstCharPtr		3
-nim	Char	bindings/types.html#Char	type Char		4
-nim	LCDBitmapPtr	bindings/types.html#LCDBitmapPtr	type LCDBitmapPtr		5
-nim	PDLog	bindings/types.html#PDLog	type PDLog		7
-nim	PDRealloc	bindings/types.html#PDRealloc	type PDRealloc		10
+nimTitle	types	bindings/types.html	module playdate/bindings/types		0
+nim	PDDateTime	bindings/types.html#PDDateTime	object PDDateTime		1
+nim	ConstChar	bindings/types.html#ConstChar	type ConstChar		6
+nim	ConstCharPtr	bindings/types.html#ConstCharPtr	type ConstCharPtr		7
+nim	Char	bindings/types.html#Char	type Char		8
+nim	LCDBitmapPtr	bindings/types.html#LCDBitmapPtr	type LCDBitmapPtr		9
+nim	PDLog	bindings/types.html#PDLog	type PDLog		11
+nim	PDRealloc	bindings/types.html#PDRealloc	type PDRealloc		14

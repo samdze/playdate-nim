@@ -1,4 +1,4 @@
-nimTitle	lua	bindings/lua.html	module src/playdate/bindings/lua		0
+nimTitle	lua	bindings/lua.html	module playdate/bindings/lua		0
 nim	LuaStatePtr	bindings/lua.html#LuaStatePtr	object LuaStatePtr		7
 nim	LuaNimFunction	bindings/lua.html#LuaNimFunction	type LuaNimFunction		8
 nim	LuaUDObject	bindings/lua.html#LuaUDObject	object LuaUDObject		9

@@ -1,4 +1,4 @@
-nimTitle	scoreboards	scoreboards.html	module src/playdate/scoreboards		0
+nimTitle	scoreboards	scoreboards.html	module playdate/scoreboards		0
 nim	PDScore	scoreboards.html#PDScore	object PDScore		15
 nim	PDScoresList	scoreboards.html#PDScoresList	object PDScoresList		19
 nim	PDBoard	scoreboards.html#PDBoard	object PDBoard		27

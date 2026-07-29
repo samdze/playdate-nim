@@ -1,4 +1,4 @@
-nimTitle	system	system.html	module src/playdate/system		0
+nimTitle	system	system.html	module playdate/system		0
 nim	fmt	system.html#fmt.t,typed	template fmt(arg: typed): string		16
 nim	logToConsole	system.html#logToConsole,ptr.PlaydateSys,string	proc logToConsole(this: ptr PlaydateSys; str: string)		22
 nim	error	system.html#error,ptr.PlaydateSys,string	proc error(this: ptr PlaydateSys; str: string)		26
@@ -30,6 +30,9 @@ nim	removeAllMenuItems	system.html#removeAllMenuItems,ptr.PlaydateSys	proc remov
 nim	setMenuImage	system.html#setMenuImage,ptr.PlaydateSys,LCDBitmap,int32	proc setMenuImage(this: ptr PlaydateSys; image: LCDBitmap; xOffset: int32 = 0)		239
 nim	getReduceFlashing	system.html#getReduceFlashing,ptr.PlaydateSys	proc getReduceFlashing(this: ptr PlaydateSys): bool		243
 nim	setSerialMessageCallback	system.html#setSerialMessageCallback,ptr.PlaydateSys,proc(string)	proc setSerialMessageCallback(this: ptr PlaydateSys; callback: proc (msg: string))		252
-nim	randomize	system.html#randomize,ptr.PlaydateSys	proc randomize(this: ptr PlaydateSys)		259
+nim	shouldDisplay24HourTime	system.html#shouldDisplay24HourTime,ptr.PlaydateSys	proc shouldDisplay24HourTime(this: ptr PlaydateSys): bool		259
+nim	convertEpochToDateTime	system.html#convertEpochToDateTime,ptr.PlaydateSys,uint	proc convertEpochToDateTime(this: ptr PlaydateSys; epoch: uint): PDDateTime		263
+nim	convertDateTimeToEpoch	system.html#convertDateTimeToEpoch,ptr.PlaydateSys,PDDateTime	proc convertDateTimeToEpoch(this: ptr PlaydateSys; datetime: PDDateTime): uint		267
+nim	randomize	system.html#randomize,ptr.PlaydateSys	proc randomize(this: ptr PlaydateSys)		272
 nimgrp	value=	system.html#value=-procs-all	proc		132
 nimgrp	value	system.html#value-procs-all	proc		137

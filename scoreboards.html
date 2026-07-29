@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>src/playdate/scoreboards</title>
+<title>playdate/scoreboards</title>
 
 <!-- Google fonts -->
 <link href='https://fonts.googleapis.com/css?family=Lato:400,600,900' rel='stylesheet' type='text/css'/>
@@ -16,15 +16,18 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.2.6">
+<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.2.10">
 
 <!-- JS -->
-<script type="text/javascript" src="dochack.js?v=2.2.6"></script>
+<script type="text/javascript" src="dochack.js?v=2.2.10"></script>
 </head>
 <body>
   <div class="document" id="documentId">
+    <input type="checkbox" id="nav-toggle" hidden>
+    <label for="nav-toggle" id="nav-burger">&#9776;</label>
+    <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
-      <h1 class="title">src/playdate/scoreboards</h1>
+      <h1 class="title">playdate/scoreboards</h1>
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
@@ -141,7 +144,7 @@
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
     <div id="AddScoreCallback">
-  <dt><pre><a href="scoreboards.html#AddScoreCallback"><span class="Identifier">AddScoreCallback</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">result</span><span class="Other">:</span> <a href="scoreboards.html#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><a href="scoreboards.html#PDScore"><span class="Identifier">PDScore</span></a><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="#AddScoreCallback"><span class="Identifier">AddScoreCallback</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">result</span><span class="Other">:</span> <a href="#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><a href="#PDScore"><span class="Identifier">PDScore</span></a><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -149,7 +152,7 @@
   </dd>
 </div>
 <div id="BoardsListCallback">
-  <dt><pre><a href="scoreboards.html#BoardsListCallback"><span class="Identifier">BoardsListCallback</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">result</span><span class="Other">:</span> <a href="scoreboards.html#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><a href="scoreboards.html#PDBoardsList"><span class="Identifier">PDBoardsList</span></a><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="#BoardsListCallback"><span class="Identifier">BoardsListCallback</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">result</span><span class="Other">:</span> <a href="#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><a href="#PDBoardsList"><span class="Identifier">PDBoardsList</span></a><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -157,7 +160,7 @@
   </dd>
 </div>
 <div id="PDBoard">
-  <dt><pre><a href="scoreboards.html#PDBoard"><span class="Identifier">PDBoard</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
+  <dt><pre><a href="#PDBoard"><span class="Identifier">PDBoard</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
   <span class="Identifier">boardID</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">name</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
   <dd>
     
@@ -166,9 +169,9 @@
   </dd>
 </div>
 <div id="PDBoardsList">
-  <dt><pre><a href="scoreboards.html#PDBoardsList"><span class="Identifier">PDBoardsList</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
+  <dt><pre><a href="#PDBoardsList"><span class="Identifier">PDBoardsList</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
   <span class="Identifier">lastUpdated</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint32</span>
-  <span class="Identifier">boards</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="scoreboards.html#PDBoard"><span class="Identifier">PDBoard</span></a><span class="Other">]</span></pre></dt>
+  <span class="Identifier">boards</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="#PDBoard"><span class="Identifier">PDBoard</span></a><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -176,8 +179,8 @@
   </dd>
 </div>
 <div id="PDResult">
-  <dt><pre><a href="scoreboards.html#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="scoreboards.html#PDResultKind"><span class="Identifier">PDResultKind</span></a>
+  <dt><pre><a href="#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="#PDResultKind"><span class="Identifier">PDResultKind</span></a>
   <span class="Keyword">of</span> <span class="Identifier">PDResultSuccess</span><span class="Other">:</span>
     <span class="Identifier">result</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">T</span>
   <span class="Keyword">of</span> <span class="Identifier">PDResultUnavailable</span><span class="Other">:</span>
@@ -191,7 +194,7 @@
   </dd>
 </div>
 <div id="PDResultKind">
-  <dt><pre><a href="scoreboards.html#PDResultKind"><span class="Identifier">PDResultKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <dt><pre><a href="#PDResultKind"><span class="Identifier">PDResultKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
   <span class="Identifier">PDResultSuccess</span><span class="Other">,</span> <span class="Identifier">PDResultUnavailable</span><span class="Other">,</span> <span class="Comment">## The operation completed successfully, but the response had no data</span>
   <span class="Identifier">PDResultError</span></pre></dt>
   <dd>
@@ -201,7 +204,7 @@
   </dd>
 </div>
 <div id="PDScore">
-  <dt><pre><a href="scoreboards.html#PDScore"><span class="Identifier">PDScore</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
+  <dt><pre><a href="#PDScore"><span class="Identifier">PDScore</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
   <span class="Identifier">value</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">rank</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint32</span>
   <span class="Identifier">player</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
   <dd>
@@ -211,10 +214,10 @@
   </dd>
 </div>
 <div id="PDScoresList">
-  <dt><pre><a href="scoreboards.html#PDScoresList"><span class="Identifier">PDScoresList</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
+  <dt><pre><a href="#PDScoresList"><span class="Identifier">PDScoresList</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
   <span class="Identifier">boardID</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Identifier">lastUpdated</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint32</span>
-  <span class="Identifier">scores</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="scoreboards.html#PDScore"><span class="Identifier">PDScore</span></a><span class="Other">]</span></pre></dt>
+  <span class="Identifier">scores</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="#PDScore"><span class="Identifier">PDScore</span></a><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -222,7 +225,7 @@
   </dd>
 </div>
 <div id="PersonalBestCallback">
-  <dt><pre><a href="scoreboards.html#PersonalBestCallback"><span class="Identifier">PersonalBestCallback</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">result</span><span class="Other">:</span> <a href="scoreboards.html#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><a href="scoreboards.html#PDScore"><span class="Identifier">PDScore</span></a><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="#PersonalBestCallback"><span class="Identifier">PersonalBestCallback</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">result</span><span class="Other">:</span> <a href="#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><a href="#PDScore"><span class="Identifier">PDScore</span></a><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -230,7 +233,7 @@
   </dd>
 </div>
 <div id="ScoresCallback">
-  <dt><pre><a href="scoreboards.html#ScoresCallback"><span class="Identifier">ScoresCallback</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">result</span><span class="Other">:</span> <a href="scoreboards.html#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><a href="scoreboards.html#PDScoresList"><span class="Identifier">PDScoresList</span></a><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dt><pre><a href="#ScoresCallback"><span class="Identifier">ScoresCallback</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">result</span><span class="Other">:</span> <a href="#PDResult"><span class="Identifier">PDResult</span></a><span class="Other">[</span><a href="#PDScoresList"><span class="Identifier">PDScoresList</span></a><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -246,7 +249,7 @@
     <div id="addScore-procs-all">
   <div id="addScore,ptr.PlaydateScoreboards,string,uint32,AddScoreCallback">
   <dt><pre><span class="Keyword">proc</span> <a href="#addScore%2Cptr.PlaydateScoreboards%2Cstring%2Cuint32%2CAddScoreCallback"><span class="Identifier">addScore</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/scoreboards.html#PlaydateScoreboards"><span class="Identifier">PlaydateScoreboards</span></a><span class="Other">;</span> <span class="Identifier">boardID</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">uint32</span><span class="Other">;</span>
-              <span class="Identifier">callback</span><span class="Other">:</span> <a href="scoreboards.html#AddScoreCallback"><span class="Identifier">AddScoreCallback</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int32</span> {.<span class="Identifier">discardable</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+              <span class="Identifier">callback</span><span class="Other">:</span> <a href="#AddScoreCallback"><span class="Identifier">AddScoreCallback</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int32</span> {.<span class="Identifier">discardable</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -259,7 +262,7 @@
 <div id="getPersonalBest-procs-all">
   <div id="getPersonalBest,ptr.PlaydateScoreboards,string,PersonalBestCallback">
   <dt><pre><span class="Keyword">proc</span> <a href="#getPersonalBest%2Cptr.PlaydateScoreboards%2Cstring%2CPersonalBestCallback"><span class="Identifier">getPersonalBest</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/scoreboards.html#PlaydateScoreboards"><span class="Identifier">PlaydateScoreboards</span></a><span class="Other">;</span> <span class="Identifier">boardID</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
-                     <span class="Identifier">callback</span><span class="Other">:</span> <a href="scoreboards.html#PersonalBestCallback"><span class="Identifier">PersonalBestCallback</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int32</span> {.<span class="Identifier">discardable</span><span class="Other">,</span>
+                     <span class="Identifier">callback</span><span class="Other">:</span> <a href="#PersonalBestCallback"><span class="Identifier">PersonalBestCallback</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int32</span> {.<span class="Identifier">discardable</span><span class="Other">,</span>
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -271,7 +274,7 @@
 </div>
 <div id="getScoreboards-procs-all">
   <div id="getScoreboards,ptr.PlaydateScoreboards,BoardsListCallback">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getScoreboards%2Cptr.PlaydateScoreboards%2CBoardsListCallback"><span class="Identifier">getScoreboards</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/scoreboards.html#PlaydateScoreboards"><span class="Identifier">PlaydateScoreboards</span></a><span class="Other">;</span> <span class="Identifier">callback</span><span class="Other">:</span> <a href="scoreboards.html#BoardsListCallback"><span class="Identifier">BoardsListCallback</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int32</span> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#getScoreboards%2Cptr.PlaydateScoreboards%2CBoardsListCallback"><span class="Identifier">getScoreboards</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/scoreboards.html#PlaydateScoreboards"><span class="Identifier">PlaydateScoreboards</span></a><span class="Other">;</span> <span class="Identifier">callback</span><span class="Other">:</span> <a href="#BoardsListCallback"><span class="Identifier">BoardsListCallback</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int32</span> {.
     <span class="Identifier">discardable</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -284,7 +287,7 @@
 <div id="getScores-procs-all">
   <div id="getScores,ptr.PlaydateScoreboards,string,ScoresCallback">
   <dt><pre><span class="Keyword">proc</span> <a href="#getScores%2Cptr.PlaydateScoreboards%2Cstring%2CScoresCallback"><span class="Identifier">getScores</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="bindings/scoreboards.html#PlaydateScoreboards"><span class="Identifier">PlaydateScoreboards</span></a><span class="Other">;</span> <span class="Identifier">boardID</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
-               <span class="Identifier">callback</span><span class="Other">:</span> <a href="scoreboards.html#ScoresCallback"><span class="Identifier">ScoresCallback</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int32</span> {.<span class="Identifier">discardable</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+               <span class="Identifier">callback</span><span class="Other">:</span> <a href="#ScoresCallback"><span class="Identifier">ScoresCallback</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int32</span> {.<span class="Identifier">discardable</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -310,7 +313,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-08 16:04:57 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:58:35 UTC</small>
       </div>
     </div>
   </div>

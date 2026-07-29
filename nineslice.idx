@@ -1,4 +1,4 @@
-nimTitle	nineslice	nineslice.html	module src/playdate/nineslice		0
+nimTitle	nineslice	nineslice.html	module playdate/nineslice		0
 nim	NineSlice	nineslice.html#NineSlice	type NineSlice		19
 nim	newNineSlice	nineslice.html#newNineSlice,LCDBitmap	proc newNineSlice(source: LCDBitmap): NineSlice		113
-nim	draw	nineslice.html#draw,LCDBitmap,NineSlice	proc draw(target: var LCDBitmap; source: NineSlice)		172
+nim	draw	nineslice.html#draw,LCDBitmap,NineSlice	proc draw(target: var LCDBitmap; source: NineSlice)		177

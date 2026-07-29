@@ -1,4 +1,4 @@
-nimTitle	lua	lua.html	module src/playdate/lua		0
+nimTitle	lua	lua.html	module playdate/lua		0
 nim	LuaError	lua.html#LuaError	object LuaError		14
 nim	addFunction	lua.html#addFunction,ptr.PlaydateLua,LuaNimFunction,string	proc addFunction(this: ptr PlaydateLua; function: LuaNimFunction; name: string)		16
 nim	getArgCount	lua.html#getArgCount,ptr.PlaydateLua	proc getArgCount(this: ptr PlaydateLua): int		29

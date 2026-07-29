@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>src/playdate/bindings/sprite</title>
+<title>playdate/bindings/sprite</title>
 
 <!-- Google fonts -->
 <link href='https://fonts.googleapis.com/css?family=Lato:400,600,900' rel='stylesheet' type='text/css'/>
@@ -16,15 +16,18 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="../nimdoc.out.css?v=2.2.6">
+<link rel="stylesheet" type="text/css" href="../nimdoc.out.css?v=2.2.10">
 
 <!-- JS -->
-<script type="text/javascript" src="../dochack.js?v=2.2.6"></script>
+<script type="text/javascript" src="../dochack.js?v=2.2.10"></script>
 </head>
 <body>
   <div class="document" id="documentId">
+    <input type="checkbox" id="nav-toggle" hidden>
+    <label for="nav-toggle" id="nav-burger">&#9776;</label>
+    <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
-      <h1 class="title">src/playdate/bindings/sprite</h1>
+      <h1 class="title">playdate/bindings/sprite</h1>
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
@@ -136,7 +139,7 @@
   <h1><a class="toc-backref" href="#7">Types</a></h1>
   <dl class="item">
     <div id="CollisionPoint">
-  <dt><pre><a href="sprite.html#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;CollisionPoint&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+  <dt><pre><a href="#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;CollisionPoint&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">x</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;x&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span>
   <span class="Identifier">y</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;y&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span></pre></dt>
   <dd>
@@ -146,7 +149,7 @@
   </dd>
 </div>
 <div id="CollisionVector">
-  <dt><pre><a href="sprite.html#CollisionVector"><span class="Identifier">CollisionVector</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;CollisionVector&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+  <dt><pre><a href="#CollisionVector"><span class="Identifier">CollisionVector</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;CollisionVector&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">x</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;x&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cint</span>
   <span class="Identifier">y</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;y&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cint</span></pre></dt>
   <dd>
@@ -156,7 +159,7 @@
   </dd>
 </div>
 <div id="PDRect">
-  <dt><pre><a href="sprite.html#PDRect"><span class="Identifier">PDRect</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;PDRect&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+  <dt><pre><a href="#PDRect"><span class="Identifier">PDRect</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;PDRect&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">x</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;x&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span>
   <span class="Identifier">y</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;y&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span>
   <span class="Identifier">width</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;width&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span>
@@ -168,7 +171,7 @@
   </dd>
 </div>
 <div id="PlaydateSprite">
-  <dt><pre><a href="sprite.html#PlaydateSprite"><span class="Identifier">PlaydateSprite</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;const struct playdate_sprite&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span>
+  <dt><pre><a href="#PlaydateSprite"><span class="Identifier">PlaydateSprite</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;const struct playdate_sprite&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span>
                  <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">addDirtyRect</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;addDirtyRect&quot;</span>.}<span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">dirtyRect</span><span class="Other">:</span> <a href="graphics.html#LCDRect"><span class="Identifier">LCDRect</span></a><span class="Other">)</span> {.<span class="Identifier">cdecl</span><span class="Other">,</span>
       <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}
@@ -184,15 +187,15 @@
   </dd>
 </div>
 <div id="SpriteCollisionInfo">
-  <dt><pre><a href="sprite.html#SpriteCollisionInfo"><span class="Identifier">SpriteCollisionInfo</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;SpriteCollisionInfo&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
-  <span class="Identifier">responseType</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;responseType&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#SpriteCollisionResponseType"><span class="Identifier">SpriteCollisionResponseType</span></a> <span class="Comment">## The result of collisionResponse</span>
+  <dt><pre><a href="#SpriteCollisionInfo"><span class="Identifier">SpriteCollisionInfo</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;SpriteCollisionInfo&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">responseType</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;responseType&quot;</span>.}<span class="Other">:</span> <a href="#SpriteCollisionResponseType"><span class="Identifier">SpriteCollisionResponseType</span></a> <span class="Comment">## The result of collisionResponse</span>
   <span class="Identifier">overlaps</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;overlaps&quot;</span>.}<span class="Other">:</span> <span class="Identifier">uint8</span> <span class="Comment">## True if the sprite was overlapping other when the collision started. False if it didn’t overlap but tunneled through other.</span>
   <span class="Identifier">ti</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;ti&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span> <span class="Comment">## A number between 0 and 1 indicating how far along the movement to the goal the collision occurred</span>
-  <span class="Identifier">move</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;move&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> <span class="Comment">## The difference between the original coordinates and the actual ones when the collision happened</span>
-  <span class="Identifier">normal</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;normal&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#CollisionVector"><span class="Identifier">CollisionVector</span></a> <span class="Comment">## The collision normal; usually -1, 0, or 1 in x and y. Use this value to determine things like if your character is touching the ground.</span>
-  <span class="Identifier">touch</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;touch&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> <span class="Comment">## The coordinates where the sprite started touching other</span>
-  <span class="Identifier">spriteRect</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;spriteRect&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#PDRect"><span class="Identifier">PDRect</span></a> <span class="Comment">## The rectangle the sprite occupied when the touch happened</span>
-  <span class="Identifier">otherRect</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;otherRect&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#PDRect"><span class="Identifier">PDRect</span></a> <span class="Comment">## The rectangle the sprite being collided with occupied when the touch happened</span></pre></dt>
+  <span class="Identifier">move</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;move&quot;</span>.}<span class="Other">:</span> <a href="#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> <span class="Comment">## The difference between the original coordinates and the actual ones when the collision happened</span>
+  <span class="Identifier">normal</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;normal&quot;</span>.}<span class="Other">:</span> <a href="#CollisionVector"><span class="Identifier">CollisionVector</span></a> <span class="Comment">## The collision normal; usually -1, 0, or 1 in x and y. Use this value to determine things like if your character is touching the ground.</span>
+  <span class="Identifier">touch</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;touch&quot;</span>.}<span class="Other">:</span> <a href="#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> <span class="Comment">## The coordinates where the sprite started touching other</span>
+  <span class="Identifier">spriteRect</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;spriteRect&quot;</span>.}<span class="Other">:</span> <a href="#PDRect"><span class="Identifier">PDRect</span></a> <span class="Comment">## The rectangle the sprite occupied when the touch happened</span>
+  <span class="Identifier">otherRect</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;otherRect&quot;</span>.}<span class="Other">:</span> <a href="#PDRect"><span class="Identifier">PDRect</span></a> <span class="Comment">## The rectangle the sprite being collided with occupied when the touch happened</span></pre></dt>
   <dd>
     
     
@@ -200,7 +203,7 @@
   </dd>
 </div>
 <div id="SpriteCollisionResponseType">
-  <dt><pre><a href="sprite.html#SpriteCollisionResponseType"><span class="Identifier">SpriteCollisionResponseType</span></a> {.<span class="Identifier">size</span><span class="Other">:</span> <span class="DecNumber">4</span><span class="Other">,</span> <span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;SpriteCollisionResponseType&quot;</span>.} <span class="Other">=</span> <span class="Keyword">enum</span>
+  <dt><pre><a href="#SpriteCollisionResponseType"><span class="Identifier">SpriteCollisionResponseType</span></a> {.<span class="Identifier">size</span><span class="Other">:</span> <span class="DecNumber">4</span><span class="Other">,</span> <span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;SpriteCollisionResponseType&quot;</span>.} <span class="Other">=</span> <span class="Keyword">enum</span>
   <span class="Identifier">kCollisionTypeSlide</span><span class="Other">,</span> <span class="Identifier">kCollisionTypeFreeze</span><span class="Other">,</span> <span class="Identifier">kCollisionTypeOverlap</span><span class="Other">,</span>
   <span class="Identifier">kCollisionTypeBounce</span></pre></dt>
   <dd>
@@ -210,13 +213,13 @@
   </dd>
 </div>
 <div id="SpriteQueryInfo">
-  <dt><pre><a href="sprite.html#SpriteQueryInfo"><span class="Identifier">SpriteQueryInfo</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;SpriteQueryInfo&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+  <dt><pre><a href="#SpriteQueryInfo"><span class="Identifier">SpriteQueryInfo</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;SpriteQueryInfo&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">sprite</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;sprite&quot;</span>.}<span class="Other">:</span> <span class="Identifier">LCDSpritePtr</span> <span class="Comment">## The sprite being intersected by the segment</span>
                                               <span class="Comment">## ti1 and ti2 are numbers between 0 and 1 which indicate how far from the starting point of the line segment the collision happened</span>
   <span class="Identifier">ti1</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;ti1&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span> <span class="Comment">## entry point</span>
   <span class="Identifier">ti2</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;ti2&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cfloat</span> <span class="Comment">## exit point</span>
-  <span class="Identifier">entryPoint</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;entryPoint&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> <span class="Comment">## The coordinates of the first intersection between sprite and the line segment</span>
-  <span class="Identifier">exitPoint</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;exitPoint&quot;</span>.}<span class="Other">:</span> <a href="sprite.html#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> <span class="Comment">## The coordinates of the second intersection between sprite and the line segment</span></pre></dt>
+  <span class="Identifier">entryPoint</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;entryPoint&quot;</span>.}<span class="Other">:</span> <a href="#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> <span class="Comment">## The coordinates of the first intersection between sprite and the line segment</span>
+  <span class="Identifier">exitPoint</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;exitPoint&quot;</span>.}<span class="Other">:</span> <a href="#CollisionPoint"><span class="Identifier">CollisionPoint</span></a> <span class="Comment">## The coordinates of the second intersection between sprite and the line segment</span></pre></dt>
   <dd>
     
     
@@ -231,7 +234,7 @@
   <dl class="item">
     <div id="getSpriteCount-procs-all">
   <div id="getSpriteCount,ptr.PlaydateSprite">
-  <dt><pre><span class="Keyword">proc</span> <a href="#getSpriteCount%2Cptr.PlaydateSprite"><span class="Identifier">getSpriteCount</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="sprite.html#PlaydateSprite"><span class="Identifier">PlaydateSprite</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#getSpriteCount%2Cptr.PlaydateSprite"><span class="Identifier">getSpriteCount</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="#PlaydateSprite"><span class="Identifier">PlaydateSprite</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -243,7 +246,7 @@
 </div>
 <div id="PDRectMake-procs-all">
   <div id="PDRectMake,cfloat,cfloat,cfloat,cfloat">
-  <dt><pre><span class="Keyword">proc</span> <a href="#PDRectMake%2Ccfloat%2Ccfloat%2Ccfloat%2Ccfloat"><span class="Identifier">PDRectMake</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <span class="Identifier">cfloat</span><span class="Other">;</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">cfloat</span><span class="Other">;</span> <span class="Identifier">width</span><span class="Other">:</span> <span class="Identifier">cfloat</span><span class="Other">;</span> <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">cfloat</span><span class="Other">)</span><span class="Other">:</span> <a href="sprite.html#PDRect"><span class="Identifier">PDRect</span></a> {.
+  <dt><pre><span class="Keyword">proc</span> <a href="#PDRectMake%2Ccfloat%2Ccfloat%2Ccfloat%2Ccfloat"><span class="Identifier">PDRectMake</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <span class="Identifier">cfloat</span><span class="Other">;</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">cfloat</span><span class="Other">;</span> <span class="Identifier">width</span><span class="Other">:</span> <span class="Identifier">cfloat</span><span class="Other">;</span> <span class="Identifier">height</span><span class="Other">:</span> <span class="Identifier">cfloat</span><span class="Other">)</span><span class="Other">:</span> <a href="#PDRect"><span class="Identifier">PDRect</span></a> {.
     <span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">cdecl</span><span class="Other">,</span> <span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;PDRectMake&quot;</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
@@ -263,7 +266,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-08 16:04:56 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:58:34 UTC</small>
       </div>
     </div>
   </div>

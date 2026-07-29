@@ -1,4 +1,4 @@
-nimTitle	sprite	sprite.html	module src/playdate/sprite		0
+nimTitle	sprite	sprite.html	module playdate/sprite		0
 nim	LCDSprite	sprite.html#LCDSprite	type LCDSprite		24
 nim	LCDSpriteCollisionFilterProc	sprite.html#LCDSpriteCollisionFilterProc	type LCDSpriteCollisionFilterProc		26
 nim	LCDSpriteDrawFunction	sprite.html#LCDSpriteDrawFunction	type LCDSpriteDrawFunction		29

@@ -1,4 +1,4 @@
-nimTitle	types	types.html	module src/playdate/types		0
+nimTitle	types	types.html	module playdate/types		0
 nim	SDKArray	types.html#SDKArray	type SDKArray		7
 nim	`=destroy`	types.html#=destroy,SDKArrayObj[T]	proc `=destroy`[T](this: var SDKArrayObj[T])		9
 nim	`[]`	types.html#[],SDKArray[T],Natural	proc `[]`[T](this: SDKArray[T]; i: Natural): lent T		13

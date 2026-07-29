@@ -1,4 +1,4 @@
-nimTitle	graphics	bindings/graphics.html	module src/playdate/bindings/graphics		0
+nimTitle	graphics	bindings/graphics.html	module playdate/bindings/graphics		0
 nim	LCDRect	bindings/graphics.html#LCDRect	object LCDRect		5
 nim	makeLCDRect	bindings/graphics.html#makeLCDRect,int,int,int,int	proc makeLCDRect(x: int; y: int; width: int; height: int): LCDRect		11
 nim	translateLCDRect	bindings/graphics.html#translateLCDRect,LCDRect,int,int	proc translateLCDRect(rect: LCDRect; dx: int; dy: int): LCDRect		14

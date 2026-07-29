@@ -16,13 +16,16 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.2.6">
+<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.2.10">
 
 <!-- JS -->
-<script type="text/javascript" src="dochack.js?v=2.2.6"></script>
+<script type="text/javascript" src="dochack.js?v=2.2.10"></script>
 </head>
 <body>
   <div class="document" id="documentId">
+    <input type="checkbox" id="nav-toggle" hidden>
+    <label for="nav-toggle" id="nav-burger">&#9776;</label>
+    <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
       <h1 class="title">Index</h1>
       Modules: <a href="api.html">api</a>, <a href="bindings/api.html">bindings/api</a>, <a href="bindings/display.html">bindings/display</a>, <a href="bindings/file.html">bindings/file</a>, <a href="bindings/graphics.html">bindings/graphics</a>, <a href="bindings/initreqs.html">bindings/initreqs</a>, <a href="bindings/json.html">bindings/json</a>, <a href="bindings/lua.html">bindings/lua</a>, <a href="bindings/scoreboards.html">bindings/scoreboards</a>, <a href="bindings/sound.html">bindings/sound</a>, <a href="bindings/sprite.html">bindings/sprite</a>, <a href="bindings/system.html">bindings/system</a>, <a href="bindings/types.html">bindings/types</a>, <a href="bindings/utils.html">bindings/utils</a>, <a href="display.html">display</a>, <a href="file.html">file</a>, <a href="graphics.html">graphics</a>, <a href="json.html">json</a>, <a href="lcdbitmap.html">lcdbitmap</a>, <a href="lua.html">lua</a>, <a href="nineslice.html">nineslice</a>, <a href="scoreboards.html">scoreboards</a>, <a href="sound.html">sound</a>, <a href="sprite.html">sprite</a>, <a href="system.html">system</a>, <a href="types.html">types</a>, <a href="util/initreqs.html">util/initreqs</a>, <a href="utils.html">utils</a>.<br/><p /><h2>API symbols</h2>
@@ -172,7 +175,7 @@
 <li><a class="reference external"
           data-doc-search-tag="graphics: proc clear(this: ptr PlaydateGraphics; color: LCDColor)" href="bindings/graphics.html#clear%2Cptr.PlaydateGraphics%2CLCDColor">graphics: proc clear(this: ptr PlaydateGraphics; color: LCDColor)</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="graphics: proc clear(view: var BitmapView; x, y: int)" href="graphics.html#clear%2CBitmapView%2Cint%2Cint">graphics: proc clear(view: var BitmapView; x, y: int)</a></li>
+          data-doc-search-tag="graphics: proc clear(view: BitmapView; x, y: int)" href="graphics.html#clear%2CBitmapView%2Cint%2Cint">graphics: proc clear(view: BitmapView; x, y: int)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="graphics: proc clear(this: LCDBitmap; color: LCDColor)" href="graphics.html#clear%2CLCDBitmap%2CLCDColor">graphics: proc clear(this: LCDBitmap; color: LCDColor)</a></li>
           </ul></dd>
@@ -235,6 +238,14 @@
 <dt><a name="ConstCharPtr" href="#ConstCharPtr"><span>ConstCharPtr:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="types: type ConstCharPtr" href="bindings/types.html#ConstCharPtr">types: type ConstCharPtr</a></li>
+          </ul></dd>
+<dt><a name="convertDateTimeToEpoch" href="#convertDateTimeToEpoch"><span>convertDateTimeToEpoch:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="system: proc convertDateTimeToEpoch(this: ptr PlaydateSys; datetime: PDDateTime): uint" href="system.html#convertDateTimeToEpoch%2Cptr.PlaydateSys%2CPDDateTime">system: proc convertDateTimeToEpoch(this: ptr PlaydateSys; datetime: PDDateTime): uint</a></li>
+          </ul></dd>
+<dt><a name="convertEpochToDateTime" href="#convertEpochToDateTime"><span>convertEpochToDateTime:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="system: proc convertEpochToDateTime(this: ptr PlaydateSys; epoch: uint): PDDateTime" href="system.html#convertEpochToDateTime%2Cptr.PlaydateSys%2Cuint">system: proc convertEpochToDateTime(this: ptr PlaydateSys; epoch: uint): PDDateTime</a></li>
           </ul></dd>
 <dt><a name="copy" href="#copy"><span>copy:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -688,6 +699,10 @@
 <li><a class="reference external"
           data-doc-search-tag="sound: proc getTime(this: SoundSequence): uint32" href="sound.html#getTime%2CSoundSequence">sound: proc getTime(this: SoundSequence): uint32</a></li>
           </ul></dd>
+<dt><a name="getTimezoneOffset" href="#getTimezoneOffset"><span>getTimezoneOffset:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="system: proc getTimezoneOffset(this: ptr PlaydateSys): int" href="bindings/system.html#getTimezoneOffset%2Cptr.PlaydateSys">system: proc getTimezoneOffset(this: ptr PlaydateSys): int</a></li>
+          </ul></dd>
 <dt><a name="getWidth" href="#getWidth"><span>getWidth:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="display: proc getWidth(this: ptr PlaydateDisplay): int" href="bindings/display.html#getWidth%2Cptr.PlaydateDisplay">display: proc getWidth(this: ptr PlaydateDisplay): int</a></li>
@@ -1108,6 +1123,10 @@
 <li><a class="reference external"
           data-doc-search-tag="system: type PDCallbackFunction" href="system.html#PDCallbackFunction">system: type PDCallbackFunction</a></li>
           </ul></dd>
+<dt><a name="PDDateTime" href="#PDDateTime"><span>PDDateTime:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="types: object PDDateTime" href="bindings/types.html#PDDateTime">types: object PDDateTime</a></li>
+          </ul></dd>
 <dt><a name="PDFilePlayerCallbackFunction" href="#PDFilePlayerCallbackFunction"><span>PDFilePlayerCallbackFunction:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="sound: type PDFilePlayerCallbackFunction" href="sound.html#PDFilePlayerCallbackFunction">sound: type PDFilePlayerCallbackFunction</a></li>
@@ -1454,11 +1473,11 @@
           </ul></dd>
 <dt><a name="set" href="#set"><span>set:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="graphics: proc set(view: var BitmapView; x, y: int)" href="graphics.html#set%2CBitmapView%2Cint%2Cint">graphics: proc set(view: var BitmapView; x, y: int)</a></li>
+          data-doc-search-tag="graphics: proc set(view: BitmapView; x, y: int)" href="graphics.html#set%2CBitmapView%2Cint%2Cint">graphics: proc set(view: BitmapView; x, y: int)</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="graphics: proc set(view: var BitmapView; x, y: int; color: LCDSolidColor)" href="graphics.html#set%2CBitmapView%2Cint%2Cint%2CLCDSolidColor">graphics: proc set(view: var BitmapView; x, y: int; color: LCDSolidColor)</a></li>
+          data-doc-search-tag="graphics: proc set(view: BitmapView; x, y: int; color: LCDSolidColor)" href="graphics.html#set%2CBitmapView%2Cint%2Cint%2CLCDSolidColor">graphics: proc set(view: BitmapView; x, y: int; color: LCDSolidColor)</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="graphics: proc set(this: var LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)" href="graphics.html#set%2CLCDBitmap%2Cint%2Cint%2CLCDSolidColor">graphics: proc set(this: var LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)</a></li>
+          data-doc-search-tag="graphics: proc set(this: LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)" href="graphics.html#set%2CLCDBitmap%2Cint%2Cint%2CLCDSolidColor">graphics: proc set(this: LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)</a></li>
           </ul></dd>
 <dt><a name="setAlwaysRedraw" href="#setAlwaysRedraw"><span>setAlwaysRedraw:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1652,6 +1671,10 @@
           <li><a class="reference external"
           data-doc-search-tag="sound: proc setVolume(this: SamplePlayer; left: float32; right: float32)" href="sound.html#setVolume%2CSamplePlayer%2Cfloat32%2Cfloat32">sound: proc setVolume(this: SamplePlayer; left: float32; right: float32)</a></li>
           </ul></dd>
+<dt><a name="shouldDisplay24HourTime" href="#shouldDisplay24HourTime"><span>shouldDisplay24HourTime:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="system: proc shouldDisplay24HourTime(this: ptr PlaydateSys): bool" href="system.html#shouldDisplay24HourTime%2Cptr.PlaydateSys">system: proc shouldDisplay24HourTime(this: ptr PlaydateSys): bool</a></li>
+          </ul></dd>
 <dt><a name="SoundSequence" href="#SoundSequence"><span>SoundSequence:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="sound: type SoundSequence" href="sound.html#SoundSequence">sound: type SoundSequence</a></li>
@@ -1729,6 +1752,10 @@
 <dt><a name="toC" href="#toC"><span>toC:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="utils: template toC(str: typed): untyped" href="utils.html#toC.t%2Ctyped">utils: template toC(str: typed): untyped</a></li>
+          </ul></dd>
+<dt><a name="toStream" href="#toStream"><span>toStream:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="file: proc toStream(this: SDFile): Stream" href="file.html#toStream%2CSDFile">file: proc toStream(this: SDFile): Stream</a></li>
           </ul></dd>
 <dt><a name="translateLCDRect" href="#translateLCDRect"><span>translateLCDRect:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -1810,7 +1837,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-08 16:04:57 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:58:35 UTC</small>
       </div>
     </div>
   </div>

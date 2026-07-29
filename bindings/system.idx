@@ -1,4 +1,4 @@
-nimTitle	system	bindings/system.html	module src/playdate/bindings/system		0
+nimTitle	system	bindings/system.html	module playdate/bindings/system		0
 nim	PDButton	bindings/system.html#PDButton	enum PDButton		6
 nim	PDButtons	bindings/system.html#PDButtons	type PDButtons		14
 nim	PDLanguage	bindings/system.html#PDLanguage	enum PDLanguage		16
@@ -15,4 +15,5 @@ nim	getCrankChange	bindings/system.html#getCrankChange,ptr.PlaydateSys	proc getC
 nim	getCrankAngle	bindings/system.html#getCrankAngle,ptr.PlaydateSys	proc getCrankAngle(this: ptr PlaydateSys): float32		72
 nim	getElapsedTime	bindings/system.html#getElapsedTime,ptr.PlaydateSys	proc getElapsedTime(this: ptr PlaydateSys): float32		116
 nim	getBatteryPercentage	bindings/system.html#getBatteryPercentage,ptr.PlaydateSys	proc getBatteryPercentage(this: ptr PlaydateSys): float32		119
-nim	getBatteryVoltage	bindings/system.html#getBatteryVoltage,ptr.PlaydateSys	proc getBatteryVoltage(this: ptr PlaydateSys): float32		51
+nim	getBatteryVoltage	bindings/system.html#getBatteryVoltage,ptr.PlaydateSys	proc getBatteryVoltage(this: ptr PlaydateSys): float32		120
+nim	getTimezoneOffset	bindings/system.html#getTimezoneOffset,ptr.PlaydateSys	proc getTimezoneOffset(this: ptr PlaydateSys): int		51

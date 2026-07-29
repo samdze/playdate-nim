@@ -1,4 +1,4 @@
-nimTitle	sprite	bindings/sprite.html	module src/playdate/bindings/sprite		0
+nimTitle	sprite	bindings/sprite.html	module playdate/bindings/sprite		0
 nim	SpriteCollisionResponseType	bindings/sprite.html#SpriteCollisionResponseType	enum SpriteCollisionResponseType		5
 nim	PDRect	bindings/sprite.html#PDRect	object PDRect		11
 nim	PDRectMake	bindings/sprite.html#PDRectMake,cfloat,cfloat,cfloat,cfloat	proc PDRectMake(x: cfloat; y: cfloat; width: cfloat; height: cfloat): PDRect		17
