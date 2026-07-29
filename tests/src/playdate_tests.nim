@@ -1,7 +1,5 @@
 ##
 ## This file is the primary entry point for running the tests inside the simulator.
-## It requires that we spin up the full Lua runtime, as that allows us to then
-## exit from the simulator.
 ##
 
 import playdate/api, std/unittest
@@ -21,6 +19,9 @@ proc runTests() {.raises: [].} =
     execScoreboardTests()
   except Exception as e:
     quit(e.msg & "\n" & e.getStackTrace)
+
+  # We have to manually quit, otherwise the simulator will continue running
+  quit(0)
 
 proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
   if event == kEventInitLua:
