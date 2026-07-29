@@ -7,8 +7,15 @@ type
     rank* {.importc: "rank".}: cuint
     value* {.importc: "value".}: cuint
     player* {.importc: "player".}: cstring
+    boardID* {.importc: "boardID".}: cstring
 
   PDScorePtr* = ptr PDScoreRaw
+
+  PDListScoreRaw* {.importc: "PDListScore", header: "pd_api.h", bycopy.} = object
+    ## The entries of a `PDScoresList`
+    rank* {.importc: "rank".}: cuint
+    value* {.importc: "value".}: cuint
+    player* {.importc: "player".}: cstring
 
   PDScoresListRaw* {.importc: "PDScoresList", header: "pd_api.h", bycopy.} = object
     boardID* {.importc: "boardID".}: cstring
@@ -16,7 +23,7 @@ type
     lastUpdated* {.importc: "lastUpdated".}: cuint
     playerIncluded* {.importc: "playerIncluded".}: cuint
     limit* {.importc: "limit".}: cuint
-    scores* {.importc: "scores".}: ptr UncheckedArray[PDScoreRaw]
+    scores* {.importc: "scores".}: ptr UncheckedArray[PDListScoreRaw]
 
   PDScoresListPtr* = ptr PDScoresListRaw
 

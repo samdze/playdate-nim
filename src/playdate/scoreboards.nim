@@ -74,7 +74,7 @@ template invokeCallback(
     finally:
       freeValue(value)
 
-proc scoreBuilder(score: PDScoreRaw | PDScorePtr): PDScore =
+proc scoreBuilder(score: PDScoreRaw | PDScorePtr | PDListScoreRaw): PDScore =
   PDSCore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)
 
 proc invokePersonalBestCallback(
