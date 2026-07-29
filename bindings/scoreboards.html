@@ -73,11 +73,16 @@
   count* {.importc: &quot;count&quot;.}: cuint
   lastUpdated* {.importc: &quot;lastUpdated&quot;.}: cuint
   boards* {.importc: &quot;boards&quot;.}: ptr UncheckedArray[PDBoardRaw]">PDBoardsListRaw</a></li>
+<li><a class="reference" href="#PDListScoreRaw" title="PDListScoreRaw {.importc: &quot;PDListScore&quot;, header: &quot;pd_api.h&quot;, bycopy.} = object
+  rank* {.importc: &quot;rank&quot;.}: cuint
+  value* {.importc: &quot;value&quot;.}: cuint
+  player* {.importc: &quot;player&quot;.}: cstring">PDListScoreRaw</a></li>
 <li><a class="reference" href="#PDScorePtr" title="PDScorePtr = ptr PDScoreRaw">PDScorePtr</a></li>
 <li><a class="reference" href="#PDScoreRaw" title="PDScoreRaw {.importc: &quot;PDScore&quot;, header: &quot;pd_api.h&quot;, bycopy.} = object
   rank* {.importc: &quot;rank&quot;.}: cuint
   value* {.importc: &quot;value&quot;.}: cuint
-  player* {.importc: &quot;player&quot;.}: cstring">PDScoreRaw</a></li>
+  player* {.importc: &quot;player&quot;.}: cstring
+  boardID* {.importc: &quot;boardID&quot;.}: cstring">PDScoreRaw</a></li>
 <li><a class="reference" href="#PDScoresListPtr" title="PDScoresListPtr = ptr PDScoresListRaw">PDScoresListPtr</a></li>
 <li><a class="reference" href="#PDScoresListRaw" title="PDScoresListRaw {.importc: &quot;PDScoresList&quot;, header: &quot;pd_api.h&quot;, bycopy.} = object
   boardID* {.importc: &quot;boardID&quot;.}: cstring
@@ -85,7 +90,7 @@
   lastUpdated* {.importc: &quot;lastUpdated&quot;.}: cuint
   playerIncluded* {.importc: &quot;playerIncluded&quot;.}: cuint
   limit* {.importc: &quot;limit&quot;.}: cuint
-  scores* {.importc: &quot;scores&quot;.}: ptr UncheckedArray[PDScoreRaw]">PDScoresListRaw</a></li>
+  scores* {.importc: &quot;scores&quot;.}: ptr UncheckedArray[PDListScoreRaw]">PDScoresListRaw</a></li>
 <li><a class="reference" href="#PersonalBestCallbackRaw" title="PersonalBestCallbackRaw {.importc: &quot;PersonalBestCallback&quot;, header: &quot;pd_api.h&quot;.} = proc (
     score: PDScorePtr; errorMessage: cstring) {.cdecl.}">PersonalBestCallbackRaw</a></li>
 <li><a class="reference" href="#PlaydateScoreboards" title="PlaydateScoreboards {.importc: &quot;const struct playdate_scoreboards&quot;,
@@ -176,6 +181,17 @@
     
   </dd>
 </div>
+<div id="PDListScoreRaw">
+  <dt><pre><a href="#PDListScoreRaw"><span class="Identifier">PDListScoreRaw</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;PDListScore&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">rank</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;rank&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cuint</span>
+  <span class="Identifier">value</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;value&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cuint</span>
+  <span class="Identifier">player</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;player&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cstring</span></pre></dt>
+  <dd>
+    
+    The entries of a <tt class="docutils literal"><span class="pre"><span class="Identifier">PDScoresList</span></span></tt>
+    
+  </dd>
+</div>
 <div id="PDScorePtr">
   <dt><pre><a href="#PDScorePtr"><span class="Identifier">PDScorePtr</span></a> <span class="Other">=</span> <span class="Keyword">ptr</span> <a href="#PDScoreRaw"><span class="Identifier">PDScoreRaw</span></a></pre></dt>
   <dd>
@@ -188,7 +204,8 @@
   <dt><pre><a href="#PDScoreRaw"><span class="Identifier">PDScoreRaw</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;PDScore&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span><span class="Other">,</span> <span class="Identifier">bycopy</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">rank</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;rank&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cuint</span>
   <span class="Identifier">value</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;value&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cuint</span>
-  <span class="Identifier">player</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;player&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cstring</span></pre></dt>
+  <span class="Identifier">player</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;player&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cstring</span>
+  <span class="Identifier">boardID</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;boardID&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cstring</span></pre></dt>
   <dd>
     
     
@@ -210,7 +227,7 @@
   <span class="Identifier">lastUpdated</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;lastUpdated&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cuint</span>
   <span class="Identifier">playerIncluded</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;playerIncluded&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cuint</span>
   <span class="Identifier">limit</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;limit&quot;</span>.}<span class="Other">:</span> <span class="Identifier">cuint</span>
-  <span class="Identifier">scores</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;scores&quot;</span>.}<span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><a href="#PDScoreRaw"><span class="Identifier">PDScoreRaw</span></a><span class="Other">]</span></pre></dt>
+  <span class="Identifier">scores</span><span class="Operator">*</span> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;scores&quot;</span>.}<span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><a href="#PDListScoreRaw"><span class="Identifier">PDListScoreRaw</span></a><span class="Other">]</span></pre></dt>
   <dd>
     
     
@@ -269,7 +286,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 13:58:34 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 23:36:26 UTC</small>
       </div>
     </div>
   </div>
