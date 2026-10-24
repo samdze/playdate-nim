@@ -1,6 +1,6 @@
 {.push raises: [].}
 
-import utils
+import utils, types
 
 type
   PDScoreRaw* {.importc: "PDScore", header: "pd_api.h", bycopy.} = object
@@ -39,13 +39,13 @@ type
   PDBoardsListPtr* = ptr PDBoardsListRaw
 
   PersonalBestCallbackRaw* {.importc: "PersonalBestCallback", header: "pd_api.h".} =
-    proc(score: PDScorePtr, errorMessage: cstring) {.cdecl.}
+    proc(score: PDScorePtr, errorMessage: ConstChar) {.cdecl.}
   AddScoreCallbackRaw* {.importc: "AddScoreCallback", header: "pd_api.h".} =
-    proc(score: PDScorePtr, errorMessage: cstring) {.cdecl.}
+    proc(score: PDScorePtr, errorMessage: ConstChar) {.cdecl.}
   BoardsListCallbackRaw* =
-    proc(boards: ptr PDBoardsListRaw, errorMessage: cstring) {.cdecl.}
+    proc(boards: ptr PDBoardsListRaw, errorMessage: ConstChar) {.cdecl.}
   ScoresCallbackRaw* =
-    proc(scores: ptr PDScoresListRaw, errorMessage: cstring) {.cdecl.}
+    proc(scores: ptr PDScoresListRaw, errorMessage: ConstChar) {.cdecl.}
 
 sdktype:
   type PlaydateScoreboards* {.

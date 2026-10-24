@@ -1,6 +1,6 @@
 {.push raises: [].}
 
-import utils
+import utils, types
 
 type SDFilePtr = pointer
 
@@ -34,7 +34,7 @@ sdktype:
     geterr {.importc: "geterr".}: proc(): cstring {.cdecl, raises: [].}
     listfiles {.importc: "listfiles".}: proc(
       path: cstring,
-      callback: proc(path: cstring, userdata: pointer) {.cdecl.},
+      callback: proc(path: ConstChar, userdata: pointer) {.cdecl.},
       userdata: pointer,
       showhidden: cint,
     ): cint {.cdecl, raises: [].}
