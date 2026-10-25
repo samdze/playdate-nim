@@ -65,8 +65,6 @@ type
     ## checkerboard pattern. An additional 8 numbers can be specified for an alpha mask bitmap.
     pattern: array[16, uint8]
 
-  LCDPatternPtr = ptr array[16, uint8]
-
   RawLCDColor {.importc: "LCDColor", header: "pd_api.h".} = cuint
     # LCDSolidColor or pointer to a LCDPattern
 
@@ -307,7 +305,7 @@ sdktype:
     display* {.importsdk.}: proc() ##  misc util.
 
     setColorToPattern {.importsdk.}: proc(
-      color: LCDPatternPtr, bitmap: LCDBitmapPtr, x: cint, y: cint
+      color: ptr RawLCDColor, bitmap: LCDBitmapPtr, x: cint, y: cint
     ) {.cdecl, raises: [].}
     checkMaskCollision {.importsdk.}: proc(
       bitmap1: LCDBitmapPtr,

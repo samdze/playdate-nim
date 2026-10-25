@@ -415,7 +415,9 @@ proc createPattern*(
   privateAccess(PlaydateGraphics)
   privateAccess(LCDPattern)
   var color = new(LCDPattern)
-  this.setColorToPattern(addr color.pattern, bitmap.resource, x.cint, y.cint)
+  this.setColorToPattern(
+    cast[ptr RawLCDColor](addr color.pattern), bitmap.resource, x.cint, y.cint
+  )
   return color
 
 import macros
