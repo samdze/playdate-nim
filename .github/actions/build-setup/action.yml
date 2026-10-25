@@ -6,13 +6,25 @@ runs:
       shell: bash
       run: git config --global --add safe.directory "$(pwd)"
 
-    - uses: iffy/install-nim@v5
+    - uses: jiro4989/setup-nim-action@v2
+      with:
+        parent-nim-install-directory: ${{ runner.temp }}
+        repo-token: ${{ github.token }}
 
     - run: nimble --accept refresh
       shell: bash
 
     - run: nimble install --verbose
       shell: bash
+
+    - name: Install apt dependencies
+      if: runner.os == 'Linux'
+      shell: bash
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libpng16-16 gcc-arm-none-eabi
 
     - name: Install Playdate SDK
       id: playdate
@@ -27,12 +39,3 @@ runs:
         echo "SDK root out: ${{ steps.playdate.outputs.root }}"
         echo "SDK version: ${{ steps.playdate.outputs.version }}"
         pdc --version # because SDK/bin already in PATH
-
-    - name: Install apt dependencies
-      if: runner.os == 'Linux'
-      shell: bash
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libpng16-16 gcc-arm-none-eabi

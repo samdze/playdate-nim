@@ -10,7 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: iffy/install-nim@v5
+      - uses: jiro4989/setup-nim-action@v2
+        with:
+          parent-nim-install-directory: ${{ runner.temp }}
+          repo-token: ${{ github.token }}
       - run: git config --global --add safe.directory "$(pwd)"
       - run: nimble -y doc --index:on --out:docs --project src/playdate/api.nim
       - run: cp docs/api.html docs/index.html
