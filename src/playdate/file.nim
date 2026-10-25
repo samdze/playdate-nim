@@ -141,34 +141,34 @@ proc pdfsClose(s: Stream) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
   discard
 
 proc pdfsFlush(s: Stream) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
-  {.cast(tags: []).}:
+  {.cast(tags: []), cast(gcsafe).}:
     discard PDFileStream(s).file.flush()
 
 proc pdfsAtEnd(s: Stream): bool {.raises: [IOError], tags: [], gcsafe.} =
   let this = s.PDFileStream
-  {.cast(tags: []).}:
+  {.cast(tags: []), cast(gcsafe).}:
     return this.file.tell() >= playdate.file.stat(this.file.path).size.int
 
 proc pdfsGetPosition(s: Stream): int {.raises: [IOError], tags: [], gcsafe.} =
-  {.cast(tags: []).}:
+  {.cast(tags: []), cast(gcsafe).}:
     return s.PDFileStream.file.tell()
 
 proc pdfsSetPosition(s: Stream, pos: int) {.raises: [IOError], tags: [], gcsafe.} =
-  {.cast(tags: []).}:
+  {.cast(tags: []), cast(gcsafe).}:
     s.PDFileStream.file.seek(pos, SEEK_SET)
 
 proc pdfsReadData(
     s: Stream, buffer: pointer, bufLen: int
 ): int {.raises: [IOError], tags: [ReadIOEffect], gcsafe.} =
   privateAccess(PlaydateFile)
-  {.cast(tags: []).}:
+  {.cast(tags: []), cast(gcsafe).}:
     if bufLen > 0:
       return playdate.file.read(s.PDFileStream.file.resource, buffer, bufLen.cuint).requireValidStatus
 
 proc pdfsPeekData(
     s: Stream, buffer: pointer, bufLen: int
 ): int {.raises: [IOError], tags: [ReadIOEffect], gcsafe.} =
-  {.cast(tags: []).}:
+  {.cast(tags: []), cast(gcsafe).}:
     let this = PDFileStream(s)
     let pos = this.file.tell()
     result = pdfsReadData(s, buffer, bufLen)
@@ -178,10 +178,9 @@ proc pdfsWriteData(
     s: Stream, buffer: pointer, bufLen: int
 ) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
   privateAccess(PlaydateFile)
-  {.cast(tags: []).}:
+  {.cast(tags: []), cast(gcsafe).}:
     if bufLen > 0:
-      discard
-        playdate.file.write(s.PDFileStream.file.resource, buffer, bufLen.cuint).requireValidStatus
+      discard playdate.file.write(s.PDFileStream.file.resource, buffer, bufLen.cuint).requireValidStatus
 
 proc toStream*(this: SDFile): Stream {.raises: [].} =
   ## Wraps an open `SDFile` in a `std/streams` `Stream`, so it can be used
