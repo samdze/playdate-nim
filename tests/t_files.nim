@@ -76,3 +76,13 @@ proc execFilesTest*() =
       check(stream.getPosition() == 5)
       check(stream.readAll() == "56789")
       stream.close()
+
+    test "Explicitly closing a file":
+      block:
+        let handle = playdate.file.open("closed_file.txt", kFileWrite)
+        handle.write("content")
+        handle.close()
+        handle.close()
+      check(
+        playdate.file.open("closed_file.txt", kFileReadData).readString() == "content"
+      )

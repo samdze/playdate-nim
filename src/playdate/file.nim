@@ -81,7 +81,11 @@ proc rename*(
 
 proc close*(this: SDFile) {.raises: [IOError].} =
   privateAccess(PlaydateFile)
-  discard playdate.file.close(this.resource).requireValidStatus
+  if this.resource == nil:
+    return
+  let res = playdate.file.close(this.resource)
+  this.resource = nil
+  res.requireValidStatus
 
 proc flush*(this: SDFile): int {.raises: [IOError], discardable.} =
   privateAccess(PlaydateFile)
