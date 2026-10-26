@@ -102,6 +102,8 @@ proc read*(
 ): tuple[bytes: seq[byte], length: int] {.raises: [IOError].} =
   privateAccess(PlaydateFile)
   var buffer = newSeq[byte](length)
+  if length == 0:
+    return (bytes: buffer, length: 0)
   let res =
     playdate.file.read(this.resource, addr(buffer[0]), length.cuint).requireValidStatus
   return (bytes: buffer, length: res.int)
@@ -110,6 +112,8 @@ proc read*(this: SDFile): seq[byte] {.raises: [IOError].} =
   let size = playdate.file.stat(this.path).size
   privateAccess(PlaydateFile)
   var buffer = newSeq[byte](size)
+  if size == 0:
+    return buffer
   playdate.file.read(this.resource, addr(buffer[0]), size.cuint).requireValidStatus
   return buffer
 
@@ -117,6 +121,8 @@ proc readString*(this: SDFile): string {.raises: [IOError].} =
   let size = playdate.file.stat(this.path).size
   privateAccess(PlaydateFile)
   var str = newString(size)
+  if size == 0:
+    return str
   playdate.file.read(this.resource, addr(str[0]), size.cuint).requireValidStatus
   return str
 

@@ -86,3 +86,9 @@ proc execFilesTest*() =
       check(
         playdate.file.open("closed_file.txt", kFileReadData).readString() == "content"
       )
+
+    test "Reading an empty file":
+      createFile("empty_file.txt")
+      check(playdate.file.open("empty_file.txt", kFileReadData).read().len == 0)
+      check(playdate.file.open("empty_file.txt", kFileReadData).readString() == "")
+      check(playdate.file.open("empty_file.txt", kFileReadData).read(0).length == 0)
