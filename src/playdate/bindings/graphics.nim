@@ -65,7 +65,7 @@ type
     ## checkerboard pattern. An additional 8 numbers can be specified for an alpha mask bitmap.
     pattern: array[16, uint8]
 
-  RawLCDColor {.importc: "LCDColor", header: "pd_api.h".} = cuint
+  RawLCDColor {.importc: "LCDColor", header: "pd_api.h".} = uint
     # LCDSolidColor or pointer to a LCDPattern
 
   LCDColor* = LCDSolidColor | LCDPattern ## Either a solid color or a pattern.
