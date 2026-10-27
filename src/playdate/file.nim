@@ -155,9 +155,15 @@ proc pdfsFlush(s: Stream) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
     discard PDFileStream(s).file.flush()
 
 proc pdfsAtEnd(s: Stream): bool {.raises: [IOError], tags: [], gcsafe.} =
+  # Measures the open handle rather than stat-ing the path, which can resolve to
+  # a different file when the same name exists in both the bundle and data folder
   let this = s.PDFileStream
   {.cast(tags: []), cast(gcsafe).}:
-    return this.file.tell() >= playdate.file.stat(this.file.path).size.int
+    let pos = this.file.tell()
+    this.file.seek(0, SEEK_END)
+    let size = this.file.tell()
+    this.file.seek(pos, SEEK_SET)
+    return pos >= size
 
 proc pdfsGetPosition(s: Stream): int {.raises: [IOError], tags: [], gcsafe.} =
   {.cast(tags: []), cast(gcsafe).}:

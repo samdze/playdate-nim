@@ -100,3 +100,22 @@ proc execFilesTest*() =
         stream.write(content)
         stream.close()
       check(playdate.file.stat("stream_large.txt").size == content.len.uint)
+
+    test "Checking for the end of an unflushed Stream":
+      let stream = playdate.file.open("stream_unflushed.txt", kFileWrite).toStream()
+      stream.write("abc")
+      check(stream.atEnd())
+      stream.setPosition(1)
+      check(not stream.atEnd())
+      check(stream.getPosition() == 1)
+      stream.close()
+
+    test "Reading a bundled file that is shadowed by a data file":
+      createFile("bundled_file.txt", "abc")
+      let stream = playdate.file.open("bundled_file.txt", kFileRead).toStream()
+      var bytesRead = 0
+      while not stream.atEnd():
+        discard stream.readChar()
+        bytesRead += 1
+      check(bytesRead == 67)
+      stream.close()
