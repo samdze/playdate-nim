@@ -147,8 +147,8 @@ proc write*(this: SDFile, content: string): int {.raises: [IOError], discardable
     return playdate.file.write(this.resource, unsafeAddr(content[0]), content.len.cuint).requireValidStatus
 
 proc pdfsClose(s: Stream) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
-  # Playdate files are auto-closed when they are destroyed
-  discard
+  {.cast(tags: []), cast(gcsafe).}:
+    PDFileStream(s).file.close()
 
 proc pdfsFlush(s: Stream) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
   {.cast(tags: []), cast(gcsafe).}:

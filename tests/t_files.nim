@@ -1,4 +1,4 @@
-import unittest, playdate/api, std/[streams, strutils]
+import unittest, playdate/api, playdate/file {.all.}, std/[importutils, streams, strutils]
 
 proc createFile(name: string, body: string = "") =
   var handle = playdate.file.open(name, kFileWrite)
@@ -129,3 +129,12 @@ proc execFilesTest*() =
         discard stream.peekData(addr buffer, buffer.len)
       check(stream.getPosition() == 1)
       stream.close()
+
+    test "Closing a Stream closes the file":
+      let file = playdate.file.open("stream_close.txt", kFileWrite)
+      let stream = file.toStream()
+      stream.write("abc")
+      stream.close()
+      privateAccess(SDFileObj)
+      check(file.resource.isNil)
+      check(playdate.file.open("stream_close.txt", kFileReadData).readString() == "abc")
