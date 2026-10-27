@@ -50,6 +50,22 @@ proc execGraphicsTests*(runnable: bool) =
         let img = playdate.graphics.newBitmap(10, 10, kColorWhite)
         discard playdate.graphics.createPattern(img, 0, 0)
 
+    test "Patterns should keep the bitmap's contents":
+      if runnable:
+        let black = playdate.graphics.createPattern(
+          playdate.graphics.newBitmap(8, 8, kColorBlack), 0, 0
+        )
+        # Creating a second pattern overwrites the SDK's shared pattern buffer
+        discard playdate.graphics.createPattern(
+          playdate.graphics.newBitmap(8, 8, kColorWhite), 0, 0
+        )
+
+        let target = playdate.graphics.newBitmap(8, 8, kColorWhite)
+        playdate.graphics.pushContext(target)
+        playdate.graphics.fillRect(0, 0, 8, 8, black)
+        playdate.graphics.popContext()
+        check(target.get(3, 3) == kColorBlack)
+
     test "DebugBitmap should not be freed after use":
       if runnable:
         discard playdate.graphics.getDebugBitmap()

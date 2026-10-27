@@ -414,10 +414,12 @@ proc createPattern*(
 ): LCDPattern =
   privateAccess(PlaydateGraphics)
   privateAccess(LCDPattern)
+  # The SDK points the color at a shared buffer that the next call overwrites,
+  # so copy the pattern out of it.
+  var raw: RawLCDColor
+  this.setColorToPattern(addr raw, bitmap.resource, x.cint, y.cint)
   var color = new(LCDPattern)
-  this.setColorToPattern(
-    cast[ptr RawLCDColor](addr color.pattern), bitmap.resource, x.cint, y.cint
-  )
+  copyMem(addr color.pattern, cast[pointer](raw), sizeof(color.pattern))
   return color
 
 import macros
