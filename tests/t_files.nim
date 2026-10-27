@@ -119,3 +119,13 @@ proc execFilesTest*() =
         bytesRead += 1
       check(bytesRead == 67)
       stream.close()
+
+    test "Peeking keeps the Stream position when the read fails":
+      let stream = playdate.file.open("stream_peek_fail.txt", kFileWrite).toStream()
+      stream.write("abc")
+      stream.setPosition(1)
+      var buffer: array[2, char]
+      expect IOError:
+        discard stream.peekData(addr buffer, buffer.len)
+      check(stream.getPosition() == 1)
+      stream.close()

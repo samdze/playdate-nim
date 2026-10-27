@@ -187,8 +187,10 @@ proc pdfsPeekData(
   {.cast(tags: []), cast(gcsafe).}:
     let this = PDFileStream(s)
     let pos = this.file.tell()
-    result = pdfsReadData(s, buffer, bufLen)
-    this.file.seek(pos, SEEK_SET)
+    try:
+      result = pdfsReadData(s, buffer, bufLen)
+    finally:
+      this.file.seek(pos, SEEK_SET)
 
 proc pdfsWriteData(
     s: Stream, buffer: pointer, bufLen: int
