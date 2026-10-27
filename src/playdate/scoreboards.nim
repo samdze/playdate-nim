@@ -61,6 +61,11 @@ template invokeCallback(
     callbackSeqs, value, errorMessage, freeValue, builder: untyped
 ) =
   type ResultType = typeof(builder)
+  if callbackSeqs.len == 0:
+    # A response with no queued callback has nowhere to go, but still owns its data
+    if value != nil:
+      freeValue(value)
+    return
   let callback = callbackSeqs.pop()
   if value == nil:
     if errorMessage == nil:
