@@ -1,4 +1,4 @@
-import unittest, playdate/api, std/streams
+import unittest, playdate/api, std/[streams, strutils]
 
 proc createFile(name: string, body: string = "") =
   var handle = playdate.file.open(name, kFileWrite)
@@ -92,3 +92,11 @@ proc execFilesTest*() =
       check(playdate.file.open("empty_file.txt", kFileReadData).read().len == 0)
       check(playdate.file.open("empty_file.txt", kFileReadData).readString() == "")
       check(playdate.file.open("empty_file.txt", kFileReadData).read(0).length == 0)
+
+    test "Writing a large buffer through a Stream":
+      let content = 'x'.repeat(100_000)
+      block:
+        let stream = playdate.file.open("stream_large.txt", kFileWrite).toStream()
+        stream.write(content)
+        stream.close()
+      check(playdate.file.stat("stream_large.txt").size == content.len.uint)

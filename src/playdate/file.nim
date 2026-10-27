@@ -189,8 +189,16 @@ proc pdfsWriteData(
 ) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
   privateAccess(PlaydateFile)
   {.cast(tags: []), cast(gcsafe).}:
-    if bufLen > 0:
-      discard playdate.file.write(s.PDFileStream.file.resource, buffer, bufLen.cuint).requireValidStatus
+    var written = 0
+    while written < bufLen:
+      let chunk = playdate.file.write(
+        s.PDFileStream.file.resource,
+        cast[pointer](cast[uint](buffer) + written.uint),
+        (bufLen - written).cuint,
+      ).requireValidStatus
+      if chunk == 0:
+        raise newException(IOError, "Wrote " & $written & " of " & $bufLen & " bytes")
+      written += chunk
 
 proc toStream*(this: SDFile): Stream {.raises: [].} =
   ## Wraps an open `SDFile` in a `std/streams` `Stream`, so it can be used
