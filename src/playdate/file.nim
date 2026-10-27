@@ -147,66 +147,58 @@ proc write*(this: SDFile, content: string): int {.raises: [IOError], discardable
     return playdate.file.write(this.resource, unsafeAddr(content[0]), content.len.cuint).requireValidStatus
 
 proc pdfsClose(s: Stream) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
-  {.cast(tags: []), cast(gcsafe).}:
-    PDFileStream(s).file.close()
+  PDFileStream(s).file.close()
 
 proc pdfsFlush(s: Stream) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
-  {.cast(tags: []), cast(gcsafe).}:
-    discard PDFileStream(s).file.flush()
+  discard PDFileStream(s).file.flush()
 
 proc pdfsAtEnd(s: Stream): bool {.raises: [IOError], tags: [], gcsafe.} =
   # Measures the open handle rather than stat-ing the path, which can resolve to
   # a different file when the same name exists in both the bundle and data folder
   let this = s.PDFileStream
-  {.cast(tags: []), cast(gcsafe).}:
-    let pos = this.file.tell()
-    this.file.seek(0, SEEK_END)
-    let size = this.file.tell()
-    this.file.seek(pos, SEEK_SET)
-    return pos >= size
+  let pos = this.file.tell()
+  this.file.seek(0, SEEK_END)
+  let size = this.file.tell()
+  this.file.seek(pos, SEEK_SET)
+  return pos >= size
 
 proc pdfsGetPosition(s: Stream): int {.raises: [IOError], tags: [], gcsafe.} =
-  {.cast(tags: []), cast(gcsafe).}:
-    return s.PDFileStream.file.tell()
+  return s.PDFileStream.file.tell()
 
 proc pdfsSetPosition(s: Stream, pos: int) {.raises: [IOError], tags: [], gcsafe.} =
-  {.cast(tags: []), cast(gcsafe).}:
-    s.PDFileStream.file.seek(pos, SEEK_SET)
+  s.PDFileStream.file.seek(pos, SEEK_SET)
 
 proc pdfsReadData(
     s: Stream, buffer: pointer, bufLen: int
 ): int {.raises: [IOError], tags: [ReadIOEffect], gcsafe.} =
   privateAccess(PlaydateFile)
-  {.cast(tags: []), cast(gcsafe).}:
-    if bufLen > 0:
-      return playdate.file.read(s.PDFileStream.file.resource, buffer, bufLen.cuint).requireValidStatus
+  if bufLen > 0:
+    return playdate.file.read(s.PDFileStream.file.resource, buffer, bufLen.cuint).requireValidStatus
 
 proc pdfsPeekData(
     s: Stream, buffer: pointer, bufLen: int
 ): int {.raises: [IOError], tags: [ReadIOEffect], gcsafe.} =
-  {.cast(tags: []), cast(gcsafe).}:
-    let this = PDFileStream(s)
-    let pos = this.file.tell()
-    try:
-      result = pdfsReadData(s, buffer, bufLen)
-    finally:
-      this.file.seek(pos, SEEK_SET)
+  let this = PDFileStream(s)
+  let pos = this.file.tell()
+  try:
+    result = pdfsReadData(s, buffer, bufLen)
+  finally:
+    this.file.seek(pos, SEEK_SET)
 
 proc pdfsWriteData(
     s: Stream, buffer: pointer, bufLen: int
 ) {.raises: [IOError], tags: [WriteIOEffect], gcsafe.} =
   privateAccess(PlaydateFile)
-  {.cast(tags: []), cast(gcsafe).}:
-    var written = 0
-    while written < bufLen:
-      let chunk = playdate.file.write(
-        s.PDFileStream.file.resource,
-        cast[pointer](cast[uint](buffer) + written.uint),
-        (bufLen - written).cuint,
-      ).requireValidStatus
-      if chunk == 0:
-        raise newException(IOError, "Wrote " & $written & " of " & $bufLen & " bytes")
-      written += chunk
+  var written = 0
+  while written < bufLen:
+    let chunk = playdate.file.write(
+      s.PDFileStream.file.resource,
+      cast[pointer](cast[uint](buffer) + written.uint),
+      (bufLen - written).cuint,
+    ).requireValidStatus
+    if chunk == 0:
+      raise newException(IOError, "Wrote " & $written & " of " & $bufLen & " bytes")
+    written += chunk
 
 proc toStream*(this: SDFile): Stream {.raises: [].} =
   ## Wraps an open `SDFile` in a `std/streams` `Stream`, so it can be used

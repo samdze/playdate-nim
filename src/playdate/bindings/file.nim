@@ -31,7 +31,7 @@ when not defined(SEEK_SET):
 
 sdktype:
   type PlaydateFile* {.importc: "const struct playdate_file", header: "pd_api.h".} = object
-    geterr {.importc: "geterr".}: proc(): cstring {.cdecl, raises: [].}
+    geterr {.importc: "geterr".}: proc(): cstring {.cdecl, raises: [], tags: [].}
     listfiles {.importc: "listfiles".}: proc(
       path: cstring,
       callback: proc(path: ConstChar, userdata: pointer) {.cdecl.},
@@ -47,12 +47,16 @@ sdktype:
       proc(`from`: cstring, to: cstring): cint {.cdecl, raises: [].}
     open {.importc: "open".}:
       proc(name: cstring, mode: FileOptions): SDFilePtr {.cdecl, raises: [].}
-    close {.importc: "close".}: proc(file: SDFilePtr): cint {.cdecl, raises: [].}
-    read {.importc: "read".}:
-      proc(file: SDFilePtr, buf: pointer, len: cuint): cint {.cdecl, raises: [].}
-    write {.importc: "write".}:
-      proc(file: SDFilePtr, buf: pointer, len: cuint): cint {.cdecl, raises: [].}
-    flush {.importc: "flush".}: proc(file: SDFilePtr): cint {.cdecl, raises: [].}
-    tell {.importc: "tell".}: proc(file: SDFilePtr): cint {.cdecl, raises: [].}
+    close {.importc: "close".}:
+      proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [WriteIOEffect].}
+    read {.importc: "read".}: proc(
+      file: SDFilePtr, buf: pointer, len: cuint
+    ): cint {.cdecl, raises: [], tags: [ReadIOEffect].}
+    write {.importc: "write".}: proc(
+      file: SDFilePtr, buf: pointer, len: cuint
+    ): cint {.cdecl, raises: [], tags: [WriteIOEffect].}
+    flush {.importc: "flush".}:
+      proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [WriteIOEffect].}
+    tell {.importc: "tell".}: proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [].}
     seek {.importc: "seek".}:
-      proc(file: SDFilePtr, pos: cint, whence: cint): cint {.cdecl, raises: [].}
+      proc(file: SDFilePtr, pos: cint, whence: cint): cint {.cdecl, raises: [], tags: [].}
