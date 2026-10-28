@@ -231,12 +231,12 @@ sdktype:
     freeBitmap {.importc: "freeBitmap".}:
       proc(bitmap: LCDBitmapPtr) {.cdecl, raises: [].}
     loadBitmap {.importc: "loadBitmap".}:
-      proc(path: cstring, outerr: ptr cstring): LCDBitmapPtr {.cdecl, raises: [].}
+      proc(path: cstring, outerr: ptr ConstChar): LCDBitmapPtr {.cdecl, raises: [].}
 
     copyBitmap {.importc: "copyBitmap".}:
       proc(bitmap: LCDBitmapPtr): LCDBitmapPtr {.cdecl, raises: [].}
     loadIntoBitmap {.importc: "loadIntoBitmap".}: proc(
-      path: cstring, bitmap: LCDBitmapPtr, outerr: ptr cstring
+      path: cstring, bitmap: LCDBitmapPtr, outerr: ptr ConstChar
     ) {.cdecl, raises: [].}
     getBitmapData {.importc: "getBitmapData".}: proc(
       bitmap: LCDBitmapPtr,
@@ -261,10 +261,11 @@ sdktype:
     ): LCDBitmapTablePtr {.cdecl, raises: [].}
     freeBitmapTable {.importc: "freeBitmapTable".}:
       proc(table: LCDBitmapTablePtr) {.cdecl, raises: [].}
-    loadBitmapTable {.importc: "loadBitmapTable".}:
-      proc(path: cstring, outerr: ptr cstring): LCDBitmapTablePtr {.cdecl, raises: [].}
+    loadBitmapTable {.importc: "loadBitmapTable".}: proc(
+      path: cstring, outerr: ptr ConstChar
+    ): LCDBitmapTablePtr {.cdecl, raises: [].}
     loadIntoBitmapTable {.importc: "loadIntoBitmapTable".}: proc(
-      path: cstring, table: LCDBitmapTablePtr, outerr: ptr cstring
+      path: cstring, table: LCDBitmapTablePtr, outerr: ptr ConstChar
     ) {.cdecl, raises: [].}
     getTableBitmap {.importc: "getTableBitmap".}:
       proc(table: LCDBitmapTablePtr, idx: cint): LCDBitmapPtr {.cdecl, raises: [].}
@@ -273,7 +274,7 @@ sdktype:
     ) {.cdecl, raises: [].}
 
     loadFont {.importc: "loadFont".}:
-      proc(path: cstring, outErr: ptr cstring): LCDFontPtr {.cdecl, raises: [].}
+      proc(path: cstring, outErr: ptr ConstChar): LCDFontPtr {.cdecl, raises: [].}
 
     getFontPage {.importc: "getFontPage".}:
       proc(font: LCDFontPtr, c: uint32): LCDFontPagePtr {.cdecl, raises: [].}

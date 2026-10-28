@@ -46,11 +46,11 @@ type
   PlaydateLua* {.importc: "const struct playdate_lua", header: "pd_api.h", bycopy.} = object
     ##  these two return 1 on success, else 0 with an error message in outErr
     addFunction {.importc: "addFunction".}: proc(
-      f: LuaNimFunction, name: cstring, outErr: ptr cstring
+      f: LuaNimFunction, name: cstring, outErr: ptr ConstChar
     ): cint {.cdecl, raises: [].}
     # registerClass {.importc: "registerClass".}: proc (name: cstring;
     #         reg: ptr LuaReg; vals: ptr LuaVal;
-    #         isstatic: cint; outErr: ptr cstring): cint {.cdecl.}
+    #         isstatic: cint; outErr: ptr ConstChar): cint {.cdecl.}
     pushFunction* {.importc: "pushFunction".}: proc(f: LuaNimFunction) {.cdecl.}
     indexMetatable {.importc: "indexMetatable".}: proc(): cint {.cdecl.}
     stop* {.importc: "stop".}: proc() {.cdecl, raises: [].}
@@ -58,7 +58,7 @@ type
     ##  stack operations
     getArgCount {.importc: "getArgCount".}: proc(): cint {.cdecl, raises: [].}
     getArgType {.importc: "getArgType".}:
-      proc(pos: cint, outClass: ptr cstring): LuaType {.cdecl, raises: [].}
+      proc(pos: cint, outClass: ptr ConstChar): LuaType {.cdecl, raises: [].}
     argIsNil {.importc: "argIsNil".}: proc(pos: cint): cint {.cdecl, raises: [].}
     getArgBool {.importc: "getArgBool".}: proc(pos: cint): cint {.cdecl, raises: [].}
     getArgInt {.importc: "getArgInt".}: proc(pos: cint): cint {.cdecl, raises: [].}
@@ -94,5 +94,6 @@ type
       proc(obj: ptr LuaUDObject, slot: cuint): cint {.cdecl.}
     ##  pushes item at slot to top of stack, returns stack position
     ##  calling lua from C has some overhead. use sparingly!
-    callFunction {.importc: "callFunction".}:
-      proc(name: cstring, nargs: cint, outerr: ptr cstring): cint {.cdecl, raises: [].}
+    callFunction {.importc: "callFunction".}: proc(
+      name: cstring, nargs: cint, outerr: ptr ConstChar
+    ): cint {.cdecl, raises: [].}
