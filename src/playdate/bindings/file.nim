@@ -31,7 +31,8 @@ when not defined(SEEK_SET):
 
 sdktype:
   type PlaydateFile* {.importc: "const struct playdate_file", header: "pd_api.h".} = object
-    geterr {.importc: "geterr".}: proc(): cstring {.cdecl, raises: [], tags: [].}
+    geterr {.importc: "geterr".}:
+      proc(): cstring {.cdecl, raises: [], tags: [], gcsafe.}
     listfiles {.importc: "listfiles".}: proc(
       path: cstring,
       callback: proc(path: ConstChar, userdata: pointer) {.cdecl.},
@@ -48,15 +49,17 @@ sdktype:
     open {.importc: "open".}:
       proc(name: cstring, mode: FileOptions): SDFilePtr {.cdecl, raises: [].}
     close {.importc: "close".}:
-      proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [WriteIOEffect].}
-    read {.importc: "read".}: proc(
-      file: SDFilePtr, buf: pointer, len: cuint
-    ): cint {.cdecl, raises: [], tags: [ReadIOEffect].}
-    write {.importc: "write".}: proc(
-      file: SDFilePtr, buf: pointer, len: cuint
-    ): cint {.cdecl, raises: [], tags: [WriteIOEffect].}
+      proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [WriteIOEffect], gcsafe.}
+    read {.importc: "read".}: proc(file: SDFilePtr, buf: pointer, len: cuint): cint {.
+      cdecl, raises: [], tags: [ReadIOEffect], gcsafe
+    .}
+    write {.importc: "write".}: proc(file: SDFilePtr, buf: pointer, len: cuint): cint {.
+      cdecl, raises: [], tags: [WriteIOEffect], gcsafe
+    .}
     flush {.importc: "flush".}:
-      proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [WriteIOEffect].}
-    tell {.importc: "tell".}: proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [].}
-    seek {.importc: "seek".}:
-      proc(file: SDFilePtr, pos: cint, whence: cint): cint {.cdecl, raises: [], tags: [].}
+      proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [WriteIOEffect], gcsafe.}
+    tell {.importc: "tell".}:
+      proc(file: SDFilePtr): cint {.cdecl, raises: [], tags: [], gcsafe.}
+    seek {.importc: "seek".}: proc(file: SDFilePtr, pos: cint, whence: cint): cint {.
+      cdecl, raises: [], tags: [], gcsafe
+    .}
