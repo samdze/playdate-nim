@@ -58,7 +58,7 @@ proc gitHashOrElse(fallback: string): string =
 proc toPdxInfo*(
     dump: NimbleDump,
     version: string = gitHashOrElse(dump.version),
-    buildNumber: string = now().format("yyyyMMddhhmmss"),
+    buildNumber: string = now().format("yyyyMMddHHmmss"),
 ): PdxInfo =
   ## Creates a base PdxInfo file
   result.name = dump.name
