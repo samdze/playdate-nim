@@ -28,7 +28,7 @@ runs:
 
     - name: Install Playdate SDK
       id: playdate
-      uses: pd-rs/get-playdate-sdk@0.4
+      uses: pd-rs/get-playdate-sdk@0.5
       with:
         version: latest
 

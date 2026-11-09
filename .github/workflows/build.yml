@@ -2,7 +2,7 @@ name: Build
 on: [push, pull_request]
 jobs:
   compile-example-project-macos:
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/build-setup
