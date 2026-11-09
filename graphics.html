@@ -16,10 +16,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.2.10">
+<link rel="stylesheet" type="text/css" href="nimdoc.out.css?v=2.4.0">
 
 <!-- JS -->
-<script type="text/javascript" src="dochack.js?v=2.2.10"></script>
+<script type="text/javascript" src="dochack.js?v=2.4.0"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -31,28 +31,34 @@
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
-      <label for="theme-select">Theme:&nbsp;</label>
-      <select id="theme-select" onchange="setTheme(this.value)">
-        <option value="auto">🌗 Match OS</option>
-        <option value="dark">🌑 Dark</option>
-        <option value="light">🌕 Light</option>
-      </select>
-    </div>
+  <label for="theme-select">Theme:&nbsp;</label>
+  <select id="theme-select" onchange="setTheme(this.value)">
+    <option value="auto">🌗 Match OS</option>
+    <option value="dark">🌑 Dark</option>
+    <option value="light">🌕 Light</option>
+  </select>
+</div>
+
     <div id="global-links">
-      <ul class="simple">
-        <li><a id="indexLink" href="theindex.html">Index</a></li>
-      </ul>
-    </div>
-    <div id="searchInputDiv">
-      Search: <input type="search" id="searchInput" oninput="search()"/>
-    </div>
-    <div>
-      Group by:
-      <select onchange="groupBy(this.value)">
-        <option value="section">Section</option>
-        <option value="type">Type</option>
-      </select>
-    </div>
+  
+  <ul class="simple">
+  <li><a id="indexLink" href="theindex.html">Index</a></li>
+</ul>
+
+</div>
+
+      <div id="searchInputDiv">
+  Search: <input type="search" id="searchInput" oninput="search()"/>
+</div>
+
+    <div class="search-groupby">
+  Group by:
+  <select onchange="groupBy(this.value)">
+    <option value="section">Section</option>
+    <option value="type">Type</option>
+  </select>
+</div>
+
     <ul class="simple simple-toc" id="toc-list">
   <li>
   <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
@@ -1241,7 +1247,7 @@
 <div class="section" id="19">
   <h1><a class="toc-backref" href="#19">Exports</a></h1>
   <dl class="item">
-    <a href="lcdbitmap.html#LCDBitmapObjRef"><span class="Identifier">LCDBitmapObjRef</span></a>, <a href="lcdbitmap.html#==,LCDBitmap,LCDBitmapPtr"><span class="Identifier">==</span></a>, <a href="lcdbitmap.html#bitmapRef,LCDBitmapPtr"><span class="Identifier">bitmapRef</span></a>, <a href="lcdbitmap.html#=copy,LCDBitmapObj,LCDBitmapObj"><span class="Identifier">=copy</span></a>, <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a>, <a href="lcdbitmap.html#isNil,LCDBitmap"><span class="Identifier">isNil</span></a>, <a href="lcdbitmap.html#resource,LCDBitmap"><span class="Identifier">resource</span></a>, <a href="lcdbitmap.html#=destroy,LCDBitmapObj"><span class="Identifier">=destroy</span></a>, <a href="lcdbitmap.html#LCDBitmapObj"><span class="Identifier">LCDBitmapObj</span></a>, <a href="lcdbitmap.html#bitmapPtr.c,LCDBitmapPtr"><span class="Identifier">bitmapPtr</span></a>, <a href="bindings/graphics.html#LCD_COLUMNS"><span class="Identifier">LCD_COLUMNS</span></a>, <a href="bindings/graphics.html#fillRect,ptr.PlaydateGraphics,int,int,int,int,LCDColor"><span class="Identifier">fillRect</span></a>, <a href="bindings/graphics.html#LCDFontData"><span class="Identifier">LCDFontData</span></a>, <a href="bindings/graphics.html#markUpdatedRows,ptr.PlaydateGraphics,int,int"><span class="Identifier">markUpdatedRows</span></a>, <a href="bindings/graphics.html#drawText,ptr.PlaydateGraphics,string,uint,PDStringEncoding,int,int"><span class="Identifier">drawText</span></a>, <a href="bindings/graphics.html#makeLCDRect,int,int,int,int"><span class="Identifier">makeLCDRect</span></a>, <a href="bindings/graphics.html#LCD_SCREEN_RECT"><span class="Identifier">LCD_SCREEN_RECT</span></a>, <a href="bindings/graphics.html#display,ptr.PlaydateGraphics"><span class="Identifier">display</span></a>, <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a>, <a href="bindings/graphics.html#LCDFontGlyph"><span class="Identifier">LCDFontGlyph</span></a>, <a href="bindings/graphics.html#LCDSolidColor"><span class="Identifier">LCDSolidColor</span></a>, <a href="bindings/graphics.html#makeLCDOpaquePattern,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8"><span class="Identifier">makeLCDOpaquePattern</span></a>, <a href="bindings/graphics.html#clearBitmap,ptr.PlaydateGraphics,LCDBitmapPtr,LCDColor"><span class="Identifier">clearBitmap</span></a>, <a href="bindings/graphics.html#LCD_ROWSIZE"><span class="Identifier">LCD_ROWSIZE</span></a>, <a href="bindings/graphics.html#drawEllipse,ptr.PlaydateGraphics,int,int,int,int,int,float32,float32,LCDColor"><span class="Identifier">drawEllipse</span></a>, <a href="bindings/graphics.html#LCD_ROWS"><span class="Identifier">LCD_ROWS</span></a>, <a href="bindings/graphics.html#fillEllipse,ptr.PlaydateGraphics,int,int,int,int,float32,float32,LCDColor"><span class="Identifier">fillEllipse</span></a>, <a href="bindings/graphics.html#PlaydateVideo"><span class="Identifier">PlaydateVideo</span></a>, <a href="bindings/graphics.html#LCDFontLanguage"><span class="Identifier">LCDFontLanguage</span></a>, <a href="bindings/graphics.html#PDStringEncoding"><span class="Identifier">PDStringEncoding</span></a>, <a href="bindings/graphics.html#LCDColor"><span class="Identifier">LCDColor</span></a>, <a href="bindings/graphics.html#setColorToPattern,ptr.PlaydateGraphics,LCDPatternPtr,LCDBitmapPtr,int,int"><span class="Identifier">setColorToPattern</span></a>, <a href="bindings/graphics.html#setClipRect,ptr.PlaydateGraphics,int,int,int,int"><span class="Identifier">setClipRect</span></a>, <a href="bindings/graphics.html#setScreenClipRect,ptr.PlaydateGraphics,int,int,int,int"><span class="Identifier">setScreenClipRect</span></a>, <a href="bindings/graphics.html#LCDBitmapDrawMode"><span class="Identifier">LCDBitmapDrawMode</span></a>, <a href="bindings/graphics.html#clear,ptr.PlaydateGraphics,LCDColor"><span class="Identifier">clear</span></a>, <a href="bindings/graphics.html#translateLCDRect,LCDRect,int,int"><span class="Identifier">translateLCDRect</span></a>, <a href="bindings/graphics.html#setDrawOffset,ptr.PlaydateGraphics,int,int"><span class="Identifier">setDrawOffset</span></a>, <a href="bindings/graphics.html#LCDPattern"><span class="Identifier">LCDPattern</span></a>, <a href="bindings/graphics.html#LCDRect"><span class="Identifier">LCDRect</span></a>, <a href="bindings/graphics.html#drawLine,ptr.PlaydateGraphics,int,int,int,int,int,LCDColor"><span class="Identifier">drawLine</span></a>, <a href="bindings/graphics.html#LCDFont"><span class="Identifier">LCDFont</span></a>, <a href="bindings/graphics.html#makeLCDPattern,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8"><span class="Identifier">makeLCDPattern</span></a>, <a href="bindings/graphics.html#setTextLeading,ptr.PlaydateGraphics,int"><span class="Identifier">setTextLeading</span></a>, <a href="bindings/graphics.html#LCDFontPage"><span class="Identifier">LCDFontPage</span></a>, <a href="bindings/graphics.html#LCDLineCapStyle"><span class="Identifier">LCDLineCapStyle</span></a>, <a href="bindings/graphics.html#LCDPolygonFillRule"><span class="Identifier">LCDPolygonFillRule</span></a>, <a href="bindings/graphics.html#fillTriangle,ptr.PlaydateGraphics,int,int,int,int,int,int,LCDColor"><span class="Identifier">fillTriangle</span></a>, <a href="bindings/graphics.html#LCDBitmapFlip"><span class="Identifier">LCDBitmapFlip</span></a>, <a href="bindings/graphics.html#setTextTracking,ptr.PlaydateGraphics,int"><span class="Identifier">setTextTracking</span></a>, <a href="bindings/graphics.html#drawRect,ptr.PlaydateGraphics,int,int,int,int,LCDColor"><span class="Identifier">drawRect</span></a>, <a href="bindings/graphics.html#checkMaskCollision,ptr.PlaydateGraphics,LCDBitmapPtr,int,int,LCDBitmapFlip,LCDBitmapPtr,int,int,LCDBitmapFlip,LCDRect"><span class="Identifier">checkMaskCollision</span></a>
+    <a href="lcdbitmap.html#==,LCDBitmap,LCDBitmapPtr"><span class="Identifier">==</span></a>, <a href="lcdbitmap.html#=copy,LCDBitmapObj,LCDBitmapObj"><span class="Identifier">=copy</span></a>, <a href="lcdbitmap.html#=destroy,LCDBitmapObj"><span class="Identifier">=destroy</span></a>, <a href="lcdbitmap.html#LCDBitmap"><span class="Identifier">LCDBitmap</span></a>, <a href="lcdbitmap.html#LCDBitmapObj"><span class="Identifier">LCDBitmapObj</span></a>, <a href="lcdbitmap.html#LCDBitmapObjRef"><span class="Identifier">LCDBitmapObjRef</span></a>, <a href="lcdbitmap.html#bitmapPtr.c,LCDBitmapPtr"><span class="Identifier">bitmapPtr</span></a>, <a href="lcdbitmap.html#bitmapRef,LCDBitmapPtr"><span class="Identifier">bitmapRef</span></a>, <a href="lcdbitmap.html#isNil,LCDBitmap"><span class="Identifier">isNil</span></a>, <a href="lcdbitmap.html#resource,LCDBitmap"><span class="Identifier">resource</span></a>, <a href="bindings/graphics.html#LCDBitmapDrawMode"><span class="Identifier">LCDBitmapDrawMode</span></a>, <a href="bindings/graphics.html#LCDBitmapFlip"><span class="Identifier">LCDBitmapFlip</span></a>, <a href="bindings/graphics.html#LCDColor"><span class="Identifier">LCDColor</span></a>, <a href="bindings/graphics.html#LCD_COLUMNS"><span class="Identifier">LCD_COLUMNS</span></a>, <a href="bindings/graphics.html#LCDFont"><span class="Identifier">LCDFont</span></a>, <a href="bindings/graphics.html#LCDFontData"><span class="Identifier">LCDFontData</span></a>, <a href="bindings/graphics.html#LCDFontGlyph"><span class="Identifier">LCDFontGlyph</span></a>, <a href="bindings/graphics.html#LCDFontLanguage"><span class="Identifier">LCDFontLanguage</span></a>, <a href="bindings/graphics.html#LCDFontPage"><span class="Identifier">LCDFontPage</span></a>, <a href="bindings/graphics.html#LCDLineCapStyle"><span class="Identifier">LCDLineCapStyle</span></a>, <a href="bindings/graphics.html#LCDPattern"><span class="Identifier">LCDPattern</span></a>, <a href="bindings/graphics.html#LCDPolygonFillRule"><span class="Identifier">LCDPolygonFillRule</span></a>, <a href="bindings/graphics.html#LCDRect"><span class="Identifier">LCDRect</span></a>, <a href="bindings/graphics.html#LCD_ROWS"><span class="Identifier">LCD_ROWS</span></a>, <a href="bindings/graphics.html#LCD_ROWSIZE"><span class="Identifier">LCD_ROWSIZE</span></a>, <a href="bindings/graphics.html#LCD_SCREEN_RECT"><span class="Identifier">LCD_SCREEN_RECT</span></a>, <a href="bindings/graphics.html#LCDSolidColor"><span class="Identifier">LCDSolidColor</span></a>, <a href="bindings/graphics.html#PDStringEncoding"><span class="Identifier">PDStringEncoding</span></a>, <a href="bindings/graphics.html#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a>, <a href="bindings/graphics.html#PlaydateVideo"><span class="Identifier">PlaydateVideo</span></a>, <a href="bindings/graphics.html#checkMaskCollision,ptr.PlaydateGraphics,LCDBitmapPtr,int,int,LCDBitmapFlip,LCDBitmapPtr,int,int,LCDBitmapFlip,LCDRect"><span class="Identifier">checkMaskCollision</span></a>, <a href="bindings/graphics.html#clear,ptr.PlaydateGraphics,LCDColor"><span class="Identifier">clear</span></a>, <a href="bindings/graphics.html#clearBitmap,ptr.PlaydateGraphics,LCDBitmapPtr,LCDColor"><span class="Identifier">clearBitmap</span></a>, <a href="bindings/graphics.html#display,ptr.PlaydateGraphics"><span class="Identifier">display</span></a>, <a href="bindings/graphics.html#drawEllipse,ptr.PlaydateGraphics,int,int,int,int,int,float32,float32,LCDColor"><span class="Identifier">drawEllipse</span></a>, <a href="bindings/graphics.html#drawLine,ptr.PlaydateGraphics,int,int,int,int,int,LCDColor"><span class="Identifier">drawLine</span></a>, <a href="bindings/graphics.html#drawRect,ptr.PlaydateGraphics,int,int,int,int,LCDColor"><span class="Identifier">drawRect</span></a>, <a href="bindings/graphics.html#drawText,ptr.PlaydateGraphics,string,uint,PDStringEncoding,int,int"><span class="Identifier">drawText</span></a>, <a href="bindings/graphics.html#fillEllipse,ptr.PlaydateGraphics,int,int,int,int,float32,float32,LCDColor"><span class="Identifier">fillEllipse</span></a>, <a href="bindings/graphics.html#fillRect,ptr.PlaydateGraphics,int,int,int,int,LCDColor"><span class="Identifier">fillRect</span></a>, <a href="bindings/graphics.html#fillTriangle,ptr.PlaydateGraphics,int,int,int,int,int,int,LCDColor"><span class="Identifier">fillTriangle</span></a>, <a href="bindings/graphics.html#makeLCDOpaquePattern,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8"><span class="Identifier">makeLCDOpaquePattern</span></a>, <a href="bindings/graphics.html#makeLCDPattern,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8,uint8"><span class="Identifier">makeLCDPattern</span></a>, <a href="bindings/graphics.html#makeLCDRect,int,int,int,int"><span class="Identifier">makeLCDRect</span></a>, <a href="bindings/graphics.html#markUpdatedRows,ptr.PlaydateGraphics,int,int"><span class="Identifier">markUpdatedRows</span></a>, <a href="bindings/graphics.html#setClipRect,ptr.PlaydateGraphics,int,int,int,int"><span class="Identifier">setClipRect</span></a>, <a href="bindings/graphics.html#setColorToPattern,ptr.PlaydateGraphics,LCDColor,LCDBitmapPtr,int,int"><span class="Identifier">setColorToPattern</span></a>, <a href="bindings/graphics.html#setDrawOffset,ptr.PlaydateGraphics,int,int"><span class="Identifier">setDrawOffset</span></a>, <a href="bindings/graphics.html#setScreenClipRect,ptr.PlaydateGraphics,int,int,int,int"><span class="Identifier">setScreenClipRect</span></a>, <a href="bindings/graphics.html#setTextLeading,ptr.PlaydateGraphics,int"><span class="Identifier">setTextLeading</span></a>, <a href="bindings/graphics.html#setTextTracking,ptr.PlaydateGraphics,int"><span class="Identifier">setTextTracking</span></a>, <a href="bindings/graphics.html#translateLCDRect,LCDRect,int,int"><span class="Identifier">translateLCDRect</span></a>
   </dl>
 </div>
 
@@ -1251,7 +1257,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 23:36:26 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-09 16:03:58 UTC</small>
       </div>
     </div>
   </div>

@@ -16,10 +16,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="../nimdoc.out.css?v=2.2.10">
+<link rel="stylesheet" type="text/css" href="../nimdoc.out.css?v=2.4.0">
 
 <!-- JS -->
-<script type="text/javascript" src="../dochack.js?v=2.2.10"></script>
+<script type="text/javascript" src="../dochack.js?v=2.4.0"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -31,28 +31,34 @@
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
-      <label for="theme-select">Theme:&nbsp;</label>
-      <select id="theme-select" onchange="setTheme(this.value)">
-        <option value="auto">🌗 Match OS</option>
-        <option value="dark">🌑 Dark</option>
-        <option value="light">🌕 Light</option>
-      </select>
-    </div>
+  <label for="theme-select">Theme:&nbsp;</label>
+  <select id="theme-select" onchange="setTheme(this.value)">
+    <option value="auto">🌗 Match OS</option>
+    <option value="dark">🌑 Dark</option>
+    <option value="light">🌕 Light</option>
+  </select>
+</div>
+
     <div id="global-links">
-      <ul class="simple">
-        <li><a id="indexLink" href="../theindex.html">Index</a></li>
-      </ul>
-    </div>
-    <div id="searchInputDiv">
-      Search: <input type="search" id="searchInput" oninput="search()"/>
-    </div>
-    <div>
-      Group by:
-      <select onchange="groupBy(this.value)">
-        <option value="section">Section</option>
-        <option value="type">Type</option>
-      </select>
-    </div>
+  
+  <ul class="simple">
+  <li><a id="indexLink" href="../theindex.html">Index</a></li>
+</ul>
+
+</div>
+
+      <div id="searchInputDiv">
+  Search: <input type="search" id="searchInput" oninput="search()"/>
+</div>
+
+    <div class="search-groupby">
+  Group by:
+  <select onchange="groupBy(this.value)">
+    <option value="section">Section</option>
+    <option value="type">Type</option>
+  </select>
+</div>
+
     <ul class="simple simple-toc" id="toc-list">
   <li>
   <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
@@ -62,9 +68,9 @@
     <summary><a class="reference reference-toplevel" href="#7" id="57">Types</a></summary>
     <ul class="simple simple-toc-section">
       <li><a class="reference" href="#AddScoreCallbackRaw" title="AddScoreCallbackRaw {.importc: &quot;AddScoreCallback&quot;, header: &quot;pd_api.h&quot;.} = proc (
-    score: PDScorePtr; errorMessage: cstring) {.cdecl.}">AddScoreCallbackRaw</a></li>
-<li><a class="reference" href="#BoardsListCallbackRaw" title="BoardsListCallbackRaw = proc (boards: ptr PDBoardsListRaw; errorMessage: cstring) {.
-    cdecl.}">BoardsListCallbackRaw</a></li>
+    score: PDScorePtr; errorMessage: ConstChar) {.cdecl.}">AddScoreCallbackRaw</a></li>
+<li><a class="reference" href="#BoardsListCallbackRaw" title="BoardsListCallbackRaw = proc (boards: ptr PDBoardsListRaw;
+                              errorMessage: ConstChar) {.cdecl.}">BoardsListCallbackRaw</a></li>
 <li><a class="reference" href="#PDBoardRaw" title="PDBoardRaw {.importc: &quot;PDBoard&quot;, header: &quot;pd_api.h&quot;, bycopy.} = object
   boardID* {.importc: &quot;boardID&quot;.}: cstring
   name* {.importc: &quot;name&quot;.}: cstring">PDBoardRaw</a></li>
@@ -92,7 +98,7 @@
   limit* {.importc: &quot;limit&quot;.}: cuint
   scores* {.importc: &quot;scores&quot;.}: ptr UncheckedArray[PDListScoreRaw]">PDScoresListRaw</a></li>
 <li><a class="reference" href="#PersonalBestCallbackRaw" title="PersonalBestCallbackRaw {.importc: &quot;PersonalBestCallback&quot;, header: &quot;pd_api.h&quot;.} = proc (
-    score: PDScorePtr; errorMessage: cstring) {.cdecl.}">PersonalBestCallbackRaw</a></li>
+    score: PDScorePtr; errorMessage: ConstChar) {.cdecl.}">PersonalBestCallbackRaw</a></li>
 <li><a class="reference" href="#PlaydateScoreboards" title="PlaydateScoreboards {.importc: &quot;const struct playdate_scoreboards&quot;,
                       header: &quot;pd_api.h&quot;.} = object
   getPersonalBestBinding* {.importc: &quot;getPersonalBest&quot;.}: proc (
@@ -110,7 +116,7 @@
       callback: ScoresCallbackRaw): cint {.cdecl, raises: [].}
   freeScoresList* {.importc: &quot;freeScoresList&quot;.}: proc (
       scoresList: PDScoresListPtr) {.cdecl, raises: [].}">PlaydateScoreboards</a></li>
-<li><a class="reference" href="#ScoresCallbackRaw" title="ScoresCallbackRaw = proc (scores: ptr PDScoresListRaw; errorMessage: cstring) {.
+<li><a class="reference" href="#ScoresCallbackRaw" title="ScoresCallbackRaw = proc (scores: ptr PDScoresListRaw; errorMessage: ConstChar) {.
     cdecl.}">ScoresCallbackRaw</a></li>
 
     </ul>
@@ -128,7 +134,7 @@
     <div class="section" id="6">
   <h1><a class="toc-backref" href="#6">Imports</a></h1>
   <dl class="item">
-    <a class="reference external" href="utils.html">utils</a>
+    <a class="reference external" href="utils.html">utils</a>, <a class="reference external" href="types.html">types</a>
   </dl>
 </div>
 <div class="section" id="7">
@@ -136,7 +142,7 @@
   <dl class="item">
     <div id="AddScoreCallbackRaw">
   <dt><pre><a href="#AddScoreCallbackRaw"><span class="Identifier">AddScoreCallbackRaw</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;AddScoreCallback&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span>.} <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span>
-    <span class="Identifier">score</span><span class="Other">:</span> <a href="#PDScorePtr"><span class="Identifier">PDScorePtr</span></a><span class="Other">;</span> <span class="Identifier">errorMessage</span><span class="Other">:</span> <span class="Identifier">cstring</span><span class="Other">)</span> {.<span class="Identifier">cdecl</span>.}</pre></dt>
+    <span class="Identifier">score</span><span class="Other">:</span> <a href="#PDScorePtr"><span class="Identifier">PDScorePtr</span></a><span class="Other">;</span> <span class="Identifier">errorMessage</span><span class="Other">:</span> <a href="types.html#ConstChar"><span class="Identifier">ConstChar</span></a><span class="Other">)</span> {.<span class="Identifier">cdecl</span>.}</pre></dt>
   <dd>
     
     
@@ -144,8 +150,8 @@
   </dd>
 </div>
 <div id="BoardsListCallbackRaw">
-  <dt><pre><a href="#BoardsListCallbackRaw"><span class="Identifier">BoardsListCallbackRaw</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">boards</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="#PDBoardsListRaw"><span class="Identifier">PDBoardsListRaw</span></a><span class="Other">;</span> <span class="Identifier">errorMessage</span><span class="Other">:</span> <span class="Identifier">cstring</span><span class="Other">)</span> {.
-    <span class="Identifier">cdecl</span>.}</pre></dt>
+  <dt><pre><a href="#BoardsListCallbackRaw"><span class="Identifier">BoardsListCallbackRaw</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">boards</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="#PDBoardsListRaw"><span class="Identifier">PDBoardsListRaw</span></a><span class="Other">;</span>
+                              <span class="Identifier">errorMessage</span><span class="Other">:</span> <a href="types.html#ConstChar"><span class="Identifier">ConstChar</span></a><span class="Other">)</span> {.<span class="Identifier">cdecl</span>.}</pre></dt>
   <dd>
     
     
@@ -236,7 +242,7 @@
 </div>
 <div id="PersonalBestCallbackRaw">
   <dt><pre><a href="#PersonalBestCallbackRaw"><span class="Identifier">PersonalBestCallbackRaw</span></a> {.<span class="Identifier">importc</span><span class="Other">:</span> <span class="StringLit">&quot;PersonalBestCallback&quot;</span><span class="Other">,</span> <span class="Identifier">header</span><span class="Other">:</span> <span class="StringLit">&quot;pd_api.h&quot;</span>.} <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span>
-    <span class="Identifier">score</span><span class="Other">:</span> <a href="#PDScorePtr"><span class="Identifier">PDScorePtr</span></a><span class="Other">;</span> <span class="Identifier">errorMessage</span><span class="Other">:</span> <span class="Identifier">cstring</span><span class="Other">)</span> {.<span class="Identifier">cdecl</span>.}</pre></dt>
+    <span class="Identifier">score</span><span class="Other">:</span> <a href="#PDScorePtr"><span class="Identifier">PDScorePtr</span></a><span class="Other">;</span> <span class="Identifier">errorMessage</span><span class="Other">:</span> <a href="types.html#ConstChar"><span class="Identifier">ConstChar</span></a><span class="Other">)</span> {.<span class="Identifier">cdecl</span>.}</pre></dt>
   <dd>
     
     
@@ -268,7 +274,7 @@
   </dd>
 </div>
 <div id="ScoresCallbackRaw">
-  <dt><pre><a href="#ScoresCallbackRaw"><span class="Identifier">ScoresCallbackRaw</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">scores</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="#PDScoresListRaw"><span class="Identifier">PDScoresListRaw</span></a><span class="Other">;</span> <span class="Identifier">errorMessage</span><span class="Other">:</span> <span class="Identifier">cstring</span><span class="Other">)</span> {.
+  <dt><pre><a href="#ScoresCallbackRaw"><span class="Identifier">ScoresCallbackRaw</span></a> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">scores</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="#PDScoresListRaw"><span class="Identifier">PDScoresListRaw</span></a><span class="Other">;</span> <span class="Identifier">errorMessage</span><span class="Other">:</span> <a href="types.html#ConstChar"><span class="Identifier">ConstChar</span></a><span class="Other">)</span> {.
     <span class="Identifier">cdecl</span>.}</pre></dt>
   <dd>
     
@@ -286,7 +292,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 23:36:26 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-09 16:03:57 UTC</small>
       </div>
     </div>
   </div>

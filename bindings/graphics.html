@@ -16,10 +16,10 @@
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH4QQQEwksSS9ZWwAAAk1JREFUWMPtll2ITVEUx39nn/O7Y5qR8f05wtCUUr6ZIS++8pEnkZInPImneaCQ5METNdOkeFBKUhMPRIkHKfEuUZSUlGlKPN2TrgfncpvmnntnmlEyq1Z7t89/rf9a6+y99oZxGZf/XeIq61EdtgKXgdXA0xrYAvBjOIF1AI9zvjcC74BSpndrJPkBWDScTF8Aa4E3wDlgHbASaANmVqlcCnwHvgDvgVfAJ+AikAAvgfVZwLnSVZHZaOuKoQi3ZOMi4NkYkpe1p4J7A8BpYAD49hfIy/oqG0+hLomiKP2L5L+1ubn5115S+3OAn4EnwBlgMzCjyt6ZAnQCJ4A7wOs88iRJHvw50HoujuPBoCKwHWiosy8MdfZnAdcHk8dxXFJ3VQbQlCTJvRBCGdRbD4M6uc5glpY3eAihpN5S5w12diSEcCCEcKUO4ljdr15T76ur1FDDLIQQ3qv71EdDOe3Kxj3leRXyk+pxdWnFWod6Wt2bY3de3aSuUHcPBVimHs7mK9WrmeOF6lR1o9qnzskh2ar2qm1qizpfXaPeVGdlmGN5pb09qMxz1Xb1kLqgzn1RyH7JUXW52lr5e/Kqi9qpto7V1atuUzfnARrV7jEib1T76gG2qxdGmXyiekkt1GswPTtek0aBfJp6YySGBfWg2tPQ0FAYgf1stUfdmdcjarbYJEniKIq6gY/Aw+zWHAC+p2labGpqiorFYgGYCEzN7oQdQClN07O1/EfDyGgC0ALMBdYAi4FyK+4H3gLPsxfR1zRNi+NP7nH5J+QntnXe5B5mpfQAAAAASUVORK5CYII=">
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="../nimdoc.out.css?v=2.2.10">
+<link rel="stylesheet" type="text/css" href="../nimdoc.out.css?v=2.4.0">
 
 <!-- JS -->
-<script type="text/javascript" src="../dochack.js?v=2.2.10"></script>
+<script type="text/javascript" src="../dochack.js?v=2.4.0"></script>
 </head>
 <body>
   <div class="document" id="documentId">
@@ -31,28 +31,34 @@
       <div class="row">
   <div class="three columns">
     <div class="theme-select-wrapper">
-      <label for="theme-select">Theme:&nbsp;</label>
-      <select id="theme-select" onchange="setTheme(this.value)">
-        <option value="auto">🌗 Match OS</option>
-        <option value="dark">🌑 Dark</option>
-        <option value="light">🌕 Light</option>
-      </select>
-    </div>
+  <label for="theme-select">Theme:&nbsp;</label>
+  <select id="theme-select" onchange="setTheme(this.value)">
+    <option value="auto">🌗 Match OS</option>
+    <option value="dark">🌑 Dark</option>
+    <option value="light">🌕 Light</option>
+  </select>
+</div>
+
     <div id="global-links">
-      <ul class="simple">
-        <li><a id="indexLink" href="../theindex.html">Index</a></li>
-      </ul>
-    </div>
-    <div id="searchInputDiv">
-      Search: <input type="search" id="searchInput" oninput="search()"/>
-    </div>
-    <div>
-      Group by:
-      <select onchange="groupBy(this.value)">
-        <option value="section">Section</option>
-        <option value="type">Type</option>
-      </select>
-    </div>
+  
+  <ul class="simple">
+  <li><a id="indexLink" href="../theindex.html">Index</a></li>
+</ul>
+
+</div>
+
+      <div id="searchInputDiv">
+  Search: <input type="search" id="searchInput" oninput="search()"/>
+</div>
+
+    <div class="search-groupby">
+  Group by:
+  <select onchange="groupBy(this.value)">
+    <option value="section">Section</option>
+    <option value="type">Type</option>
+  </select>
+</div>
+
     <ul class="simple simple-toc" id="toc-list">
   <li>
   <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
@@ -204,8 +210,8 @@
 
 </ul>
 <ul class="simple nested-toc-section">setColorToPattern
-  <li><a class="reference" href="#setColorToPattern%2Cptr.PlaydateGraphics%2CLCDPatternPtr%2CLCDBitmapPtr%2Cint%2Cint" title="setColorToPattern(this: ptr PlaydateGraphics; color: LCDPatternPtr;
-                  bitmap: LCDBitmapPtr; x: int; y: int)">setColorToPattern(this: ptr PlaydateGraphics; color: LCDPatternPtr;
+  <li><a class="reference" href="#setColorToPattern%2Cptr.PlaydateGraphics%2CLCDColor%2CLCDBitmapPtr%2Cint%2Cint" title="setColorToPattern(this: ptr PlaydateGraphics; color: LCDColor;
+                  bitmap: LCDBitmapPtr; x: int; y: int)">setColorToPattern(this: ptr PlaydateGraphics; color: LCDColor;
                   bitmap: LCDBitmapPtr; x: int; y: int)</a></li>
 
 </ul>
@@ -645,10 +651,10 @@
 
 </div>
 <div id="setColorToPattern-procs-all">
-  <div id="setColorToPattern,ptr.PlaydateGraphics,LCDPatternPtr,LCDBitmapPtr,int,int">
-  <dt><pre><span class="Keyword">proc</span> <a href="#setColorToPattern%2Cptr.PlaydateGraphics%2CLCDPatternPtr%2CLCDBitmapPtr%2Cint%2Cint"><span class="Identifier">setColorToPattern</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">;</span> <span class="Identifier">color</span><span class="Other">:</span> <span class="Identifier">LCDPatternPtr</span><span class="Other">;</span>
+  <div id="setColorToPattern,ptr.PlaydateGraphics,LCDColor,LCDBitmapPtr,int,int">
+  <dt><pre><span class="Keyword">proc</span> <a href="#setColorToPattern%2Cptr.PlaydateGraphics%2CLCDColor%2CLCDBitmapPtr%2Cint%2Cint"><span class="Identifier">setColorToPattern</span></a><span class="Other">(</span><span class="Identifier">this</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="#PlaydateGraphics"><span class="Identifier">PlaydateGraphics</span></a><span class="Other">;</span> <span class="Identifier">color</span><span class="Other">:</span> <a href="#LCDColor"><span class="Identifier">LCDColor</span></a><span class="Other">;</span>
                        <span class="Identifier">bitmap</span><span class="Other">:</span> <a href="types.html#LCDBitmapPtr"><span class="Identifier">LCDBitmapPtr</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
     
@@ -729,7 +735,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-07-29 23:36:26 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-09 16:03:57 UTC</small>
       </div>
     </div>
   </div>

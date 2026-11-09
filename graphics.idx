@@ -51,40 +51,40 @@ nim	set	graphics.html#set,BitmapView,int,int,LCDSolidColor	proc set(view: Bitmap
 nim	getDebugBitmap	graphics.html#getDebugBitmap,ptr.PlaydateGraphics	proc getDebugBitmap(this: ptr PlaydateGraphics): LCDBitmap		401
 nim	copyFrameBufferBitmap	graphics.html#copyFrameBufferBitmap,ptr.PlaydateGraphics	proc copyFrameBufferBitmap(this: ptr PlaydateGraphics): LCDBitmap		408
 nim	createPattern	graphics.html#createPattern,ptr.PlaydateGraphics,LCDBitmap,int,int	proc createPattern(this: ptr PlaydateGraphics; bitmap: LCDBitmap; x: int; y: int): LCDPattern		412
-nim	fillPolygon	graphics.html#fillPolygon,ptr.PlaydateGraphics,openArray[Int32x2],LCDColor,LCDPolygonFillRule	proc fillPolygon[Int32x2](this: ptr PlaydateGraphics; points: openArray[Int32x2];\n                     color: LCDColor; fillRule: LCDPolygonFillRule)		423
-nim	getFontHeight	graphics.html#getFontHeight,LCDFont	proc getFontHeight(this: LCDFont): uint		437
-nim	getDisplayBufferBitmap	graphics.html#getDisplayBufferBitmap,ptr.PlaydateGraphics	proc getDisplayBufferBitmap(this: ptr PlaydateGraphics): LCDBitmap		442
-nim	drawRotated	graphics.html#drawRotated,LCDBitmap,int,int,float32,float32,float32,float32,float32	proc drawRotated(this: LCDBitmap; x: int; y: int; rotation: float32;\n            centerX: float32; centerY: float32; xScale: float32; yScale: float32)		446
-nim	width	graphics.html#width,LCDBitmap	proc width(this: LCDBitmap): int		462
-nim	height	graphics.html#height,LCDBitmap	proc height(this: LCDBitmap): int		465
-nim	setBitmapMask	graphics.html#setBitmapMask,LCDBitmap,LCDBitmap	proc setBitmapMask(this: LCDBitmap; mask: LCDBitmap = playdate.graphics.newBitmap(\n    this.width, this.height, kColorWhite)): int		468
-nim	getBitmapMask	graphics.html#getBitmapMask,LCDBitmap	proc getBitmapMask(this: LCDBitmap): LCDBitmap		475
-nim	get	graphics.html#get,LCDBitmap,int,int	proc get(this: LCDBitmap; x, y: int): LCDSolidColor		479
-nim	set	graphics.html#set,LCDBitmap,int,int,LCDSolidColor	proc set(this: LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)		487
-nim	setStencilImage	graphics.html#setStencilImage,ptr.PlaydateGraphics,LCDBitmap,bool	proc setStencilImage(this: ptr PlaydateGraphics; bitmap: LCDBitmap;\n                tile: bool = false)		496
-nim	makeFont	graphics.html#makeFont,LCDFontDataPtr,bool	proc makeFont(this: LCDFontData; wide: bool): LCDFont		505
-nim	`$`	graphics.html#$	proc `$`(view: BitmapView | LCDBitmap): string		510
-nim	getTextSize	graphics.html#getTextSize,LCDFont,string,int	proc getTextSize(this: LCDFont; text: string; lineHeightAdjustment: int = 0): tuple[\n    width: int, height: int]		528
-nim	kTextAlignmentLeft	graphics.html#kTextAlignmentLeft	TextAlignment.kTextAlignmentLeft		541
-nim	kTextAlignmentCenter	graphics.html#kTextAlignmentCenter	TextAlignment.kTextAlignmentCenter		541
-nim	kTextAlignmentRight	graphics.html#kTextAlignmentRight	TextAlignment.kTextAlignmentRight		541
-nim	TextAlignment	graphics.html#TextAlignment	enum TextAlignment		541
-nim	drawTextAligned	graphics.html#drawTextAligned,ptr.PlaydateGraphics,string,int,int,TextAlignment,int	proc drawTextAligned(this: ptr PlaydateGraphics; text: string; x, y: int;\n                alignment: TextAlignment = kTextAlignmentCenter;\n                lineHeightAdjustment: int = 0)		546
-nim	drawTextAligned	graphics.html#drawTextAligned,LCDFont,string,int,int,TextAlignment,int	proc drawTextAligned(this: LCDFont; text: string; x, y: int;\n                alignment: TextAlignment = kTextAlignmentCenter;\n                lineHeightAdjustment: int = 0)		575
-nim	TextInRectResult	graphics.html#TextInRectResult	object TextInRectResult		587
-nim	drawTextInRect	graphics.html#drawTextInRect,LCDFont,string,int,int,int,int,int,string,TextAlignment	proc drawTextInRect(this: LCDFont; text: string; x, y, width, height: int;\n               lineHeightAdjustment: int = 0; truncationString: string = "...";\n               alignment: TextAlignment = kTextAlignmentLeft): TextInRectResult		738
-nim	getTextSizeInRect	graphics.html#getTextSizeInRect,LCDFont,string,int,int,int,int,int,string,TextAlignment	proc getTextSizeInRect(this: LCDFont; text: string; x, y, width, height: int;\n                  lineHeightAdjustment: int = 0;\n                  truncationString: string = "...";\n                  alignment: TextAlignment = kTextAlignmentLeft): TextInRectResult		756
-nim	drawTextInRect	graphics.html#drawTextInRect,ptr.PlaydateGraphics,string,int,int,int,int,int,string,TextAlignment	proc drawTextInRect(this: ptr PlaydateGraphics; text: string;\n               x, y, width, height: int; lineHeightAdjustment: int = 0;\n               truncationString: string = "...";\n               alignment: TextAlignment = kTextAlignmentLeft): TextInRectResult		769
-nim	getTextSizeInRect	graphics.html#getTextSizeInRect,ptr.PlaydateGraphics,string,int,int,int,int,int,string,TextAlignment	proc getTextSizeInRect(this: ptr PlaydateGraphics; text: string;\n                  x, y, width, height: int; lineHeightAdjustment: int = 0;\n                  truncationString: string = "...";\n                  alignment: TextAlignment = kTextAlignmentLeft): TextInRectResult		792
+nim	fillPolygon	graphics.html#fillPolygon,ptr.PlaydateGraphics,openArray[Int32x2],LCDColor,LCDPolygonFillRule	proc fillPolygon[Int32x2](this: ptr PlaydateGraphics; points: openArray[Int32x2];\n                     color: LCDColor; fillRule: LCDPolygonFillRule)		427
+nim	getFontHeight	graphics.html#getFontHeight,LCDFont	proc getFontHeight(this: LCDFont): uint		441
+nim	getDisplayBufferBitmap	graphics.html#getDisplayBufferBitmap,ptr.PlaydateGraphics	proc getDisplayBufferBitmap(this: ptr PlaydateGraphics): LCDBitmap		446
+nim	drawRotated	graphics.html#drawRotated,LCDBitmap,int,int,float32,float32,float32,float32,float32	proc drawRotated(this: LCDBitmap; x: int; y: int; rotation: float32;\n            centerX: float32; centerY: float32; xScale: float32; yScale: float32)		450
+nim	width	graphics.html#width,LCDBitmap	proc width(this: LCDBitmap): int		466
+nim	height	graphics.html#height,LCDBitmap	proc height(this: LCDBitmap): int		469
+nim	setBitmapMask	graphics.html#setBitmapMask,LCDBitmap,LCDBitmap	proc setBitmapMask(this: LCDBitmap; mask: LCDBitmap = playdate.graphics.newBitmap(\n    this.width, this.height, kColorWhite)): int		472
+nim	getBitmapMask	graphics.html#getBitmapMask,LCDBitmap	proc getBitmapMask(this: LCDBitmap): LCDBitmap		479
+nim	get	graphics.html#get,LCDBitmap,int,int	proc get(this: LCDBitmap; x, y: int): LCDSolidColor		483
+nim	set	graphics.html#set,LCDBitmap,int,int,LCDSolidColor	proc set(this: LCDBitmap; x, y: int; color: LCDSolidColor = kColorBlack)		491
+nim	setStencilImage	graphics.html#setStencilImage,ptr.PlaydateGraphics,LCDBitmap,bool	proc setStencilImage(this: ptr PlaydateGraphics; bitmap: LCDBitmap;\n                tile: bool = false)		500
+nim	makeFont	graphics.html#makeFont,LCDFontDataPtr,bool	proc makeFont(this: LCDFontData; wide: bool): LCDFont		509
+nim	`$`	graphics.html#$	proc `$`(view: BitmapView | LCDBitmap): string		514
+nim	getTextSize	graphics.html#getTextSize,LCDFont,string,int	proc getTextSize(this: LCDFont; text: string; lineHeightAdjustment: int = 0): tuple[\n    width: int, height: int]		532
+nim	kTextAlignmentLeft	graphics.html#kTextAlignmentLeft	TextAlignment.kTextAlignmentLeft		545
+nim	kTextAlignmentCenter	graphics.html#kTextAlignmentCenter	TextAlignment.kTextAlignmentCenter		545
+nim	kTextAlignmentRight	graphics.html#kTextAlignmentRight	TextAlignment.kTextAlignmentRight		545
+nim	TextAlignment	graphics.html#TextAlignment	enum TextAlignment		545
+nim	drawTextAligned	graphics.html#drawTextAligned,ptr.PlaydateGraphics,string,int,int,TextAlignment,int	proc drawTextAligned(this: ptr PlaydateGraphics; text: string; x, y: int;\n                alignment: TextAlignment = kTextAlignmentCenter;\n                lineHeightAdjustment: int = 0)		550
+nim	drawTextAligned	graphics.html#drawTextAligned,LCDFont,string,int,int,TextAlignment,int	proc drawTextAligned(this: LCDFont; text: string; x, y: int;\n                alignment: TextAlignment = kTextAlignmentCenter;\n                lineHeightAdjustment: int = 0)		579
+nim	TextInRectResult	graphics.html#TextInRectResult	object TextInRectResult		591
+nim	drawTextInRect	graphics.html#drawTextInRect,LCDFont,string,int,int,int,int,int,string,TextAlignment	proc drawTextInRect(this: LCDFont; text: string; x, y, width, height: int;\n               lineHeightAdjustment: int = 0; truncationString: string = "...";\n               alignment: TextAlignment = kTextAlignmentLeft): TextInRectResult		742
+nim	getTextSizeInRect	graphics.html#getTextSizeInRect,LCDFont,string,int,int,int,int,int,string,TextAlignment	proc getTextSizeInRect(this: LCDFont; text: string; x, y, width, height: int;\n                  lineHeightAdjustment: int = 0;\n                  truncationString: string = "...";\n                  alignment: TextAlignment = kTextAlignmentLeft): TextInRectResult		760
+nim	drawTextInRect	graphics.html#drawTextInRect,ptr.PlaydateGraphics,string,int,int,int,int,int,string,TextAlignment	proc drawTextInRect(this: ptr PlaydateGraphics; text: string;\n               x, y, width, height: int; lineHeightAdjustment: int = 0;\n               truncationString: string = "...";\n               alignment: TextAlignment = kTextAlignmentLeft): TextInRectResult		773
+nim	getTextSizeInRect	graphics.html#getTextSizeInRect,ptr.PlaydateGraphics,string,int,int,int,int,int,string,TextAlignment	proc getTextSizeInRect(this: ptr PlaydateGraphics; text: string;\n                  x, y, width, height: int; lineHeightAdjustment: int = 0;\n                  truncationString: string = "...";\n                  alignment: TextAlignment = kTextAlignmentLeft): TextInRectResult		796
 nimgrp	height	graphics.html#height-procs-all	proc		360
 nimgrp	load	graphics.html#load-procs-all	proc		150
 nimgrp	width	graphics.html#width-procs-all	proc		356
 nimgrp	newbitmaptable	graphics.html#newBitmapTable-procs-all	proc		254
-nimgrp	gettextsizeinrect	graphics.html#getTextSizeInRect-procs-all	proc		756
+nimgrp	gettextsizeinrect	graphics.html#getTextSizeInRect-procs-all	proc		760
 nimgrp	newbitmap	graphics.html#newBitmap-procs-all	proc		130
-nimgrp	drawtextaligned	graphics.html#drawTextAligned-procs-all	proc		546
+nimgrp	drawtextaligned	graphics.html#drawTextAligned-procs-all	proc		550
 nimgrp	rotated	graphics.html#rotated-procs-all	proc		210
 nimgrp	clear	graphics.html#clear-procs-all	proc		206
-nimgrp	drawtextinrect	graphics.html#drawTextInRect-procs-all	proc		738
+nimgrp	drawtextinrect	graphics.html#drawTextInRect-procs-all	proc		742
 nimgrp	get	graphics.html#get-procs-all	proc		377
 nimgrp	set	graphics.html#set-procs-all	proc		384
